@@ -1,10 +1,10 @@
 # RiskStudio · Cascade Command
 
-Speelbaar prototype voor beurs, Mac met groot scherm en mobiel. Projectcode buiten iCloud opgeslagen, expliciet gekozen op 1 oktober 2026. Op 1 oktober 2026 is publicatie onder het RiskStudio-account aangevraagd, met expliciete keuze voor een openbare link.
+Speelbaar prototype voor beurs, Mac met groot scherm en mobiel. Projectcode buiten iCloud opgeslagen, expliciet gekozen op 1 oktober 2026. Op 1 oktober 2026 is de game succesvol onder het RiskStudio-account gepubliceerd, met expliciete keuze voor een openbare link.
 
 ## Online versie
 
-Sites-locatie onder RiskStudio: https://riskstudio-cascade-command.good-hare-7303.chatgpt.site
+Sites-locatie onder RiskStudio: https://riskstudio-cascade-command.codexwillem.chatgpt.site
 
 Willem koos op 1 oktober 2026 expliciet openbare toegang: iedereen met de link kan de game openen en met collega’s spelen. De QR-code opent dezelfde website op je telefoon. Een telefoon begint een eigen ronde. De Mac hoeft voor de online versie niet aan te blijven. Toegang wordt door Sites afgedwongen; er is geen aparte login gebouwd.
 
@@ -27,7 +27,7 @@ De Galaxy toont Tier 3 → Tier 2 → Tier 1 → kritieke dienst → eigen organ
 - Klik/tik vóór een dreiging. Een onderschepper reist vanuit het centrum naar een beschermingsveld. Dat kost 20 energie; energie herstelt met 13 per seconde. Het veld kan ook een laag risico raken, wat 50 punten kost.
 - Scan kost 25 energie, vertraagt signalen 5 seconden en herlaadt 18 seconden. De knop onderzoekt de dreiging met de grootste potentiële impact op operationele diensten. Met ‘Kies een leverancier’ selecteer je een dreiging of node met klik/tik. Op de Mac kan dit ook met richten en spatie. Escape annuleert de gerichte selectie; Enter scant in deze modus. Zonder dreiging onderzoekt de knop een leveranciersnode.
 - Scan toont een momentopname van tier, type, ernst, mogelijke bedrijfsimpact, land, jurisdictie en cyberrating. Verborgen uitgaande verbindingen van de onderzochte nodes worden blijvend zichtbaar. Dezelfde verbinding telt maar één keer als ontdekking.
-- Leaderboard, kritieke diensten en Live Risk Feed zijn tegelijk zichtbaar. Groene, amberkleurige en lege balken tonen de actuele weerbaarheid. De feed toont echte spelgebeurtenissen met simulatietijd. De leverancierskaart staat op desktop naast de Galaxy en op smallere schermen onder de bediening. Op mobiel opent het scanbericht de detailkaart; deze pauzeert de ronde. ‘Terug naar de missie’ hervat de ronde.
+- Kritieke diensten, Live Risk Feed en leaderboard zijn tegelijk zichtbaar, in die volgorde. Het leaderboard staat onder de Live Risk Feed op desktop, tablet en mobiel. Groene, amberkleurige en lege balken tonen de actuele weerbaarheid. De feed toont echte spelgebeurtenissen met simulatietijd. De leverancierskaart staat op desktop naast de Galaxy en op smallere schermen onder de bediening. Op mobiel opent het scanbericht de detailkaart; deze pauzeert de ronde. ‘Terug naar de missie’ hervat de ronde.
 - +50 per onderschepte dreiging; +100 voor een relevante dreiging die vanaf golf 2 vóór de eerste mogelijke splitsing is gestopt; +200 per dienst die na afloop nog operationeel is. De kettingreactiebonus geldt één keer per oorspronkelijke dreiging, nooit na een eerdere splitsing.
 - Snelle reactie binnen 3 seconden: +25. Combo binnen 2,5 seconden: +25 per extra onderschepping, maximaal +100. Een verkeerde onderschepping of inslag op een operationele dienst: −50. Scores worden niet negatief.
 - De eindrapportage toont onderschepte dreigingen, voorkomen kettingreacties, ontdekte afhankelijkheden, operationele diensten, combo en fouten. De kernboodschap: een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.
@@ -41,7 +41,7 @@ De drie kritieke diensten hebben in de Galaxy en rechterbalk dezelfde identiteit
 
 Een lokale Node-server bewaart de top 100 per spelversie in `data/leaderboard.json`, buiten iCloud. Het scherm toont de top 10. Mac en telefoons op dezelfde server delen dit klassement. Alleen een zelfgekozen naam en spelresultaat worden opgeslagen, geen e-mailadres of account.
 
-De server herberekent de score aan de hand van een deterministische replay van de spelacties. De client kan geen eigen score insturen. De server controleert actievolgorde, energie, cooldown, sessie en minimale rondeduur. Een sessie kan één score opslaan en verloopt na 30 minuten. Alle spelers binnen dezelfde spelversie krijgen dezelfde scenarioseed. De nieuwe spelregels gebruiken `cascade-2`; eerdere `cascade-1`-scores blijven bewaard en zijn apart op te vragen via de versie-keuze in het leaderboard. Scores met verschillende puntentellingen worden niet gemengd.
+De server herberekent de score aan de hand van een deterministische replay van de spelacties. De client kan geen eigen score insturen. De server controleert actievolgorde, energie, cooldown, sessie en minimale rondeduur. Een sessie kan één score opslaan en verloopt na 30 minuten. Alle spelers binnen dezelfde spelversie krijgen dezelfde scenarioseed. Er is één zichtbaar leaderboard zonder keuze voor eerdere spelregels. Het gebruikt automatisch de actuele spelversie uit `src/engine.js`, nu `cascade-2`, ook wanneer een oud API-adres een andere versie opvraagt. Bij inhoudelijk gewijzigde spelregels moet `VERSION` worden verhoogd; het leaderboard volgt die versie automatisch. Scores met een eerdere puntentelling blijven bewaard buiten het zichtbare leaderboard. De spelacties van oude rondes zijn niet opgeslagen, dus oude scores kunnen niet eerlijk worden herberekend naar nieuwe regels.
 
 **Prototypegrens:** dit is geen productieklare prijsvraag. Replayvalidatie verhindert verzonnen scores, maar geen bots, meerdere namen of meerdere pogingen. Voor echte prijzen ontbreken nog deelnemersidentiteit/deelnameregels, moderatie, beperking van pogingen en een afsluitmoment. De RiskStudio Sites-versie is openbaar toegankelijk via de link. Het is een gedeeld prototypeklassement, geen automatisch dagklassement.
 
@@ -73,10 +73,14 @@ Er is optionele WebMCP-leestoegang tot hetzelfde leaderboard wanneer de browser 
 
 ## Controle van de nieuwe spelregels
 
-De regressieset controleert onder meer deterministische replay, energie/cooldown, schade per severity, LOW-signalen, splitsingen met behoud van dreiging, voorkomen kettingreacties, eenmalige ontdekkingen, eindbonus en gescheiden historische klassementen. Browsercontrole omvat speluitleg/pauze, scan-intelligence, Live Risk Feed, mobiele viewport, eindrapportage en opslaan in een apart lokaal testklassement. Geen testscores in de online database geplaatst.
+De regressieset controleert onder meer deterministische replay, energie/cooldown, schade per severity, LOW-signalen, splitsingen met behoud van dreiging, voorkomen kettingreacties, eenmalige ontdekkingen, eindbonus en één actueel leaderboard waarbij eerdere scores bewaard blijven buiten het zichtbare klassement. Browsercontrole omvat speluitleg/pauze, scan-intelligence, Live Risk Feed, mobiele viewport, eindrapportage en opslaan in een apart lokaal testklassement. Geen testscores in de online database geplaatst.
 
 ## Ontwerpuitwerking, 1 oktober 2026
 
 Gebaseerd op het door Willem aangeleverde ontwerp: een omlijst commandoscherm, permanent zichtbare contextpanelen, vijf categorie-symbolen, gekleurde actieve ketenroutes met pijlen, kettingreactie-effecten, vraagtekens voor verborgen relaties, een leverancierskaart met gerichte scan en een categorielegenda met punten. Het bestaande eigen logo, de gecentreerde tierlabels in nodevrije zones, QR-code en klassementen blijven behouden. Alle signalen zijn fictieve spelsignalen. De decoratieve genummerde toelichtingskaders uit het ontwerp zijn vertaald naar de bediening, legenda en speluitleg.
 
 Gecontroleerd op schermbreedtes 320, 390, 1280 en 1440 pixels, inclusief gericht scannen, detailkaart, pauzeren/hervatten, ronde-einde en scoreopslag in een geïsoleerd lokaal testklassement. Geen testscores in de online database geplaatst.
+
+## Eén actueel leaderboard, 1 oktober 2026
+
+Willem vraagt één leaderboard volgens de laatste spelregels, onder de Live Risk Feed. Lokaal doorgevoerd en herstart; zestien regressietests en de bouwcontrole slagen. De volgorde en afwezigheid van een versie-keuze zijn gecontroleerd op 390, 800 en 1440 pixels. De Worker-bron is overeenkomstig aangepast en is dezelfde bron voor de gevraagde nieuwe Sites-publicatie. Voor de ene bestaande lokale score zonder spelacties is voorlopig gekozen voor bewaren buiten het zichtbare leaderboard; een andere gebruikerskeuze is nog niet ontvangen.

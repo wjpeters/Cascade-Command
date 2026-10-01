@@ -1,10 +1,11 @@
+import { VERSION } from '../src/engine.js';
 // Schema changes live in generated Drizzle migrations, never in request handlers.
 export function storage(env) {
   const db = env.DB;
   if (!db) throw new Error('Leaderboard database unavailable');
   const statement = (sql, ...args) => db.prepare(sql).bind(...args);
-  const top = async version => (await statement(
-    'SELECT id, name, score, services, date FROM scores WHERE version = ? ORDER BY score DESC, services DESC, date ASC, id ASC LIMIT 10', version
+  const top = async () => (await statement(
+    'SELECT id, name, score, services, date FROM scores WHERE version = ? ORDER BY score DESC, services DESC, date ASC, id ASC LIMIT 10', VERSION
   ).all()).results;
   return {
     top,
@@ -38,7 +39,7 @@ export function storage(env) {
         (score = ? AND services = ? AND date = ? AND id < ?))`,
         entry.version, entry.score, entry.score, entry.services,
         entry.score, entry.services, entry.date, entry.score, entry.services, entry.date, entry.id).first();
-      return { rank: position.rank, score: entry.score, id: entry.id, scores: await top(entry.version) };
+      return { rank: position.rank, score: entry.score, id: entry.id, scores: await top() };
     },
   };
 }

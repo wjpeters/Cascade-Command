@@ -19,13 +19,13 @@ const body = req => new Promise((resolve, reject) => {
   let text = ''; req.on('data', chunk => { text += chunk; if (text.length > 160000) { reject(new Error('Te veel gegevens.')); req.destroy(); } });
   req.on('end', () => { try { resolve(JSON.parse(text || '{}')); } catch { reject(new Error('Ongeldige invoer.')); } }); req.on('error', reject);
 });
-const topScores = (version = VERSION) => scores.filter(s => s.version === version).sort((a,b) => b.score-a.score || b.services-a.services || a.date.localeCompare(b.date)).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
+const topScores = () => scores.filter(s => s.version === VERSION).sort((a,b) => b.score-a.score || b.services-a.services || a.date.localeCompare(b.date)).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
     if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port });
-    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores(url.searchParams.get('version') === 'cascade-1' ? 'cascade-1' : VERSION) });
+    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
     if (url.pathname === '/api/session' && req.method === 'POST') {
       for (const [key, s] of sessions) if (Date.now() - s.started > 30 * 60 * 1000) sessions.delete(key);
       if (sessions.size >= 500) return json(res, 429, { error: 'Even geduld; er zijn veel rondes actief.' });

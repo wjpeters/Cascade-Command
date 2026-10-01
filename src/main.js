@@ -17,7 +17,6 @@ async function request(url,options={}){
   const data=await response.json();if(!response.ok)throw new Error(data.error||'Verbinding met de gameserver mislukt.');return data;
 }
 // All three panels remain visible together, including during a round.
-function selectSide(name){for(const panel of ['feed','board'])$(panel+'-panel').dataset.active=String(panel===name);}
 function setTargeting(value){
   scanTargeting=value;renderer.targeting=value;renderer.pointer=null;
   canvas.classList.toggle('targeting',value);$('target-scan').setAttribute('aria-pressed',String(value));
@@ -33,18 +32,17 @@ function setState(value){
 }
 function toast(text,danger=false){$('event-toast').textContent=text;$('event-toast').className='event-toast show'+(danger?' danger':'');toastUntil=performance.now()+2100;}
 function drawBoard(scores){
-  const board=$('leaderboard');if(!scores.length){board.innerHTML=$('score-edition').value==='cascade-1'?'<div class="empty-board"><strong>Geen eerdere scores.</strong><p>Dit klassement hoort bij de vorige spelregels.</p></div>':emptyBoard;return;}board.replaceChildren();
+  const board=$('leaderboard');if(!scores.length){board.innerHTML=emptyBoard;return;}board.replaceChildren();
   for(const [index,score] of scores.entries()){
     const row=document.createElement('div');row.className='board-row'+(score.id===boardId?' mine':'');
     for(const [className,text] of [['rank',String(index+1).padStart(2,'0')],['name',score.name],['points',score.score.toLocaleString('nl-NL')]]){const span=document.createElement('span');span.className=className;span.textContent=text;row.append(span);}board.append(row);
   }
 }
 async function refreshBoard(){
-  const revision=++boardRequest,edition=$('score-edition').value;
-  try{const data=await request('/api/leaderboard?version='+encodeURIComponent(edition));if(revision===boardRequest)drawBoard(data.scores);}
+  const revision=++boardRequest;
+  try{const data=await request('/api/leaderboard');if(revision===boardRequest)drawBoard(data.scores);}
   catch{if(revision===boardRequest)$('leaderboard').innerHTML='<div class="empty-board"><strong>Leaderboard even niet bereikbaar.</strong><p>Probeer het zo opnieuw.</p></div>';}
 }
-$('score-edition').addEventListener('change',refreshBoard);
 function drawIntelligence(){
   const info=game.intelligence;
   if(info===lastIntel)return;lastIntel=info;
@@ -97,18 +95,18 @@ async function start(){
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina om te spelen.');
     game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
-    $('score-edition').value=VERSION;setState('playing');selectSide('feed');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');updateHud();
+    setState('playing');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');updateHud();
   }catch(error){setState('intro');$('start-error').textContent=error.message;}
   finally{busy=false;$('start').disabled=false;$('retry').disabled=false;}
 }
-function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');selectSide('board');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
+function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
 function action(type,point={}){
   if(state!=='playing')return false;
   const a={tick:game.tick,type,...point};
   if(type==='scan'&&a.x!==undefined){a.x=clamp(a.x,0,1000);a.y=clamp(a.y,0,1000);}
   if(game.act(a)){
     actions.push(a);audio.play(type);
-    if(type==='scan'){setTargeting(false);selectSide('feed');toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
+    if(type==='scan'){setTargeting(false);toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
     return true;
   }
   if(type==='shot')toast(game.energy<20?'Energie laadt op…':'Even richten, dan opnieuw.');
@@ -195,7 +193,6 @@ document.addEventListener('keydown',event=>{
   if(state!=='playing'||event.target.matches('button,a'))return;
   if(event.code==='Space'){event.preventDefault();if(!event.repeat)action('scan',renderer.pointer?{...renderer.pointer}:{});return;}
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){
-    if(event.target.closest('.side-tabs'))return;
     event.preventDefault();renderer.keyboard=true;renderer.pointer??={x:500,y:250};const step=event.shiftKey?12:30;
     if(event.key==='ArrowUp')renderer.pointer.y-=step;if(event.key==='ArrowDown')renderer.pointer.y+=step;
     if(event.key==='ArrowLeft')renderer.pointer.x-=step;if(event.key==='ArrowRight')renderer.pointer.x+=step;
@@ -205,13 +202,13 @@ document.addEventListener('keydown',event=>{
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 $('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('demo-play').addEventListener('click',start);
-$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=undefined;accumulator=0;setState('demo');selectSide('feed');});
+$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=undefined;accumulator=0;setState('demo');});
 $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
 $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sound').setAttribute('aria-pressed',enabled);$('sound').setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');$('sound').title=enabled?'Geluid uit':'Geluid aan';$('sound').innerHTML=enabled?'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>':'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg>';}catch{toast('Geluid is niet beschikbaar in deze browser.');}});
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
-$('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;$('score-edition').value=VERSION;selectSide('board');drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
+$('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
 $('mobile-link').addEventListener('click',()=>{if(state==='playing')pause();renderMobileShare(mobileUrl);$('mobile-dialog').showModal();});$('close-mobile').addEventListener('click',()=>$('mobile-dialog').close());$('mobile-dialog').addEventListener('click',e=>{if(e.target===$('mobile-dialog'))$('mobile-dialog').close();});$('copy-url').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mobileUrl);$('copy-url').textContent='Adres gekopieerd';}catch{$('copy-url').textContent='Selecteer het adres hierboven';}});
-request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Privéversie. Log op je telefoon in met hetzelfde ChatGPT-account. Je begint daar een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();setInterval(()=>{if(state!=='playing')refreshBoard();},15000);setState('intro');updateHud();requestAnimationFrame(frame);
+request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Open de game via de link of QR-code. Je begint op je telefoon een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();setInterval(()=>{if(state!=='playing')refreshBoard();},15000);setState('intro');updateHud();requestAnimationFrame(frame);
 
 // Optional page-scoped access uses the same leaderboard as the visible game.
 if(document.modelContext?.registerTool){
@@ -224,7 +221,7 @@ if(document.modelContext?.registerTool){
     annotations:{readOnlyHint:true,untrustedContentHint:true},
     async execute(input){
       if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Gebruik een leeg object.');
-      const result=await request('/api/leaderboard');$('score-edition').value=VERSION;selectSide('board');drawBoard(result.scores);return result;
+      const result=await request('/api/leaderboard');drawBoard(result.scores);return result;
     }
   },{signal:lifecycle.signal})).catch(()=>{});}catch{}
 }
