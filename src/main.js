@@ -1,3 +1,4 @@
+import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, clamp } from './engine.js';
 import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
@@ -43,5 +44,21 @@ $('start').addEventListener('click',start);$('retry').addEventListener('click',s
 $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sound').setAttribute('aria-pressed',enabled);$('sound').setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');$('sound').title=enabled?'Geluid uit':'Geluid aan';$('sound').innerHTML=enabled?'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>':'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg>';}catch{toast('Geluid is niet beschikbaar in deze browser.');}});
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
 $('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
-$('mobile-link').addEventListener('click',()=>{if(state==='playing')pause();$('mobile-url').textContent=mobileUrl||'Geen lokaal netwerkadres gevonden.';if(mobileUrl)$('mobile-url').href=mobileUrl;$('mobile-dialog').showModal();});$('close-mobile').addEventListener('click',()=>$('mobile-dialog').close());$('mobile-dialog').addEventListener('click',e=>{if(e.target===$('mobile-dialog'))$('mobile-dialog').close();});$('copy-url').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mobileUrl);$('copy-url').textContent='Adres gekopieerd';}catch{$('copy-url').textContent='Selecteer het adres hierboven';}});
-request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';}).catch(()=>{});refreshBoard();setInterval(()=>{if(state!=='playing')refreshBoard();},15000);setState('intro');updateHud();requestAnimationFrame(frame);
+$('mobile-link').addEventListener('click',()=>{if(state==='playing')pause();renderMobileShare(mobileUrl);$('mobile-dialog').showModal();});$('close-mobile').addEventListener('click',()=>$('mobile-dialog').close());$('mobile-dialog').addEventListener('click',e=>{if(e.target===$('mobile-dialog'))$('mobile-dialog').close();});$('copy-url').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mobileUrl);$('copy-url').textContent='Adres gekopieerd';}catch{$('copy-url').textContent='Selecteer het adres hierboven';}});
+request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Privéversie. Log op je telefoon in met hetzelfde ChatGPT-account. Je begint daar een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();setInterval(()=>{if(state!=='playing')refreshBoard();},15000);setState('intro');updateHud();requestAnimationFrame(frame);
+
+// Optional page-scoped access uses the same leaderboard as the visible game.
+if(document.modelContext?.registerTool){
+  const lifecycle=new AbortController();
+  addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
+  try{Promise.resolve(document.modelContext.registerTool({
+    name:'read_cascade_leaderboard',title:'Bekijk Cascade Command leaderboard',
+    description:'Lees de tien hoogste opgeslagen scores van Cascade Command. Start geen ronde en slaat geen scores op.',
+    inputSchema:{type:'object',properties:{},additionalProperties:false},
+    annotations:{readOnlyHint:true,untrustedContentHint:true},
+    async execute(input){
+      if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Gebruik een leeg object.');
+      const result=await request('/api/leaderboard');drawBoard(result.scores);return result;
+    }
+  },{signal:lifecycle.signal})).catch(()=>{});}catch{}
+}

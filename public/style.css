@@ -14,3 +14,5 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 @media(min-width:1100px){.sidebar{padding:34px 32px 24px}.sidebar h2{font-size:35px}.sidebar-title p{font-size:16px}.empty-board svg{width:128px;height:108px;margin-bottom:27px}.empty-board strong{font-size:19px}.empty-board p{font-size:16px}.howto p{font-size:14px}.service-row{font-size:13px}.footnote{font-size:11px}.mobile-link{font-size:13px}}
+
+#mobile-dialog{max-height:calc(100dvh - 32px);overflow:auto}#mobile-dialog .mobile-qr{display:block;width:264px;height:auto;aspect-ratio:1;max-width:100%;margin:22px auto 8px;background:#fff;border-radius:8px}#mobile-dialog .qr-hint{text-align:center;font-size:12px;margin:8px 0;color:var(--muted)}#mobile-dialog #mobile-url{text-align:center;font-size:14px;margin:16px 0 20px}#mobile-dialog .primary:disabled{opacity:.5;cursor:default}

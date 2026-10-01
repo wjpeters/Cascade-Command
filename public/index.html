@@ -55,7 +55,7 @@
     <p class="footnote">Een spel over afhankelijkheden.<br>Een wereld aan inzicht.</p>
   </aside>
 </main>
-<dialog id="mobile-dialog"><button class="dialog-close icon-button" id="close-mobile" aria-label="Sluiten">×</button><h2>Neem je galaxy mee.</h2><p>Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en open:</p><a id="mobile-url"></a><button class="primary" id="copy-url">Kopieer adres</button><p class="micro">Deze lokale demo werkt zolang de gameserver op de Mac draait. Internetpublicatie volgt later.</p></dialog>
+<dialog id="mobile-dialog" aria-labelledby="mobile-title"><button class="dialog-close icon-button" id="close-mobile" aria-label="Sluiten">×</button><h2 id="mobile-title">Neem je galaxy mee.</h2><p id="mobile-instructions">Scan de QR-code met de camera van je telefoon.</p><img id="mobile-qr" class="mobile-qr" width="264" height="264" alt="QR-code om Cascade Command op je telefoon te openen" hidden><p id="mobile-qr-hint" class="qr-hint" aria-live="polite"></p><a id="mobile-url"></a><button class="primary" id="copy-url">Kopieer adres</button><p class="micro" id="mobile-availability"></p></dialog>
 <div class="sr-only" id="accessible-status" aria-live="polite"></div>
 <script type="module" src="/src/main.js"></script>
 </body></html>

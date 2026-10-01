@@ -1,12 +1,20 @@
 # RiskStudio · Cascade Command
 
-Speelbaar prototype voor beurs, Mac met groot scherm en mobiel. Alleen lokaal opgeslagen, expliciet gekozen op 1 oktober 2026.
+Speelbaar prototype voor beurs, Mac met groot scherm en mobiel. Projectcode buiten iCloud opgeslagen, expliciet gekozen op 1 oktober 2026. Dezelfde dag is Sites-publicatie aangevraagd, voorlopig alleen toegankelijk voor Willem.
 
-## Spelen
+## Online versie
+
+Sites-locatie: https://riskstudio-cascade-command.black-lamp-2085.chatgpt.site
+
+De site wordt privé gepubliceerd. Open de game met je eigen ChatGPT-account. De QR-code opent dezelfde website op je telefoon; log daar met hetzelfde account in. Een telefoon begint een eigen ronde. De Mac hoeft voor de online versie niet aan te blijven. Toegang wordt door Sites afgedwongen; er is geen aparte login gebouwd.
+
+Het online leaderboard staat in een Sites D1-database en blijft behouden na opnieuw publiceren. Online sessies verlopen na 30 minuten; scoreopslag is atomair en herhalen na een verloren antwoord levert dezelfde score op. Lokale en online klassementen zijn afzonderlijk. Lokale scores zijn niet naar Sites gekopieerd.
+
+## Lokaal spelen
 
 - Dubbelklik op **Start Cascade Command.command**. Of voer in deze map `rtk proxy npm start` uit.
 - Open http://localhost:4317 op de Mac.
-- Klik in het spel op **Speel op je telefoon** voor het actuele wifi-adres. Open dat adres op een telefoon op hetzelfde netwerk. De Mac moet aan blijven; sommige gastnetwerken blokkeren onderling verkeer.
+- Klik in het spel op **Speel op je telefoon** en scan de QR-code, of open het getoonde adres op een telefoon op hetzelfde netwerk. De Mac moet aan blijven; sommige gastnetwerken blokkeren onderling verkeer.
 - Er zijn geen packages te installeren. Node 20 of nieuwer volstaat.
 
 ## Spelregels
@@ -27,9 +35,9 @@ Een lokale Node-server bewaart de top 100 in `data/leaderboard.json`, buiten iCl
 
 De server herberekent de score aan de hand van een deterministische replay van de spelacties. De client kan geen eigen score insturen. De server controleert actievolgorde, energie, cooldown, sessie en minimale rondeduur. Een sessie kan één score opslaan en verloopt na 30 minuten. Alle spelers krijgen dezelfde scenarioseed.
 
-**Prototypegrens:** dit is geen productieklare prijsvraag. Replayvalidatie verhindert verzonnen scores, maar geen bots, meerdere namen of meerdere pogingen. Voor echte prijzen ontbreken nog identiteit/deelnameregels, moderatie, rate limits, een afsluitmoment en een beveiligde publieke deployment. Het is een gedeeld prototypeklassement, geen automatisch dagklassement.
+**Prototypegrens:** dit is geen productieklare prijsvraag. Replayvalidatie verhindert verzonnen scores, maar geen bots, meerdere namen of meerdere pogingen. Voor echte prijzen ontbreken nog deelnemersidentiteit/deelnameregels, moderatie, beperking van pogingen en een afsluitmoment. De Sites-versie is voorlopig privé. Het is een gedeeld prototypeklassement, geen automatisch dagklassement.
 
-De server luistert op het lokale netwerk voor mobiele deelname. Er is niets op internet gepubliceerd en geen portforwarding ingesteld. De app haalt geen klantdata op en wijzigt RiskStudio niet. Beschermingsvelden zijn een spelmetafoor, geen bestaande RiskStudio-functionaliteit.
+De server luistert op het lokale netwerk voor mobiele deelname. Voor lokaal spelen is geen portforwarding nodig; de Sites-versie draait onafhankelijk van deze lokale server. De app haalt geen klantdata op en wijzigt RiskStudio niet. Beschermingsvelden zijn een spelmetafoor, geen bestaande RiskStudio-functionaliteit.
 
 ## Techniek
 
@@ -42,4 +50,14 @@ Dependencyvrije browsergame met native ES-modules, Canvas 2D voor het stabiele n
 - `design/`: visueel concept en ontwerpkeuzes.
 - `public/assets/`: lokale spelbeelden.
 
-Voer `rtk proxy npm test` uit voor betekenisvolle regressietests. Optioneel: `PORT`, `HOST` en `CASCADE_DATA_DIR` instellen. Dit prototype is nog niet in de homepage geïntegreerd; de statische frontend en API kunnen later worden gehost en geïntegreerd.
+Voer `rtk proxy npm test` uit voor betekenisvolle regressietests (Node 22.13+ voor SQLite-tests). Optioneel: `PORT`, `HOST` en `CASCADE_DATA_DIR` instellen. Dit prototype is nog niet in de homepage geïntegreerd; de Sites-versie heeft een afzonderlijke Worker-backend met dezelfde spelregels.
+
+De QR-code wordt lokaal in de browser gemaakt met de meegeleverde MIT-bibliotheek qrcode-generator 2.0.4. Er is geen externe QR-dienst of installatie nodig.
+
+## Sites bouwen
+
+Installeer de ontwikkelpakketten met `rtk proxy npm ci`. `rtk proxy npm run build` maakt één zelfstandige Worker inclusief lokale spelbeelden, CSS, JavaScript en QR-bibliotheek. De browserversie gebruikt geen externe CDN. `rtk proxy node scripts/validate-build.mjs` controleert het bouwresultaat.
+
+Het schema staat in `db/schema.ts`; `rtk proxy npm run db:generate` maakt nieuwe migraties. Gepubliceerde migraties nooit wijzigen. De Sites-workflow pusht broncode naar de bij deze site behorende bronrepository; de lokale checkout blijft buiten iCloud. Gegevens en geheimen zijn uitgesloten. `.openai/hosting.json` bevat alleen de sitekoppeling en logische databasebinding.
+
+Er is optionele WebMCP-leestoegang tot hetzelfde leaderboard wanneer de browser dit ondersteunt. Niet vereist voor spelen. Platformtoegang en een echte telefoonscan moeten met het eigen ingelogde account worden gebruikt.
