@@ -35,6 +35,8 @@ De Galaxy toont Tier 3 → Tier 2 → Tier 1 → kritieke dienst → eigen organ
 
 De volledige uitleg staat onder **?** in de header en **Speluitleg & puntentelling** op het startscherm.
 
+De drie kritieke diensten hebben in de Galaxy en rechterbalk dezelfde identiteit: **A · Klantportaal** (portaal, cyaan), **B · Betalingen** (betaalkaart, paars) en **C · Operatie** (tandwiel, goud). De volledige namen staan in de rechterbalk; de Galaxy houdt alleen de herkenbare pictogrammen en letters. Letters, kleuren en pictogrammen blijven herkenbaar bij schade of uitval; de gezondheidsbalken geven afzonderlijk de actuele weerbaarheid aan.
+
 ## Leaderboard en gegevens
 
 Een lokale Node-server bewaart de top 100 per spelversie in `data/leaderboard.json`, buiten iCloud. Het scherm toont de top 10. Mac en telefoons op dezelfde server delen dit klassement. Alleen een zelfgekozen naam en spelresultaat worden opgeslagen, geen e-mailadres of account.

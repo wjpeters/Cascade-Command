@@ -2,13 +2,13 @@ import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, VERSION, THREATS, SCAN_COST, SERVICE_NAMES, clamp } from './engine.js';
 import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
-import { CATEGORIES, symbolMarkup } from './symbols.js';
+import { CATEGORIES, symbolMarkup, SERVICE_VISUALS, serviceSymbolMarkup } from './symbols.js';
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
 let state='intro',game=new Game(),session=null,actions=[],lastFrame=0,accumulator=0,toastUntil=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
 const formatTime=tick=>`${String(Math.floor(tick/FPS/60)).padStart(2,'0')}:${String(Math.floor(tick/FPS)%60).padStart(2,'0')}`;
 const severityName={critical:'Kritiek',high:'Hoog',low:'Laag',unknown:'Geen signaal in beeld'};
-$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" id="service-${i}"><span class="service-symbol" aria-hidden="true">${['✣','⬡','◇'][i]}</span><span class="service-name">${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
+$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" data-service="${SERVICE_VISUALS[name].key}" id="service-${i}"><span class="service-symbol" aria-hidden="true">${serviceSymbolMarkup(name)}</span><span class="service-name">${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
 $('category-list').innerHTML=Object.entries(CATEGORIES).filter(([kind])=>kind!=='low').map(([kind,item])=>`<div class="category" data-kind="${kind}"><span class="category-symbol">${symbolMarkup(kind)}</span><div><strong>${item.title}</strong><span>${item.detail}</span></div></div>`).join('');
 
 const emptyBoard=$('leaderboard').innerHTML;

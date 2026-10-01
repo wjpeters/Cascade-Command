@@ -1,10 +1,11 @@
-import { THREATS, linkKey } from './engine.js';
-import { CATEGORIES } from './symbols.js';
+import { THREATS, SERVICE_NAMES, linkKey } from './engine.js';
+import { CATEGORIES, SERVICE_VISUALS } from './symbols.js';
 const TAU = Math.PI * 2;
 export class Renderer {
   constructor(canvas) {
     this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.pointer = null; this.keyboard = false; this.targeting = false; this.selectedNode = null;
     this.symbols = Object.fromEntries(Object.entries(CATEGORIES).map(([kind,item])=>[kind,new Path2D(item.path)]));
+    this.serviceSymbols = Object.fromEntries(Object.entries(SERVICE_VISUALS).map(([name,item])=>[name,new Path2D(item.path)]));
     this.image = new Image(); this.image.src = '/assets/sprites.png';
     this.ready = this.image.decode().catch(() => { this.assetError = true; });
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,6 +38,22 @@ export class Renderer {
     if(critical){c.strokeStyle='#ff616f';c.lineWidth=2.5;c.beginPath();c.arc(0,0,radius+5,0,TAU);c.stroke();}
     c.scale(radius/15,radius/15);c.translate(-12,-12);c.strokeStyle=color;c.lineWidth=1.8;c.lineCap='round';c.lineJoin='round';c.stroke(this.symbols[kind]);c.restore();
   }
+  serviceIdentity(node,health) {
+    const c=this.ctx,name=SERVICE_NAMES[node.index],service=SERVICE_VISUALS[name],r=Math.max(24,8/this.scale);
+    c.save();
+    c.shadowColor=service.color;c.shadowBlur=health>0?10:0;
+    c.fillStyle='#071421';c.strokeStyle=service.color;c.lineWidth=2.2;
+    c.beginPath();c.roundRect(node.x-r,node.y-r,r*2,r*2,8);c.fill();c.stroke();c.shadowBlur=0;
+    c.save();c.translate(node.x,node.y);c.scale(r/17,r/17);c.translate(-12,-13);
+    c.strokeStyle=service.color;c.lineWidth=1.6;c.lineCap='round';c.lineJoin='round';c.stroke(this.serviceSymbols[name]);c.restore();
+    const badge=Math.max(11,5/this.scale),bx=node.x+r+6,by=node.y;
+    c.fillStyle=service.color;c.beginPath();c.arc(bx,by,badge,0,TAU);c.fill();c.fillStyle='#071421';c.textAlign='center';c.textBaseline='middle';c.font=`700 ${badge*1.45}px -apple-system,sans-serif`;c.fillText(service.code,bx,by+1);
+    // Status stays separate from identity: warning/failed services keep their icon and letter.
+    const barWidth=r*2,barY=node.y+r+8,segment=(barWidth-9)/4;
+    for(let i=0;i<4;i++){c.fillStyle=i<health?(health<=2?'#ffb45c':'#66dfb0'):'#304051';c.fillRect(node.x-r+i*(segment+3),barY,segment,4);}
+    if(health===0){this.circle(node.x,node.y,r+7,'#ff7078',2);}
+    c.restore();
+  }
   render(game, state) {
     const c = this.ctx; c.setTransform(this.dpr,0,0,this.dpr,0,0); c.clearRect(0,0,this.w,this.h);
     c.translate(this.ox,this.oy); c.scale(this.scale,this.scale);
@@ -57,17 +74,15 @@ export class Renderer {
       if(link.hidden&&!known&&!active){
         const x=link.from.x+(link.to.x-link.from.x)*.38,y=link.from.y+(link.to.y-link.from.y)*.38;
         // Keep the reserved tier-label column clear of hidden-link markers.
-        if(Math.abs(x-500)>95||y>425){c.fillStyle='#071421';c.beginPath();c.arc(x,y,13,0,TAU);c.fill();this.circle(x,y,13,'#a1bace88');c.font='600 18px -apple-system,sans-serif';c.textAlign='center';c.fillStyle='#bed4e4';c.fillText('?',x,y+6);}
+        if(Math.hypot(x-500,y-500)>150&&(Math.abs(x-500)>95||y>425)){c.fillStyle='#071421';c.beginPath();c.arc(x,y,13,0,TAU);c.fill();this.circle(x,y,13,'#a1bace88');c.font='600 18px -apple-system,sans-serif';c.textAlign='center';c.fillStyle='#bed4e4';c.fillText('?',x,y+6);}
       }
     }
     for(const node of game.network.nodes){
       if(node.tier===0){
         c.beginPath();c.moveTo(500,500);c.lineTo(node.x,node.y);c.strokeStyle=game.hp[node.index]>0?'#79d8ebaa':'#743a4b77';c.lineWidth=2;c.stroke();
-        this.sprite(1,node.x,node.y,90,game.hp[node.index]>0?1:.16);
-        const health=game.hp[node.index];
-        for(let i=0;i<4;i++){c.fillStyle=i<health?(health<=2?'#ffb45c':'#66dfb0'):'#243341';c.fillRect(node.x-20+i*11,node.y+36,8,3);}
       }else{this.sprite(0,node.x,node.y,node.tier===3?70:60,.95);}
     }
+    for(const node of game.network.nodes)if(node.tier===0)this.serviceIdentity(node,game.hp[node.index]);
     const selected=game.network.map[this.selectedNode];
     if(selected){this.circle(selected.x,selected.y,32,'#97edff',2.8);this.circle(selected.x,selected.y,40,'#97edff50',1);}
     if(this.targeting&&this.pointer){
@@ -79,7 +94,7 @@ export class Renderer {
     for(let i=0;i<6;i++){const a=i*TAU/6-Math.PI/2;c.lineTo(500+Math.cos(a)*26,500+Math.sin(a)*26);}c.closePath();c.fill();c.shadowBlur=0;
     this.circle(500,500,47,'#eea15b70',1.2);
     c.textAlign='center';
-    c.font=`600 ${Math.max(13,8/this.scale)}px -apple-system, sans-serif`;c.fillStyle='#ffb87c';c.fillText('ORGANISATIE',500,558);
+    c.font=`600 ${Math.max(13,8/this.scale)}px -apple-system, sans-serif`;c.fillStyle='#ffb87c';c.fillText('ORGANISATIE',500,624);
     if(scan){const age=300-(game.scanUntil-game.tick);const radius=(age%85)/85*490;this.circle(500,500,radius,'#80e5f866',2);this.circle(500,500,radius*.83,'#80e5f828',1);}
     for(const f of game.fields){
       if(game.tick<f.start){const t=(game.tick-f.born)/Math.max(1,f.start-f.born);const x=500+(f.x-500)*t,y=500+(f.y-500)*t;c.strokeStyle='#8cdded60';c.lineWidth=2;c.beginPath();c.moveTo(500+(f.x-500)*Math.max(0,t-.15),500+(f.y-500)*Math.max(0,t-.15));c.lineTo(x,y);c.stroke();c.fillStyle='#c8f6ff';c.beginPath();c.arc(x,y,4,0,TAU);c.fill();this.circle(f.x,f.y,7,'#8cdded80',1);}

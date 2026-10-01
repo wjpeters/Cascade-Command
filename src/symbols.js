@@ -11,3 +11,14 @@ export function symbolMarkup(kind) {
   const item=CATEGORIES[kind];
   return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${item.path}"/></svg>`;
 }
+
+// Stable identities: the same name, letter, colour and icon on the node and status row.
+export const SERVICE_VISUALS = {
+  Klantportaal: {key:'portal',code:'A',color:'#81dff2',path:'M3 4h18v16H3Z M3 8h18 M6 6h.1 M8 6h.1 M13 11v6 M10 14h7 M15 12l2 2-2 2'},
+  Betalingen: {key:'payments',code:'B',color:'#c4b5fd',path:'M3 5h18v14H3Z M3 9h18 M6 15h4 M15 14h3v2h-3Z'},
+  Operatie: {key:'operations',code:'C',color:'#f5cf86',path:'M9 3h6l.5 3 2 1 2.7-1L23 11l-2.4 2 0 2L23 17l-2.8 4-2.7-1-2 1-.5 2H9l-.5-2-2-1-2.7 1L1 17l2.4-2v-2L1 11l2.8-5 2.7 1 2-1Z M16 13a4 4 0 1 1-8 0a4 4 0 0 1 8 0'},
+};
+export function serviceSymbolMarkup(name) {
+  const service=SERVICE_VISUALS[name];
+  return `<svg viewBox="0 0 24 26" aria-hidden="true"><path d="${service.path}"/></svg><b>${service.code}</b>`;
+}
