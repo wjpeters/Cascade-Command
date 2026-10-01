@@ -25,3 +25,6 @@
 @media(max-width:360px){.header h1{left:16px}.control-rail{gap:10px;padding-inline:14px}.energy-note{font-size:9px}.chain-path{font-size:9px}.briefing .primary{gap:12px}.briefing .text-button{margin-left:6px}.briefing .rules-link{margin-left:0}.instructions li{font-size:10px}.scan-button{min-width:97px}}
 
 @media(min-width:761px){.chain-path{top:14px}.event-toast{top:40px}}
+
+/* Keep the intro glow inside the galaxy on narrow phones. */
+.arena{overflow:hidden}
