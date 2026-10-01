@@ -5,7 +5,8 @@ import { Audio } from './audio.js';
 import { CATEGORIES, symbolMarkup, SERVICE_VISUALS, serviceSymbolMarkup } from './symbols.js';
 import { loadGameAssets } from './asset-loader.js';
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
-let state='intro',game=new Game(),session=null,actions=[],lastFrame=null,accumulator=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
+let createGame=seed=>new Game(seed);
+let state='intro',game=createGame(),session=null,actions=[],lastFrame=null,accumulator=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
 let frameRequest=null,drawing=false,lastHudAt=-Infinity,toastTimer=null,boardTimer=null,lastBoard=null;
 const HUD_INTERVAL=1000/15;
@@ -145,13 +146,13 @@ async function start(){
   try{
     session=await request('/api/session',{method:'POST',body:'{}'});
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
-    game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
+    game=createGame(session.seed,true);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
     setState(document.hidden?'paused':'playing');if(!document.hidden){canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');}
   }catch(error){setState('intro');$('start-error').textContent=error.message;}
   finally{busy=false;updateLaunchButtons();}
 }
-function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('start').focus({preventScroll:true});refreshBoard();}
+function goHome(){session=null;actions=[];game=createGame();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('start').focus({preventScroll:true});refreshBoard();}
 function action(type,point={}){
   if(state!=='playing')return false;
   const a={tick:game.tick,type,...point};
@@ -227,7 +228,7 @@ function frame(now){
         }
         if(game.phase!==previousPhase){previousPhase=game.phase;toast(game.wave.message);}
         if(game.finished){finish();break;}
-      }else if(game.finished){game=new Game(SEED);lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
+      }else if(game.finished){game=createGame(SEED);lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
     }
   }
   renderer.render(game,state);
@@ -259,7 +260,7 @@ document.addEventListener('visibilitychange',()=>{
   scheduleBoardRefresh();
 });
 $('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('demo-play').addEventListener('click',start);
-$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=undefined;accumulator=0;setState('demo');});
+$('watch-demo').addEventListener('click',()=>{game=createGame(SEED);lastFeed=-1;lastIntel=undefined;accumulator=0;setState('demo');});
 $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
 $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sound').setAttribute('aria-pressed',enabled);$('sound').setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');$('sound').title=enabled?'Geluid uit':'Geluid aan';$('sound').innerHTML=enabled?'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>':'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg>';}catch{toast('Geluid is niet beschikbaar in deze browser.');}});
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
@@ -281,4 +282,19 @@ if(document.modelContext?.registerTool){
       const result=await request('/api/leaderboard');drawBoard(result.scores);return result;
     }
   },{signal:lifecycle.signal})).catch(()=>{});}catch{}
+}
+
+
+// The disabled path never imports or registers the presentation plugin.
+if (GAME_CONFIG.easterEggs === true) {
+  import('/plugins/easter-eggs/index.js').then(({ mount }) => {
+    const plugin = mount({
+      state: () => state, pause, canvas,
+      point: (x, y) => renderer.point(x, y),
+      audioEnabled: () => audio.enabled, audioContext: () => audio.context,
+    });
+    createGame = (seed, track = false) => plugin.observe(new Game(seed), track);
+    // A slow optional import must not start tracking partway through a real round.
+    if (state !== 'playing' && state !== 'paused') plugin.observe(game);
+  }).catch(error => console.warn('Galactic Council niet geladen; de missie blijft beschikbaar.', error.message));
 }

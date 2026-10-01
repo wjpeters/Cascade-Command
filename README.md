@@ -160,8 +160,8 @@ In de stabiele pauze- en eindschermmeting daalde circa 60 tekenrondes/s naar
 0 en circa 1.080 HUD-mutaties/s naar 0. Twintig regressietests, de build en zeven
 browsercontroles slagen, inclusief resize, hervatten en een gesimuleerde
 120 Hz-klok. Het downloadbudget telt nu 414.275 van maximaal 800.000 bytes.
-Spelregels en score-identiteit zijn behouden. Deze tweede wijziging is lokaal
-uitgevoerd en nog niet gepubliceerd. Vernieuw de lokale browserpagina.
+Spelregels en score-identiteit zijn behouden. Deze tweede wijziging is op
+1 oktober 2026 succesvol als Sites-versie 5 op dezelfde openbare link gepubliceerd.
 
 [Resultaat en meetmethode](docs/performance-verbetering-2-2026-10-01.md).
 Meetbewijs: `docs/performance-verbetering-2-evidence-2026-10-01/`.
@@ -170,4 +170,21 @@ Meetbewijs: `docs/performance-verbetering-2-evidence-2026-10-01/`.
 
 De labels TIER 1, TIER 2 en TIER 3 worden als deel van de netwerkachtergrond getekend. Sprites, dreigingsiconen, beschermingsvelden en inslageffecten verschijnen daarna, zodat de labels ze niet meer afdekken. Posities, spelregels en score-identiteit blijven gelijk.
 
-Lokaal gecontroleerd met iconen en effecten die bewust alle drie de labels overlappen. Twintig regressietests en de bouwcontrole slagen. De tijdelijke controlescène is verwijderd en het startscherm is hersteld. Deze wijziging is lokaal uitgevoerd; deze sessie heeft geen Sites-publicatie gedaan.
+Lokaal gecontroleerd met iconen en effecten die bewust alle drie de labels overlappen. Twintig regressietests en de bouwcontrole slagen. De tijdelijke controlescène is verwijderd en het startscherm is hersteld. Deze wijziging is op 1 oktober 2026 succesvol als Sites-versie 5 op dezelfde openbare RiskStudio-link gepubliceerd.
+
+## Sites-versie 5 gepubliceerd, 1 oktober 2026
+
+De nieuwste lokale versie staat op https://riskstudio-cascade-command.codexwillem.chatgpt.site. Performanceverbetering 2, tierlabels achter spelobjecten en de laatste indeling van de start- en demoknoppen zijn meegenomen. Twintig regressietests, downloadbudget en Worker-bouwcontrole slagen. De laatste HTML/CSS-wijzigingen zijn opnieuw gebouwd en gecontroleerd; spelcode en scorecontrole bleven daarbij gelijk. Openbare toegang, spelinstellingen en online scores zijn behouden.
+
+
+## Easter Egg-plugin: The Force Behind the Galaxy
+
+De tien teamcameo’s, portretten, geluiden en Galactic Council staan zelfstandig in `plugins/easter-eggs/`. Niels is Mace Windu en Willem is Darth Sidious / Emperor Palpatine, Master of the Galaxy.
+
+De huidige instelling in `src/game-config.js` is `easterEggs: true`. Met `false` worden geen pluginmodules, CSS of portretten geladen en zijn geen pluginobservers, listeners of timers actief. De lokale server geeft dan ook 404 voor pluginroutes. Het online bouwpakket laat de plugin en beelden volledig weg. Na aanpassen: lokaal de server herstarten en de pagina vernieuwen; online opnieuw bouwen en publiceren. Een `.env` is niet nodig.
+
+De plugin verandert geen score, energie, risico’s, timing, scenarioseed of klassementidentiteit. De server gebruikt dezelfde ongewijzigde simulatie. Tijdens echte rondes worden alleen korte tekstmeldingen getoond op desktop. Portretten, geluiden en animaties verschijnen in het start-/eindscherm en de Council. Op mobiel worden onthullingen uitgesteld tot het eindscherm. Geen extra renderlus of continue polling.
+
+Op het startscherm staat bij ingeschakelde plugin een ✦-knop voor de Galactic Council. Verborgen kaarten geven een aanwijzing. Ontdekkingen blijven lokaal op dit apparaat bewaard, ook als je de plugin later uitzet. Alle tien gevonden? De finale toont de hele Council rond Willems troon. Geluid volgt de bestaande geluidsknop. Verminderde animatie wordt gerespecteerd.
+
+Zie `plugins/easter-eggs/README.md` voor de triggers, architectuur en grenzen. De oorspronkelijke reviewportretten staan buiten de game; de plugin gebruikt kleinere transparante WebP’s met bestandsvingerafdrukken. Deze uitbreiding is lokaal gebouwd; publicatie is een afzonderlijke stap.

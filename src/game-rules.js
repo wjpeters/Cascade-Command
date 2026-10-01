@@ -10,6 +10,7 @@ export function validateGameConfig(config) {
     if (Object.values(values).reduce((sum, value) => sum + value, 0) <= 0) fail(`${name} moet minstens één positief gewicht hebben.`);
   };
   if (!config?.round || !config.energy || !config.shot || !config.scan) fail('round, energy, shot en scan zijn verplicht.');
+  if (config.easterEggs !== undefined && typeof config.easterEggs !== 'boolean') fail('easterEggs moet true of false zijn.');
   const { round, energy, shot, scan, waves } = config;
   number(round.durationSeconds, 'round.durationSeconds', 10, 300);
   if (!Number.isInteger(round.durationSeconds)) fail('round.durationSeconds moet een geheel aantal seconden zijn.');
@@ -56,7 +57,8 @@ export function deepFreeze(value) {
 const stable = value => Array.isArray(value) ? '[' + value.map(stable).join(',') + ']' :
   value && typeof value === 'object' ? '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}' : JSON.stringify(value);
 export function configFingerprint(config) {
-  const gameplay = { ...config, waves: config.waves.map(({ name, message, ...wave }) => wave) };
+  const { easterEggs, ...settings } = config;
+  const gameplay = { ...settings, waves: config.waves.map(({ name, message, ...wave }) => wave) };
   let hash = 2166136261;
   for (const char of stable(gameplay)) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);
   return (hash >>> 0).toString(16).padStart(8, '0');
