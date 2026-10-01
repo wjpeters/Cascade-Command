@@ -1,3 +1,4 @@
+import { VERSION } from '../src/engine.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
@@ -67,11 +68,11 @@ test('one leaderboard always uses current rules and preserves older scores outsi
   sql.prepare('INSERT INTO scores(id,session_id,name,score,services,date,version) VALUES(?,?,?,?,?,?,?)').run('old','old-session','Eerdere speler',9700,3,'2026-10-01','cascade-1');
   assert.equal((await (await call('/api/leaderboard')).json()).scores.length,0);
   assert.deepEqual((await (await call('/api/leaderboard?version=cascade-1')).json()).scores,[]);
-  sql.prepare('INSERT INTO scores(id,session_id,name,score,services,date,version) VALUES(?,?,?,?,?,?,?)').run('current','current-session','Huidige speler',250,2,'2026-10-01','cascade-2');
+  sql.prepare('INSERT INTO scores(id,session_id,name,score,services,date,version) VALUES(?,?,?,?,?,?,?)').run('current','current-session','Huidige speler',250,2,'2026-10-01',VERSION);
   const current=(await (await call('/api/leaderboard')).json()).scores;
   assert.equal(current.length,1);assert.equal(current[0].score,250);
   assert.deepEqual((await (await call('/api/leaderboard?version=cascade-1')).json()).scores,current);
   assert.deepEqual((await (await call('/api/leaderboard?version=unknown')).json()).scores,current);
-  const session=await (await call('/api/session',{})).json();assert.equal(session.version,'cascade-2');
+  const session=await (await call('/api/session',{})).json();assert.equal(session.version,VERSION);
   assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM scores WHERE version = ?').get('cascade-1').n,1);
 });

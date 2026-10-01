@@ -1,5 +1,5 @@
 import { renderMobileShare } from './mobile-share.js';
-import { Game, FPS, DURATION, SEED, VERSION, THREATS, SCAN_COST, SERVICE_NAMES, clamp } from './engine.js';
+import { Game, FPS, DURATION, SEED, VERSION, THREATS, SHOT_COST, SCAN_COST, GAME_CONFIG, SERVICE_NAMES, clamp } from './engine.js';
 import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
 import { CATEGORIES, symbolMarkup, SERVICE_VISUALS, serviceSymbolMarkup } from './symbols.js';
@@ -8,6 +8,17 @@ let state='intro',game=new Game(),session=null,actions=[],lastFrame=0,accumulato
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
 const formatTime=tick=>`${String(Math.floor(tick/FPS/60)).padStart(2,'0')}:${String(Math.floor(tick/FPS)%60).padStart(2,'0')}`;
 const severityName={critical:'Kritiek',high:'Hoog',low:'Laag',unknown:'Geen signaal in beeld'};
+const formatNumber=value=>value.toLocaleString('nl-NL',{maximumFractionDigits:2});
+const roundTime=seconds=>`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+const branchWave=GAME_CONFIG.waves.find(wave=>wave.maxBranches>1);
+for(const element of document.querySelectorAll('[data-config-duration]'))element.textContent=formatNumber(DURATION);
+$('energy-note').textContent=`Veld ${formatNumber(SHOT_COST)} · scan ${formatNumber(SCAN_COST)} · herstel ${formatNumber(GAME_CONFIG.energy.regenerationPerSecond)}/s`;
+document.querySelector('.scan-cost').textContent=`${formatNumber(SCAN_COST)} energie per scan`;
+$('rules-shot').textContent=`Klik of tik vóór een dreiging om een kort beschermingsveld te plaatsen. De onderschepper reist vanaf het centrum, dus richt een stukje vooruit. Een veld kost ${formatNumber(SHOT_COST)} energie en kan meerdere signalen raken, ook lage risico’s. Je krijgt ${formatNumber(GAME_CONFIG.energy.regenerationPerSecond)} energie per seconde terug.`;
+$('rules-scan-cost').textContent=`Scan kost ${formatNumber(SCAN_COST)} energie.`;
+$('rules-scan-time').textContent=`Scan vertraagt signalen ${formatNumber(GAME_CONFIG.scan.durationSeconds)} seconden naar ${formatNumber(GAME_CONFIG.scan.speedMultiplier*100)}% snelheid en kan na ${formatNumber(GAME_CONFIG.scan.cooldownSeconds)} seconden opnieuw. Nieuw ontdekte verbindingen blijven zichtbaar. Alle leveranciers en risico’s zijn fictief; dit is een spelmetafoor, geen live RiskStudio-dataset.`;
+$('rules-branching').textContent=branchWave?`Vanaf seconde ${formatNumber(branchWave.startsAtSeconds)} kunnen ze bij gedeelde leveranciers opsplitsen. Stop ze vroeg om een kettingreactie te voorkomen.`:'Risico’s volgen de keten zonder zich op te splitsen.';
+
 $('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" data-service="${SERVICE_VISUALS[name].key}" id="service-${i}"><span class="service-symbol" aria-hidden="true">${serviceSymbolMarkup(name)}</span><span class="service-name">${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
 $('category-list').innerHTML=Object.entries(CATEGORIES).filter(([kind])=>kind!=='low').map(([kind,item])=>`<div class="category" data-kind="${kind}"><span class="category-symbol">${symbolMarkup(kind)}</span><div><strong>${item.title}</strong><span>${item.detail}</span></div></div>`).join('');
 
@@ -92,7 +103,7 @@ async function start(){
   try{
     await renderer.ready;if(renderer.assetError)throw new Error('De spelbeelden zijn niet geladen. Vernieuw de pagina.');
     session=await request('/api/session',{method:'POST',body:'{}'});
-    if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina om te spelen.');
+    if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
     game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
     setState('playing');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');updateHud();
@@ -109,8 +120,8 @@ function action(type,point={}){
     if(type==='scan'){setTargeting(false);toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
     return true;
   }
-  if(type==='shot')toast(game.energy<20?'Energie laadt op…':'Even richten, dan opnieuw.');
-  if(type==='scan')toast(game.energy<SCAN_COST?'Scan vraagt 25 energie.':'Scan wordt opgeladen.');
+  if(type==='shot')toast(game.energy<SHOT_COST?'Energie laadt op…':'Even richten, dan opnieuw.');
+  if(type==='scan')toast(game.energy<SCAN_COST?`Scan vraagt ${formatNumber(SCAN_COST)} energie.`:'Scan wordt opgeladen.');
   return false;
 }
 function pause(){if(state!=='playing')return;setState('paused');updateHud();$('resume').focus({preventScroll:true});}
@@ -130,15 +141,15 @@ function finish(){
 }
 function updateHud(){
   const intro=state==='intro',t=Math.max(0,DURATION-Math.floor(game.seconds));
-  $('score').textContent=String(intro?0:game.score).padStart(4,'0');$('time').textContent=intro?'01:15':`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+  $('score').textContent=String(intro?0:game.score).padStart(4,'0');$('time').textContent=roundTime(intro?DURATION:t);
   $('services').innerHTML=`${intro?3:game.services} <span>/ 3</span>`;document.querySelector('.timer').classList.toggle('urgent',!intro&&t<=15);
-  $('phase').textContent=intro?'75 seconden. Eén keten.':state==='demo'?'Demonstratie':game.phase===1?'01 · Eerste signalen':game.phase===2?'02 · Kettingreacties':'03 · Onder druk';
-  const energy=intro?100:Math.floor(game.energy);$('energy-fill').style.width=energy+'%';$('energy-number').textContent=energy+'%';$('energy-meter').setAttribute('aria-valuenow',energy);$('energy-meter').classList.toggle('low',energy<20);
+  $('phase').textContent=intro?`${formatNumber(DURATION)} seconden. Eén keten.`:state==='demo'?'Demonstratie':`${String(game.phase).padStart(2,'0')} · ${game.wave.name}`;
+  const energy=intro?100:Math.floor(game.energy);$('energy-fill').style.width=energy+'%';$('energy-number').textContent=energy+'%';$('energy-meter').setAttribute('aria-valuenow',energy);$('energy-meter').classList.toggle('low',energy<SHOT_COST);
   const cooldown=Math.max(0,Math.ceil((game.scanReady-game.tick)/FPS));
   $('scan').disabled=state!=='playing'||cooldown>0||game.energy<SCAN_COST;
   $('target-scan').disabled=state!=='playing'||(!scanTargeting&&(cooldown>0||game.energy<SCAN_COST));
-  $('scan-text').textContent=state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':'Scan · 25';
-  $('scan').title=cooldown>0?`Scan over ${cooldown} seconden beschikbaar`:'Scan kost 25 energie; onderzoekt de gevaarlijkste dreiging';
+  $('scan-text').textContent=state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':`Scan · ${formatNumber(SCAN_COST)}`;
+  $('scan').title=cooldown>0?`Scan over ${cooldown} seconden beschikbaar`:`Scan kost ${formatNumber(SCAN_COST)} energie; onderzoekt de gevaarlijkste dreiging`;
   $('scan').classList.toggle('active',state==='playing'&&game.tick<game.scanUntil);
   $('combo').hidden=!(state==='playing'&&game.combo>=2);$('combo-value').textContent=game.combo+'×';
   for(let i=0;i<3;i++){
@@ -150,7 +161,7 @@ function updateHud(){
   if(state==='playing'&&game.seconds-lastAnnounced>=15){lastAnnounced=game.seconds;$('accessible-status').textContent=`${t} seconden. ${game.score} punten. ${game.services} diensten. ${energy} procent energie.`;}
 }
 function autoPlay(){
-  if(game.tick%21===0&&game.energy>=21){
+  if(game.tick%21===0&&game.energy>=SHOT_COST){
     const active=game.packets.filter(packet=>packet.warning===0&&THREATS[packet.kind].damage>0);
     if(active.length){
       const target=active.sort((a,b)=>Math.hypot(a.x-500,a.y-500)-Math.hypot(b.x-500,b.y-500))[0],to=game.network.map[target.to],length=Math.max(1,Math.hypot(to.x-target.x,to.y-target.y));
@@ -172,7 +183,7 @@ function frame(now){
           if(event.type==='cascade')audio.play('cascade');
           if(event.type==='mistake')toast('Laag risico geraakt · −50 punten',true);
         }
-        if(game.phase!==previousPhase){previousPhase=game.phase;toast(game.phase===2?'Gedeelde leveranciers · dreigingen kunnen splitsen':'Laatste golf · houd je diensten operationeel!');}
+        if(game.phase!==previousPhase){previousPhase=game.phase;toast(game.wave.message);}
         if(game.finished){finish();break;}
       }else if(game.finished){game=new Game(SEED);lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
     }

@@ -1,0 +1,1898 @@
+{
+  "date": "2026-10-01T19:03:47.758Z",
+  "browser": "154.0.8037.58",
+  "platform": "darwin",
+  "arch": "arm64",
+  "profiles": [
+    {
+      "config": {
+        "name": "desktop",
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 2,
+        "cpu": 1
+      },
+      "status": 200,
+      "wallLoad": 2455.9521659999996,
+      "spriteReady": 2353.699999988079,
+      "load": {
+        "navigation": {
+          "name": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 2340.399999976158,
+          "navigationId": 604,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "h2",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "gzip",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.5,
+          "domainLookupStart": 1.399999976158142,
+          "domainLookupEnd": 8.5,
+          "connectStart": 8.5,
+          "secureConnectionStart": 39.799999952316284,
+          "connectEnd": 88.29999995231628,
+          "requestStart": 88.39999997615814,
+          "responseStart": 1572.699999988079,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 1572.699999988079,
+          "responseEnd": 1579.7999999523163,
+          "transferSize": 5794,
+          "encodedBodySize": 5494,
+          "decodedBodySize": 15286,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 1590.0999999642372,
+          "domContentLoadedEventStart": 1952.0999999642372,
+          "domContentLoadedEventEnd": 1952.199999988079,
+          "domComplete": 2340.2999999523163,
+          "loadEventStart": 2340.399999976158,
+          "loadEventEnd": 2340.399999976158,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "low"
+          }
+        },
+        "paint": [],
+        "lcp": [],
+        "resources": [
+          {
+            "path": "/style.css",
+            "start": 1583.5,
+            "end": 1707.199999988079,
+            "encoded": 9982,
+            "decoded": 44075,
+            "transfer": 10282
+          },
+          {
+            "path": "/assets/riskstudio-logo.png",
+            "start": 1583.5999999642372,
+            "end": 1878.5,
+            "encoded": 272082,
+            "decoded": 272082,
+            "transfer": 272382
+          },
+          {
+            "path": "/src/main.js",
+            "start": 1583.699999988079,
+            "end": 1845.8999999761581,
+            "encoded": 7816,
+            "decoded": 23352,
+            "transfer": 8116
+          },
+          {
+            "path": "/tokens.css",
+            "start": 1708.199999988079,
+            "end": 1864.3999999761581,
+            "encoded": 212,
+            "decoded": 242,
+            "transfer": 512
+          },
+          {
+            "path": "/src/mobile-share.js",
+            "start": 1846.5999999642372,
+            "end": 1935.7999999523163,
+            "encoded": 695,
+            "decoded": 1340,
+            "transfer": 995
+          },
+          {
+            "path": "/src/renderer.js",
+            "start": 1846.699999988079,
+            "end": 1937,
+            "encoded": 4327,
+            "decoded": 12256,
+            "transfer": 4627
+          },
+          {
+            "path": "/src/engine.js",
+            "start": 1846.699999988079,
+            "end": 1940.5999999642372,
+            "encoded": 4706,
+            "decoded": 14178,
+            "transfer": 5006
+          },
+          {
+            "path": "/src/audio.js",
+            "start": 1846.699999988079,
+            "end": 1940.8999999761581,
+            "encoded": 518,
+            "decoded": 1053,
+            "transfer": 818
+          },
+          {
+            "path": "/src/symbols.js",
+            "start": 1846.699999988079,
+            "end": 1945.8999999761581,
+            "encoded": 1029,
+            "decoded": 2010,
+            "transfer": 1329
+          },
+          {
+            "path": "/assets/space.png",
+            "start": 1866.7999999523163,
+            "end": 2270.7999999523163,
+            "encoded": 1726816,
+            "decoded": 1726816,
+            "transfer": 1727116
+          },
+          {
+            "path": "/api/meta",
+            "start": 1950.8999999761581,
+            "end": 2322,
+            "encoded": 121,
+            "decoded": 119,
+            "transfer": 421
+          },
+          {
+            "path": "/assets/sprites.png",
+            "start": 1952.0999999642372,
+            "end": 2339.899999976158,
+            "encoded": 1349760,
+            "decoded": 1349760,
+            "transfer": 1350060
+          }
+        ],
+        "canvas": {
+          "width": 1756,
+          "height": 1108
+        },
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "overflow": false
+      },
+      "requests": [
+        {
+          "path": "/",
+          "status": 200,
+          "type": "text/html; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/style.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/tokens.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/main.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/renderer.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/engine.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/audio.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/symbols.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/space.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/assets/sprites.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/api/meta",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/favicon.svg",
+          "status": 200,
+          "type": "image/svg+xml",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        },
+        {
+          "path": "/api/session",
+          "status": 201,
+          "type": "application/json"
+        }
+      ],
+      "errors": [
+        "Executing inline script violates the following Content Security Policy directive 'script-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-ZGjBhNWM2VdOUhz/RMK8hy7S+9PL5ii182LzeMSi8T0='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+      ],
+      "failed": [],
+      "samples": [
+        {
+          "name": "intro",
+          "state": "intro",
+          "time": "01:15",
+          "ms": 4000,
+          "fps": 41.83500274915732,
+          "frameIntervals": {
+            "count": 175,
+            "mean": 23.903428571428574,
+            "p50": 16.699999999999818,
+            "p95": 16.800000000000182,
+            "p99": 283.3000000000002,
+            "max": 316.6999999999998
+          },
+          "callbackCpu": {
+            "count": 176,
+            "mean": 0.4142045459964059,
+            "p50": 0.3999999761581421,
+            "p95": 0.7000000476837158,
+            "p99": 1.300000011920929,
+            "max": 1.5
+          },
+          "framesOver25ms": 5,
+          "framesOver50ms": 5,
+          "mutations": 1081,
+          "mutationRate": 270.25,
+          "longTasks": []
+        },
+        {
+          "name": "playing",
+          "state": "playing",
+          "time": "01:07",
+          "ms": 8000,
+          "fps": 57.74771389202054,
+          "frameIntervals": {
+            "count": 461,
+            "mean": 17.316702819956618,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "p99": 16.80000000000109,
+            "max": 183.3000000000011
+          },
+          "callbackCpu": {
+            "count": 462,
+            "mean": 0.3586580079871339,
+            "p50": 0.30000001192092896,
+            "p95": 0.5999999642372131,
+            "p99": 0.9000000357627869,
+            "max": 1.699999988079071
+          },
+          "framesOver25ms": 2,
+          "framesOver50ms": 2,
+          "mutations": 2425,
+          "mutationRate": 303.125,
+          "longTasks": []
+        },
+        {
+          "name": "paused",
+          "state": "paused",
+          "time": "01:07",
+          "ms": 3000,
+          "fps": 56.335211173705765,
+          "frameIntervals": {
+            "count": 169,
+            "mean": 17.750887573964505,
+            "p50": 16.69999999999709,
+            "p95": 16.799999999999272,
+            "p99": 16.799999999999272,
+            "max": 200
+          },
+          "callbackCpu": {
+            "count": 170,
+            "mean": 0.41705882163608776,
+            "p50": 0.3999999761581421,
+            "p95": 0.5999999642372131,
+            "p99": 1,
+            "max": 1.100000023841858
+          },
+          "framesOver25ms": 1,
+          "framesOver50ms": 1,
+          "mutations": 3400,
+          "mutationRate": 1133.3333333333333,
+          "longTasks": []
+        }
+      ],
+      "layout": {
+        "game": {
+          "x": 25,
+          "y": 179,
+          "width": 878,
+          "height": 520,
+          "visible": true
+        },
+        "scan": {
+          "x": 949,
+          "y": 715,
+          "width": 154,
+          "height": 49,
+          "visible": true
+        },
+        "target-scan": {
+          "x": 917,
+          "y": 534,
+          "width": 183,
+          "height": 36,
+          "visible": true
+        },
+        "service-title": {
+          "x": 1146,
+          "y": 341,
+          "width": 251,
+          "height": 12,
+          "visible": true
+        },
+        "feed-panel": {
+          "x": 1146,
+          "y": 512,
+          "width": 251,
+          "height": 292.5,
+          "visible": true
+        },
+        "board-panel": {
+          "x": 1146,
+          "y": 120,
+          "width": 251,
+          "height": 188,
+          "visible": true
+        },
+        "intel-card": {
+          "x": 903,
+          "y": 229,
+          "width": 211,
+          "height": 433,
+          "visible": true
+        },
+        "pause": {
+          "x": 1299,
+          "y": 17,
+          "width": 35,
+          "height": 44,
+          "visible": true
+        }
+      }
+    },
+    {
+      "config": {
+        "name": "mobile",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 3,
+        "cpu": 1,
+        "mobile": true
+      },
+      "status": 200,
+      "wallLoad": 1524.0604590000003,
+      "spriteReady": 1502.3999999761581,
+      "load": {
+        "navigation": {
+          "name": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 1487.0999999642372,
+          "navigationId": 3652,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "h2",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "gzip",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.800000011920929,
+          "domainLookupStart": 3.300000011920929,
+          "domainLookupEnd": 5.199999988079071,
+          "connectStart": 5.199999988079071,
+          "secureConnectionStart": 41.89999997615814,
+          "connectEnd": 100.39999997615814,
+          "requestStart": 100.5,
+          "responseStart": 292.89999997615814,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 292.89999997615814,
+          "responseEnd": 297,
+          "transferSize": 5705,
+          "encodedBodySize": 5405,
+          "decodedBodySize": 15084,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 306.80000001192093,
+          "domContentLoadedEventStart": 1095.3999999761581,
+          "domContentLoadedEventEnd": 1095.5999999642372,
+          "domComplete": 1487,
+          "loadEventStart": 1487.0999999642372,
+          "loadEventEnd": 1487.0999999642372,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "entryType": "paint",
+            "startTime": 788,
+            "duration": 0,
+            "navigationId": 3652,
+            "paintTime": 725.3999999761581,
+            "presentationTime": 788
+          },
+          {
+            "name": "first-contentful-paint",
+            "entryType": "paint",
+            "startTime": 788,
+            "duration": 0,
+            "navigationId": 3652,
+            "paintTime": 725.3999999761581,
+            "presentationTime": 788
+          }
+        ],
+        "lcp": [
+          {
+            "time": 788,
+            "size": 21280,
+            "element": "intro-title",
+            "url": ""
+          }
+        ],
+        "resources": [
+          {
+            "path": "/style.css",
+            "start": 304.19999998807907,
+            "end": 577.1999999880791,
+            "encoded": 10052,
+            "decoded": 43968,
+            "transfer": 10352
+          },
+          {
+            "path": "/src/main.js",
+            "start": 304.39999997615814,
+            "end": 577.3000000119209,
+            "encoded": 7596,
+            "decoded": 22655,
+            "transfer": 7896
+          },
+          {
+            "path": "/assets/riskstudio-logo.png",
+            "start": 304.39999997615814,
+            "end": 611,
+            "encoded": 272082,
+            "decoded": 272082,
+            "transfer": 272382
+          },
+          {
+            "path": "/tokens.css",
+            "start": 577.5,
+            "end": 679.5999999642372,
+            "encoded": 212,
+            "decoded": 242,
+            "transfer": 512
+          },
+          {
+            "path": "/src/mobile-share.js",
+            "start": 578.0999999642372,
+            "end": 679.8000000119209,
+            "encoded": 695,
+            "decoded": 1340,
+            "transfer": 995
+          },
+          {
+            "path": "/src/engine.js",
+            "start": 578.1999999880791,
+            "end": 1089.0999999642372,
+            "encoded": 4717,
+            "decoded": 14178,
+            "transfer": 5017
+          },
+          {
+            "path": "/src/audio.js",
+            "start": 578.3000000119209,
+            "end": 683.3999999761581,
+            "encoded": 518,
+            "decoded": 1053,
+            "transfer": 818
+          },
+          {
+            "path": "/src/renderer.js",
+            "start": 578.3000000119209,
+            "end": 686.0999999642372,
+            "encoded": 4327,
+            "decoded": 12256,
+            "transfer": 4627
+          },
+          {
+            "path": "/src/symbols.js",
+            "start": 578.3000000119209,
+            "end": 687.8000000119209,
+            "encoded": 1029,
+            "decoded": 2010,
+            "transfer": 1329
+          },
+          {
+            "path": "/assets/space.png",
+            "start": 680.3999999761581,
+            "end": 1188.199999988079,
+            "encoded": 1726816,
+            "decoded": 1726816,
+            "transfer": 1727116
+          },
+          {
+            "path": "/api/meta",
+            "start": 1094.300000011921,
+            "end": 1230.3999999761581,
+            "encoded": 121,
+            "decoded": 119,
+            "transfer": 421
+          },
+          {
+            "path": "/api/leaderboard",
+            "start": 1094.3999999761581,
+            "end": 1445.699999988079,
+            "encoded": 13,
+            "decoded": 13,
+            "transfer": 313
+          },
+          {
+            "path": "/assets/sprites.png",
+            "start": 1095.300000011921,
+            "end": 1486.3999999761581,
+            "encoded": 1349760,
+            "decoded": 1349760,
+            "transfer": 1350060
+          }
+        ],
+        "canvas": {
+          "width": 744,
+          "height": 874
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "overflow": false
+      },
+      "requests": [
+        {
+          "path": "/",
+          "status": 200,
+          "type": "text/html; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/style.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/main.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/tokens.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/audio.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/renderer.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/symbols.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/space.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/src/engine.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/api/meta",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/sprites.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        },
+        {
+          "path": "/favicon.svg",
+          "status": 200,
+          "type": "image/svg+xml",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/api/session",
+          "status": 201,
+          "type": "application/json"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        }
+      ],
+      "errors": [
+        "Executing inline script violates the following Content Security Policy directive 'script-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-dVey0MamTlXlw4Orza48ya38PLRu9PF4c+ulWlwgH70='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+      ],
+      "failed": [],
+      "samples": [
+        {
+          "name": "intro",
+          "state": "intro",
+          "time": "01:15",
+          "ms": 4000,
+          "fps": 60.00296310928935,
+          "frameIntervals": {
+            "count": 243,
+            "mean": 16.66584362139916,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "p99": 16.800000000000182,
+            "max": 16.800000000000182
+          },
+          "callbackCpu": {
+            "count": 244,
+            "mean": 0.46270491891219967,
+            "p50": 0.3999999761581421,
+            "p95": 1,
+            "p99": 1.9000000357627869,
+            "max": 2.5
+          },
+          "framesOver25ms": 0,
+          "framesOver50ms": 0,
+          "mutations": 1415,
+          "mutationRate": 353.75,
+          "longTasks": []
+        },
+        {
+          "name": "playing",
+          "state": "playing",
+          "time": "01:07",
+          "ms": 8000,
+          "fps": 60.00225008437816,
+          "frameIntervals": {
+            "count": 480,
+            "mean": 16.66604166666667,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "p99": 16.80000000000109,
+            "max": 16.80000000000109
+          },
+          "callbackCpu": {
+            "count": 481,
+            "mean": 0.4120582120334284,
+            "p50": 0.3999999761581421,
+            "p95": 0.800000011920929,
+            "p99": 1.100000023841858,
+            "max": 3.5
+          },
+          "framesOver25ms": 0,
+          "framesOver50ms": 0,
+          "mutations": 2704,
+          "mutationRate": 338,
+          "longTasks": []
+        },
+        {
+          "name": "paused",
+          "state": "paused",
+          "time": "01:07",
+          "ms": 3000,
+          "fps": 60.00200006666886,
+          "frameIntervals": {
+            "count": 180,
+            "mean": 16.666111111111118,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "p99": 16.799999999999272,
+            "max": 16.80000000000109
+          },
+          "callbackCpu": {
+            "count": 181,
+            "mean": 0.4740331479199025,
+            "p50": 0.40000003576278687,
+            "p95": 0.800000011920929,
+            "p99": 1.300000011920929,
+            "max": 2.300000011920929
+          },
+          "framesOver25ms": 0,
+          "framesOver50ms": 0,
+          "mutations": 3621,
+          "mutationRate": 1207,
+          "longTasks": []
+        }
+      ],
+      "layout": {
+        "game": {
+          "x": 9,
+          "y": 175,
+          "width": 372,
+          "height": 436.796875,
+          "visible": true
+        },
+        "scan": {
+          "x": 263,
+          "y": 630.296875,
+          "width": 105,
+          "height": 46,
+          "visible": true
+        },
+        "target-scan": {
+          "x": 36,
+          "y": 1237.828125,
+          "width": 318,
+          "height": 42,
+          "visible": false
+        },
+        "service-title": {
+          "x": 29,
+          "y": 1423.421875,
+          "width": 332,
+          "height": 13,
+          "visible": false
+        },
+        "feed-panel": {
+          "x": 29,
+          "y": 1619.421875,
+          "width": 332,
+          "height": 263.1875,
+          "visible": false
+        },
+        "board-panel": {
+          "x": 29,
+          "y": 1902.609375,
+          "width": 332,
+          "height": 174,
+          "visible": false
+        },
+        "intel-card": {
+          "x": 21,
+          "y": 958.78125,
+          "width": 348,
+          "height": 429.640625,
+          "visible": false
+        },
+        "pause": {
+          "x": 310,
+          "y": 12.5,
+          "width": 32,
+          "height": 40,
+          "visible": true
+        }
+      }
+    },
+    {
+      "config": {
+        "name": "mobile-cpu4",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 3,
+        "cpu": 4,
+        "mobile": true
+      },
+      "status": 200,
+      "wallLoad": 1149.6763749999955,
+      "spriteReady": 1091.8999999761581,
+      "load": {
+        "navigation": {
+          "name": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 1090.5999999642372,
+          "navigationId": 3345,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "h2",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "gzip",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.2999999523162842,
+          "domainLookupStart": 0.699999988079071,
+          "domainLookupEnd": 7.299999952316284,
+          "connectStart": 7.299999952316284,
+          "secureConnectionStart": 41.09999996423721,
+          "connectEnd": 90.79999995231628,
+          "requestStart": 90.89999997615814,
+          "responseStart": 189.89999997615814,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 189.89999997615814,
+          "responseEnd": 194.29999995231628,
+          "transferSize": 5705,
+          "encodedBodySize": 5405,
+          "decodedBodySize": 15084,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 225.19999998807907,
+          "domContentLoadedEventStart": 712.5,
+          "domContentLoadedEventEnd": 712.7999999523163,
+          "domComplete": 1090.5999999642372,
+          "loadEventStart": 1090.5999999642372,
+          "loadEventEnd": 1090.5999999642372,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "entryType": "paint",
+            "startTime": 708,
+            "duration": 0,
+            "navigationId": 3345,
+            "paintTime": 676.7999999523163,
+            "presentationTime": 708
+          },
+          {
+            "name": "first-contentful-paint",
+            "entryType": "paint",
+            "startTime": 708,
+            "duration": 0,
+            "navigationId": 3345,
+            "paintTime": 676.7999999523163,
+            "presentationTime": 708
+          }
+        ],
+        "lcp": [
+          {
+            "time": 708,
+            "size": 21280,
+            "element": "intro-title",
+            "url": ""
+          }
+        ],
+        "resources": [
+          {
+            "path": "/style.css",
+            "start": 213.89999997615814,
+            "end": 378.5999999642372,
+            "encoded": 10052,
+            "decoded": 43968,
+            "transfer": 10352
+          },
+          {
+            "path": "/src/main.js",
+            "start": 214.89999997615814,
+            "end": 345.89999997615814,
+            "encoded": 7596,
+            "decoded": 22655,
+            "transfer": 7896
+          },
+          {
+            "path": "/assets/riskstudio-logo.png",
+            "start": 214.89999997615814,
+            "end": 516.2999999523163,
+            "encoded": 272082,
+            "decoded": 272082,
+            "transfer": 272382
+          },
+          {
+            "path": "/src/mobile-share.js",
+            "start": 348.5999999642372,
+            "end": 516,
+            "encoded": 695,
+            "decoded": 1340,
+            "transfer": 995
+          },
+          {
+            "path": "/src/engine.js",
+            "start": 348.69999998807907,
+            "end": 516.0999999642372,
+            "encoded": 4706,
+            "decoded": 14178,
+            "transfer": 5006
+          },
+          {
+            "path": "/src/renderer.js",
+            "start": 348.69999998807907,
+            "end": 516.5999999642372,
+            "encoded": 4327,
+            "decoded": 12256,
+            "transfer": 4627
+          },
+          {
+            "path": "/src/audio.js",
+            "start": 349.5,
+            "end": 516.3999999761581,
+            "encoded": 518,
+            "decoded": 1053,
+            "transfer": 818
+          },
+          {
+            "path": "/src/symbols.js",
+            "start": 349.69999998807907,
+            "end": 516.6999999880791,
+            "encoded": 1029,
+            "decoded": 2010,
+            "transfer": 1329
+          },
+          {
+            "path": "/tokens.css",
+            "start": 379.7999999523163,
+            "end": 516.5,
+            "encoded": 212,
+            "decoded": 242,
+            "transfer": 512
+          },
+          {
+            "path": "/assets/space.png",
+            "start": 520.2999999523163,
+            "end": 976.7999999523163,
+            "encoded": 1726816,
+            "decoded": 1726816,
+            "transfer": 1727116
+          },
+          {
+            "path": "/api/meta",
+            "start": 707.5999999642372,
+            "end": 906.7999999523163,
+            "encoded": 121,
+            "decoded": 119,
+            "transfer": 421
+          },
+          {
+            "path": "/api/leaderboard",
+            "start": 707.6999999880791,
+            "end": 1031.5,
+            "encoded": 13,
+            "decoded": 13,
+            "transfer": 313
+          },
+          {
+            "path": "/assets/sprites.png",
+            "start": 711.6999999880791,
+            "end": 1039.0999999642372,
+            "encoded": 1349760,
+            "decoded": 1349760,
+            "transfer": 1350060
+          }
+        ],
+        "canvas": {
+          "width": 744,
+          "height": 874
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "overflow": false
+      },
+      "requests": [
+        {
+          "path": "/",
+          "status": 200,
+          "type": "text/html; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/main.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/style.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/tokens.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/engine.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/audio.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/symbols.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/renderer.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/space.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/api/meta",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/sprites.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        },
+        {
+          "path": "/favicon.svg",
+          "status": 200,
+          "type": "image/svg+xml",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/api/session",
+          "status": 201,
+          "type": "application/json"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        }
+      ],
+      "errors": [
+        "Executing inline script violates the following Content Security Policy directive 'script-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-3q49tXfHTKh1OlnQuqUDYM8cUssj7s/0zZd60zebGrU='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+      ],
+      "failed": [],
+      "samples": [
+        {
+          "name": "intro",
+          "state": "intro",
+          "time": "01:15",
+          "ms": 4000,
+          "fps": 59.499899578228565,
+          "frameIntervals": {
+            "count": 237,
+            "mean": 16.80675105485229,
+            "p50": 16.699999999999818,
+            "p95": 16.700000000000728,
+            "p99": 16.800000000000182,
+            "max": 50
+          },
+          "callbackCpu": {
+            "count": 238,
+            "mean": 1.4063025194556773,
+            "p50": 1.300000011920929,
+            "p95": 2.199999988079071,
+            "p99": 2.899999976158142,
+            "max": 3.699999988079071
+          },
+          "framesOver25ms": 1,
+          "framesOver50ms": 0,
+          "mutations": 1409,
+          "mutationRate": 352.25,
+          "longTasks": [
+            {
+              "start": 3406.699999988079,
+              "duration": 50
+            }
+          ]
+        },
+        {
+          "name": "playing",
+          "state": "playing",
+          "time": "01:07",
+          "ms": 8000,
+          "fps": 60.00175370470119,
+          "frameIntervals": {
+            "count": 479,
+            "mean": 16.666179540709813,
+            "p50": 16.69999999999891,
+            "p95": 16.700000000000728,
+            "p99": 16.80000000000109,
+            "max": 16.80000000000109
+          },
+          "callbackCpu": {
+            "count": 480,
+            "mean": 1.4345833325137696,
+            "p50": 1.399999976158142,
+            "p95": 2.199999988079071,
+            "p99": 2.800000011920929,
+            "max": 4.099999964237213
+          },
+          "framesOver25ms": 0,
+          "framesOver50ms": 0,
+          "mutations": 2559,
+          "mutationRate": 319.875,
+          "longTasks": []
+        },
+        {
+          "name": "paused",
+          "state": "paused",
+          "time": "01:07",
+          "ms": 3000,
+          "fps": 60.002681684097595,
+          "frameIntervals": {
+            "count": 179,
+            "mean": 16.6659217877095,
+            "p50": 16.69999999999891,
+            "p95": 16.799999999999272,
+            "p99": 16.80000000000109,
+            "max": 16.80000000000109
+          },
+          "callbackCpu": {
+            "count": 180,
+            "mean": 1.694444445768992,
+            "p50": 1.699999988079071,
+            "p95": 2.400000035762787,
+            "p99": 2.899999976158142,
+            "max": 4.300000011920929
+          },
+          "framesOver25ms": 0,
+          "framesOver50ms": 0,
+          "mutations": 3601,
+          "mutationRate": 1200.3333333333333,
+          "longTasks": []
+        }
+      ],
+      "layout": {
+        "game": {
+          "x": 9,
+          "y": 175,
+          "width": 372,
+          "height": 436.796875,
+          "visible": true
+        },
+        "scan": {
+          "x": 263,
+          "y": 630.296875,
+          "width": 105,
+          "height": 46,
+          "visible": true
+        },
+        "target-scan": {
+          "x": 36,
+          "y": 1237.828125,
+          "width": 318,
+          "height": 42,
+          "visible": false
+        },
+        "service-title": {
+          "x": 29,
+          "y": 1423.421875,
+          "width": 332,
+          "height": 13,
+          "visible": false
+        },
+        "feed-panel": {
+          "x": 29,
+          "y": 1619.421875,
+          "width": 332,
+          "height": 263.1875,
+          "visible": false
+        },
+        "board-panel": {
+          "x": 29,
+          "y": 1902.609375,
+          "width": 332,
+          "height": 174,
+          "visible": false
+        },
+        "intel-card": {
+          "x": 21,
+          "y": 958.78125,
+          "width": 348,
+          "height": 429.640625,
+          "visible": false
+        },
+        "pause": {
+          "x": 310,
+          "y": 12.5,
+          "width": 32,
+          "height": 40,
+          "visible": true
+        }
+      }
+    },
+    {
+      "config": {
+        "name": "mobile-slow-network",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 3,
+        "cpu": 4,
+        "mobile": true,
+        "slow": true
+      },
+      "status": 200,
+      "wallLoad": 18996.172040999998,
+      "spriteReady": 17283.399999976158,
+      "load": {
+        "navigation": {
+          "name": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/",
+          "entryType": "navigation",
+          "startTime": 0,
+          "duration": 18940.69999998808,
+          "navigationId": 9824,
+          "initiatorType": "navigation",
+          "deliveryType": "",
+          "nextHopProtocol": "h2",
+          "renderBlockingStatus": "non-blocking",
+          "contentType": "text/html",
+          "contentEncoding": "gzip",
+          "workerStart": 0,
+          "workerRouterEvaluationStart": 0,
+          "workerCacheLookupStart": 0,
+          "workerMatchedSourceType": "",
+          "workerFinalSourceType": "",
+          "redirectStart": 0,
+          "redirectEnd": 0,
+          "fetchStart": 0.2999999523162842,
+          "domainLookupStart": 0.699999988079071,
+          "domainLookupEnd": 5.799999952316284,
+          "connectStart": 5.799999952316284,
+          "secureConnectionStart": 45.09999996423721,
+          "connectEnd": 114.69999998807907,
+          "requestStart": 114.79999995231628,
+          "responseStart": 1694.8999999761581,
+          "firstInterimResponseStart": 0,
+          "finalResponseHeadersStart": 1694.8999999761581,
+          "responseEnd": 1728.8999999761581,
+          "transferSize": 5706,
+          "encodedBodySize": 5406,
+          "decodedBodySize": 15084,
+          "responseStatus": 200,
+          "serverTiming": [],
+          "unloadEventStart": 0,
+          "unloadEventEnd": 0,
+          "domInteractive": 1765.699999988079,
+          "domContentLoadedEventStart": 2721.199999988079,
+          "domContentLoadedEventEnd": 2721.899999976158,
+          "domComplete": 18940.599999964237,
+          "loadEventStart": 18940.69999998808,
+          "loadEventEnd": 18940.69999998808,
+          "type": "navigate",
+          "redirectCount": 0,
+          "activationStart": 0,
+          "criticalCHRestart": 0,
+          "notRestoredReasons": null,
+          "confidence": {
+            "randomizedTriggerRate": 0.4994798,
+            "value": "high"
+          }
+        },
+        "paint": [
+          {
+            "name": "first-paint",
+            "entryType": "paint",
+            "startTime": 2720,
+            "duration": 0,
+            "navigationId": 9824,
+            "paintTime": 2678.2999999523163,
+            "presentationTime": 2720
+          },
+          {
+            "name": "first-contentful-paint",
+            "entryType": "paint",
+            "startTime": 2720,
+            "duration": 0,
+            "navigationId": 9824,
+            "paintTime": 2678.2999999523163,
+            "presentationTime": 2720
+          }
+        ],
+        "lcp": [
+          {
+            "time": 2720,
+            "size": 21280,
+            "element": "intro-title",
+            "url": ""
+          }
+        ],
+        "resources": [
+          {
+            "path": "/style.css",
+            "start": 1762.5999999642372,
+            "end": 2155,
+            "encoded": 10052,
+            "decoded": 43968,
+            "transfer": 10352
+          },
+          {
+            "path": "/assets/riskstudio-logo.png",
+            "start": 1762.8999999761581,
+            "end": 4631.099999964237,
+            "encoded": 272082,
+            "decoded": 272082,
+            "transfer": 272382
+          },
+          {
+            "path": "/src/main.js",
+            "start": 1763.0999999642372,
+            "end": 2140.2999999523163,
+            "encoded": 7596,
+            "decoded": 22655,
+            "transfer": 7896
+          },
+          {
+            "path": "/src/engine.js",
+            "start": 2143.7999999523163,
+            "end": 2411.099999964237,
+            "encoded": 4706,
+            "decoded": 14178,
+            "transfer": 5006
+          },
+          {
+            "path": "/src/mobile-share.js",
+            "start": 2143.7999999523163,
+            "end": 2484.7999999523163,
+            "encoded": 695,
+            "decoded": 1340,
+            "transfer": 995
+          },
+          {
+            "path": "/src/renderer.js",
+            "start": 2143.899999976158,
+            "end": 2381.199999988079,
+            "encoded": 4327,
+            "decoded": 12256,
+            "transfer": 4627
+          },
+          {
+            "path": "/src/symbols.js",
+            "start": 2143.899999976158,
+            "end": 2500.7999999523163,
+            "encoded": 1029,
+            "decoded": 2010,
+            "transfer": 1329
+          },
+          {
+            "path": "/src/audio.js",
+            "start": 2143.899999976158,
+            "end": 2515.5,
+            "encoded": 518,
+            "decoded": 1053,
+            "transfer": 818
+          },
+          {
+            "path": "/tokens.css",
+            "start": 2156.399999976158,
+            "end": 2507.2999999523163,
+            "encoded": 212,
+            "decoded": 242,
+            "transfer": 512
+          },
+          {
+            "path": "/assets/space.png",
+            "start": 2510.099999964237,
+            "end": 18932.099999964237,
+            "encoded": 1726816,
+            "decoded": 1726816,
+            "transfer": 1727116
+          },
+          {
+            "path": "/api/meta",
+            "start": 2716.399999976158,
+            "end": 3065.699999988079,
+            "encoded": 121,
+            "decoded": 119,
+            "transfer": 421
+          },
+          {
+            "path": "/api/leaderboard",
+            "start": 2717.2999999523163,
+            "end": 3221,
+            "encoded": 13,
+            "decoded": 13,
+            "transfer": 313
+          },
+          {
+            "path": "/assets/sprites.png",
+            "start": 2721.199999988079,
+            "end": 17178.5,
+            "encoded": 1349760,
+            "decoded": 1349760,
+            "transfer": 1350060
+          },
+          {
+            "path": "/api/leaderboard",
+            "start": 17721.099999964237,
+            "end": 17973.899999976158,
+            "encoded": 13,
+            "decoded": 13,
+            "transfer": 313
+          }
+        ],
+        "canvas": {
+          "width": 744,
+          "height": 874
+        },
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "overflow": false
+      },
+      "requests": [
+        {
+          "path": "/",
+          "status": 200,
+          "type": "text/html; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/style.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/main.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/renderer.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/engine.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/symbols.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/tokens.css",
+          "status": 200,
+          "type": "text/css; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/src/audio.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/space.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/api/meta",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/assets/sprites.png",
+          "status": 200,
+          "type": "image/png",
+          "cache": "private, max-age=86400"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        },
+        {
+          "path": "/favicon.svg",
+          "status": 200,
+          "type": "image/svg+xml",
+          "cache": "no-cache",
+          "encoding": "gzip"
+        },
+        {
+          "path": "/api/session",
+          "status": 201,
+          "type": "application/json"
+        },
+        {
+          "path": "/api/leaderboard",
+          "status": 200,
+          "type": "application/json",
+          "cache": "no-store"
+        }
+      ],
+      "errors": [
+        "Executing inline script violates the following Content Security Policy directive 'script-src 'self''. Either the 'unsafe-inline' keyword, a hash ('sha256-q4JaDbwh3eQdbHvzEzmLhKGbpzcVzdPZLJaVSdWS3YQ='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked."
+      ],
+      "failed": [],
+      "samples": [
+        {
+          "name": "intro",
+          "state": "intro",
+          "time": "01:15",
+          "ms": 4000,
+          "fps": 59.49989957822855,
+          "frameIntervals": {
+            "count": 237,
+            "mean": 16.806751054852324,
+            "p50": 16.700000000000728,
+            "p95": 16.700000000000728,
+            "p99": 16.799999999999272,
+            "max": 50.099999999998545
+          },
+          "callbackCpu": {
+            "count": 238,
+            "mean": 1.3563025233124484,
+            "p50": 1.2000000476837158,
+            "p95": 2.099999964237213,
+            "p99": 2.600000023841858,
+            "max": 24.80000001192093
+          },
+          "framesOver25ms": 1,
+          "framesOver50ms": 1,
+          "mutations": 1396,
+          "mutationRate": 349,
+          "longTasks": [
+            {
+              "start": 21464.599999964237,
+              "duration": 56
+            }
+          ]
+        },
+        {
+          "name": "playing",
+          "state": "playing",
+          "time": "01:07",
+          "ms": 8000,
+          "fps": 59.877239133157964,
+          "frameIntervals": {
+            "count": 478,
+            "mean": 16.700836820083683,
+            "p50": 16.69999999999709,
+            "p95": 16.799999999999272,
+            "p99": 16.80000000000291,
+            "max": 33.29999999999927
+          },
+          "callbackCpu": {
+            "count": 479,
+            "mean": 1.4415448853018886,
+            "p50": 1.399999976158142,
+            "p95": 2.5,
+            "p99": 4,
+            "max": 7.100000023841858
+          },
+          "framesOver25ms": 1,
+          "framesOver50ms": 0,
+          "mutations": 2579,
+          "mutationRate": 322.375,
+          "longTasks": []
+        },
+        {
+          "name": "paused",
+          "state": "paused",
+          "time": "01:07",
+          "ms": 3000,
+          "fps": 60.000670398551954,
+          "frameIntervals": {
+            "count": 179,
+            "mean": 16.66648044692737,
+            "p50": 16.69999999999709,
+            "p95": 16.700000000004366,
+            "p99": 16.80000000000291,
+            "max": 16.80000000000291
+          },
+          "callbackCpu": {
+            "count": 180,
+            "mean": 1.8127777781751422,
+            "p50": 1.800000011920929,
+            "p95": 2.600000023841858,
+            "p99": 2.800000011920929,
+            "max": 2.900000035762787
+          },
+          "framesOver25ms": 0,
+          "framesOver50ms": 0,
+          "mutations": 3601,
+          "mutationRate": 1200.3333333333333,
+          "longTasks": []
+        }
+      ],
+      "layout": {
+        "game": {
+          "x": 9,
+          "y": 175,
+          "width": 372,
+          "height": 436.796875,
+          "visible": true
+        },
+        "scan": {
+          "x": 263,
+          "y": 630.296875,
+          "width": 105,
+          "height": 46,
+          "visible": true
+        },
+        "target-scan": {
+          "x": 36,
+          "y": 1237.828125,
+          "width": 318,
+          "height": 42,
+          "visible": false
+        },
+        "service-title": {
+          "x": 29,
+          "y": 1423.421875,
+          "width": 332,
+          "height": 13,
+          "visible": false
+        },
+        "feed-panel": {
+          "x": 29,
+          "y": 1619.421875,
+          "width": 332,
+          "height": 263.1875,
+          "visible": false
+        },
+        "board-panel": {
+          "x": 29,
+          "y": 1902.609375,
+          "width": 332,
+          "height": 174,
+          "visible": false
+        },
+        "intel-card": {
+          "x": 21,
+          "y": 958.78125,
+          "width": 348,
+          "height": 429.640625,
+          "visible": false
+        },
+        "pause": {
+          "x": 310,
+          "y": 12.5,
+          "width": 32,
+          "height": 40,
+          "visible": true
+        }
+      }
+    }
+  ],
+  "notes": [
+    "The first desktop sample overlaps a separate local benchmark and a publication change; use desktopRepeat in followup-results.json for the repeat.",
+    "Source comparisons in followup-results.json supersede the initial comparisons.",
+    "All public gameplay sessions were fulfilled inside the testbrowser, without creating production sessions or scores.",
+    "All frame rates are animation callback rates; full GPU presented-frame rate and physical mobile power use were not measured."
+  ]
+}

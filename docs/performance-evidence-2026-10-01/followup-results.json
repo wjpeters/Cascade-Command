@@ -1,0 +1,658 @@
+{
+  "date": "2026-10-01T19:06:45.493Z",
+  "browser": "154.0.8037.58",
+  "source": [
+    {
+      "file": "src/main.js",
+      "route": "/src/main.js",
+      "status": 200,
+      "remoteSize": 22655,
+      "localSize": 22655,
+      "remoteHash": "cd5b4bb93c0d5ce10dc38cfa0ce5d1b90abe73b4819ac18f830306d2bf533bc2",
+      "localHash": "cd5b4bb93c0d5ce10dc38cfa0ce5d1b90abe73b4819ac18f830306d2bf533bc2",
+      "same": true
+    },
+    {
+      "file": "src/renderer.js",
+      "route": "/src/renderer.js",
+      "status": 200,
+      "remoteSize": 12256,
+      "localSize": 12256,
+      "remoteHash": "78c0a387b42ffbff19fe560a6a56d5b91c4eb2c351b7675a53e2a3588428aa77",
+      "localHash": "78c0a387b42ffbff19fe560a6a56d5b91c4eb2c351b7675a53e2a3588428aa77",
+      "same": true
+    },
+    {
+      "file": "src/engine.js",
+      "route": "/src/engine.js",
+      "status": 200,
+      "remoteSize": 14178,
+      "localSize": 14178,
+      "remoteHash": "2d7b15eab6bc6278b281e72fb89fa0b1bfdd0a7308fcf55ed6a60557977e8bb2",
+      "localHash": "2d7b15eab6bc6278b281e72fb89fa0b1bfdd0a7308fcf55ed6a60557977e8bb2",
+      "same": true
+    },
+    {
+      "file": "public/style.css",
+      "route": "/style.css",
+      "status": 200,
+      "remoteSize": 43968,
+      "localSize": 43968,
+      "remoteHash": "b7cabacb5b967b950db85875f3211d2b894f50d0eac5f52d14ea87f36a0242b2",
+      "localHash": "b7cabacb5b967b950db85875f3211d2b894f50d0eac5f52d14ea87f36a0242b2",
+      "same": true
+    },
+    {
+      "file": "public/index.html",
+      "route": "/",
+      "status": 200,
+      "remoteSize": 15084,
+      "localSize": 14146,
+      "remoteHash": "f47357707f00ef48da2a4b3578e77580c539ce3a0b1df121368d23f7643a81aa",
+      "localHash": "64e7e6f7cca6fe52a7534948f96972541b5ea11723c4e6b83e31f6e47f58dfbd",
+      "same": false
+    }
+  ],
+  "layouts": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 720
+      },
+      "overflow": false,
+      "scrollHeight": 2198,
+      "boxes": {
+        "game": {
+          "x": 9,
+          "y": 175,
+          "width": 302,
+          "height": 410,
+          "inViewport": true
+        },
+        "start": {
+          "x": 30.125,
+          "y": 423.4375,
+          "width": 146.40625,
+          "height": 45,
+          "inViewport": true
+        },
+        "scan": {
+          "x": 190.25,
+          "y": 603.5,
+          "width": 107.75,
+          "height": 46,
+          "inViewport": true
+        },
+        "target-scan": {
+          "x": 36,
+          "y": 1269.15625,
+          "width": 248,
+          "height": 42,
+          "inViewport": false
+        },
+        "service-title": {
+          "x": 29,
+          "y": 1454.75,
+          "width": 262,
+          "height": 13,
+          "inViewport": false
+        },
+        "feed-panel": {
+          "x": 29,
+          "y": 1650.75,
+          "width": 262,
+          "height": 263.1875,
+          "inViewport": false
+        },
+        "board-panel": {
+          "x": 29,
+          "y": 1933.9375,
+          "width": 262,
+          "height": 174,
+          "inViewport": false
+        },
+        "intel-card": {
+          "x": 21,
+          "y": 990.109375,
+          "width": 278,
+          "height": 429.640625,
+          "inViewport": false
+        }
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": false,
+      "scrollHeight": 2167,
+      "boxes": {
+        "game": {
+          "x": 9,
+          "y": 175,
+          "width": 372,
+          "height": 436.796875,
+          "inViewport": true
+        },
+        "start": {
+          "x": 35.03125,
+          "y": 459.375,
+          "width": 154.40625,
+          "height": 45,
+          "inViewport": true
+        },
+        "scan": {
+          "x": 260.25,
+          "y": 630.296875,
+          "width": 107.75,
+          "height": 46,
+          "inViewport": true
+        },
+        "target-scan": {
+          "x": 36,
+          "y": 1237.828125,
+          "width": 318,
+          "height": 42,
+          "inViewport": false
+        },
+        "service-title": {
+          "x": 29,
+          "y": 1423.421875,
+          "width": 332,
+          "height": 13,
+          "inViewport": false
+        },
+        "feed-panel": {
+          "x": 29,
+          "y": 1619.421875,
+          "width": 332,
+          "height": 263.1875,
+          "inViewport": false
+        },
+        "board-panel": {
+          "x": 29,
+          "y": 1902.609375,
+          "width": 332,
+          "height": 174,
+          "inViewport": false
+        },
+        "intel-card": {
+          "x": 21,
+          "y": 958.78125,
+          "width": 348,
+          "height": 429.640625,
+          "inViewport": false
+        }
+      }
+    },
+    {
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "overflow": false,
+      "scrollHeight": 2021,
+      "boxes": {
+        "game": {
+          "x": 17,
+          "y": 171,
+          "width": 734,
+          "height": 537.59375,
+          "inViewport": true
+        },
+        "start": {
+          "x": 68.375,
+          "y": 530.421875,
+          "width": 180.40625,
+          "height": 48,
+          "inViewport": true
+        },
+        "scan": {
+          "x": 577,
+          "y": 725.59375,
+          "width": 154,
+          "height": 49,
+          "inViewport": true
+        },
+        "target-scan": {
+          "x": 538,
+          "y": 992.59375,
+          "width": 180,
+          "height": 42,
+          "inViewport": false
+        },
+        "service-title": {
+          "x": 41,
+          "y": 1366.859375,
+          "width": 686,
+          "height": 13,
+          "inViewport": false
+        },
+        "feed-panel": {
+          "x": 41,
+          "y": 1563.859375,
+          "width": 686,
+          "height": 164.59375,
+          "inViewport": false
+        },
+        "board-panel": {
+          "x": 41,
+          "y": 1752.453125,
+          "width": 686,
+          "height": 170,
+          "inViewport": false
+        },
+        "intel-card": {
+          "x": 33,
+          "y": 950.59375,
+          "width": 702,
+          "height": 375.265625,
+          "inViewport": false
+        }
+      }
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "overflow": false,
+      "scrollHeight": 2074,
+      "boxes": {
+        "game": {
+          "x": 17,
+          "y": 171,
+          "width": 810,
+          "height": 590.796875,
+          "inViewport": false
+        },
+        "start": {
+          "x": 73.6875,
+          "y": 541.015625,
+          "width": 180.40625,
+          "height": 48,
+          "inViewport": false
+        },
+        "scan": {
+          "x": 653,
+          "y": 778.796875,
+          "width": 154,
+          "height": 49,
+          "inViewport": false
+        },
+        "target-scan": {
+          "x": 614,
+          "y": 1045.796875,
+          "width": 180,
+          "height": 42,
+          "inViewport": false
+        },
+        "service-title": {
+          "x": 41,
+          "y": 1420.0625,
+          "width": 762,
+          "height": 13,
+          "inViewport": false
+        },
+        "feed-panel": {
+          "x": 41,
+          "y": 1617.0625,
+          "width": 762,
+          "height": 164.59375,
+          "inViewport": false
+        },
+        "board-panel": {
+          "x": 41,
+          "y": 1805.65625,
+          "width": 762,
+          "height": 170,
+          "inViewport": false
+        },
+        "intel-card": {
+          "x": 33,
+          "y": 1003.796875,
+          "width": 778,
+          "height": 375.265625,
+          "inViewport": false
+        }
+      }
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "overflow": false,
+      "scrollHeight": 786,
+      "boxes": {
+        "game": {
+          "x": 25,
+          "y": 179,
+          "width": 718,
+          "height": 406,
+          "inViewport": true
+        },
+        "start": {
+          "x": 72.09375,
+          "y": 453.453125,
+          "width": 180.40625,
+          "height": 48,
+          "inViewport": true
+        },
+        "scan": {
+          "x": 748.359375,
+          "y": 601,
+          "width": 194.640625,
+          "height": 49,
+          "inViewport": true
+        },
+        "target-scan": {
+          "x": 757,
+          "y": 534,
+          "width": 183,
+          "height": 36,
+          "inViewport": true
+        },
+        "service-title": {
+          "x": 986,
+          "y": 120,
+          "width": 251,
+          "height": 12,
+          "inViewport": true
+        },
+        "feed-panel": {
+          "x": 986,
+          "y": 291,
+          "width": 251,
+          "height": 231,
+          "inViewport": true
+        },
+        "board-panel": {
+          "x": 986,
+          "y": 539,
+          "width": 251,
+          "height": 170,
+          "inViewport": true
+        },
+        "intel-card": {
+          "x": 743,
+          "y": 229,
+          "width": 211,
+          "height": 328,
+          "inViewport": true
+        }
+      }
+    },
+    {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "overflow": false,
+      "scrollHeight": 1080,
+      "boxes": {
+        "game": {
+          "x": 25,
+          "y": 179,
+          "width": 1308,
+          "height": 695,
+          "inViewport": true
+        },
+        "start": {
+          "x": 102.6875,
+          "y": 623.5,
+          "width": 180.40625,
+          "height": 48,
+          "inViewport": true
+        },
+        "scan": {
+          "x": 1360.359375,
+          "y": 890,
+          "width": 194.640625,
+          "height": 49,
+          "inViewport": true
+        },
+        "target-scan": {
+          "x": 1354,
+          "y": 567.125,
+          "width": 193,
+          "height": 36,
+          "inViewport": true
+        },
+        "service-title": {
+          "x": 1604,
+          "y": 125,
+          "width": 267,
+          "height": 12,
+          "inViewport": true
+        },
+        "feed-panel": {
+          "x": 1604,
+          "y": 296,
+          "width": 267,
+          "height": 248.1875,
+          "inViewport": true
+        },
+        "board-panel": {
+          "x": 1604,
+          "y": 561.1875,
+          "width": 267,
+          "height": 170,
+          "inViewport": true
+        },
+        "intel-card": {
+          "x": 1338,
+          "y": 249,
+          "width": 225,
+          "height": 448.125,
+          "inViewport": true
+        }
+      }
+    }
+  ],
+  "cache": [
+    {
+      "load": 343.7000000476837,
+      "resources": [
+        {
+          "path": "/style.css",
+          "transfer": 10352,
+          "encoded": 10052
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "transfer": 0,
+          "encoded": 272082
+        },
+        {
+          "path": "/src/main.js",
+          "transfer": 7894,
+          "encoded": 7594
+        },
+        {
+          "path": "/tokens.css",
+          "transfer": 512,
+          "encoded": 212
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "transfer": 995,
+          "encoded": 695
+        },
+        {
+          "path": "/src/engine.js",
+          "transfer": 5006,
+          "encoded": 4706
+        },
+        {
+          "path": "/src/renderer.js",
+          "transfer": 4627,
+          "encoded": 4327
+        },
+        {
+          "path": "/src/audio.js",
+          "transfer": 818,
+          "encoded": 518
+        },
+        {
+          "path": "/src/symbols.js",
+          "transfer": 1329,
+          "encoded": 1029
+        },
+        {
+          "path": "/assets/space.png",
+          "transfer": 0,
+          "encoded": 1726816
+        },
+        {
+          "path": "/assets/sprites.png",
+          "transfer": 0,
+          "encoded": 1349760
+        },
+        {
+          "path": "/api/meta",
+          "transfer": 421,
+          "encoded": 121
+        },
+        {
+          "path": "/api/leaderboard",
+          "transfer": 313,
+          "encoded": 13
+        },
+        {
+          "path": "/favicon.svg",
+          "transfer": 459,
+          "encoded": 159
+        }
+      ]
+    },
+    {
+      "load": 303.5,
+      "resources": [
+        {
+          "path": "/style.css",
+          "transfer": 10352,
+          "encoded": 10052
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "transfer": 0,
+          "encoded": 272082
+        },
+        {
+          "path": "/src/main.js",
+          "transfer": 7894,
+          "encoded": 7594
+        },
+        {
+          "path": "/tokens.css",
+          "transfer": 512,
+          "encoded": 212
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "transfer": 995,
+          "encoded": 695
+        },
+        {
+          "path": "/src/engine.js",
+          "transfer": 5006,
+          "encoded": 4706
+        },
+        {
+          "path": "/src/symbols.js",
+          "transfer": 1329,
+          "encoded": 1029
+        },
+        {
+          "path": "/src/audio.js",
+          "transfer": 818,
+          "encoded": 518
+        },
+        {
+          "path": "/src/renderer.js",
+          "transfer": 4627,
+          "encoded": 4327
+        },
+        {
+          "path": "/assets/space.png",
+          "transfer": 0,
+          "encoded": 1726816
+        },
+        {
+          "path": "/assets/sprites.png",
+          "transfer": 0,
+          "encoded": 1349760
+        },
+        {
+          "path": "/api/meta",
+          "transfer": 421,
+          "encoded": 121
+        },
+        {
+          "path": "/api/leaderboard",
+          "transfer": 313,
+          "encoded": 13
+        },
+        {
+          "path": "/favicon.svg",
+          "transfer": 459,
+          "encoded": 159
+        }
+      ]
+    }
+  ],
+  "desktopRepeat": {
+    "count": 359,
+    "fps": 60.00167602446996,
+    "cpuP95": 0.5,
+    "intervalP95": 16.799999999999727,
+    "over25": 0
+  },
+  "renderBenchmark": {
+    "snapshots": [
+      {
+        "seconds": 10,
+        "packets": 1,
+        "fields": 1,
+        "fx": 0,
+        "p50": 0.10000002384185791,
+        "p95": 0.2999999523162842
+      },
+      {
+        "seconds": 35,
+        "packets": 1,
+        "fields": 2,
+        "fx": 1,
+        "p50": 0.10000002384185791,
+        "p95": 0.20000004768371582
+      },
+      {
+        "seconds": 55,
+        "packets": 2,
+        "fields": 3,
+        "fx": 1,
+        "p50": 0.10000002384185791,
+        "p95": 0.20000004768371582
+      },
+      {
+        "seconds": 70,
+        "packets": 1,
+        "fields": 1,
+        "fx": 1,
+        "p50": 0.10000002384185791,
+        "p95": 0.19999998807907104
+      }
+    ],
+    "maxPackets": 3,
+    "score": 4425,
+    "seconds": 75
+  },
+  "webkit": {
+    "browser": "26.5",
+    "errors": [],
+    "state": "paused",
+    "overflow": false
+  }
+}
