@@ -55,3 +55,6 @@ body{height:auto;min-height:100dvh;overflow:auto;background:#030c17 url('/assets
 .sidebar>section{flex-shrink:0}.sidebar .service-status{border-top:0;padding-top:0}#board-panel{border-top:1px solid #264459;padding-top:15px}
 
 .briefing .asset-status{font-size:11px;line-height:1.5;min-height:17px;margin:8px 0;color:var(--cyan)}body[data-assets=error] .asset-status{color:var(--red)}.briefing #retry-assets{display:block;margin:0;padding:4px 0;min-height:32px;color:var(--cyan)}
+
+.briefing .intro-actions{display:flex;align-items:center;gap:10px}.briefing .intro-actions>button{flex-shrink:0;white-space:nowrap}.briefing .intro-actions .text-button{margin:0;gap:8px}.briefing .intro-actions .primary{padding-inline:16px;gap:16px}
+@media(max-width:600px){.briefing .intro-actions .primary{padding-inline:12px;gap:12px}}
