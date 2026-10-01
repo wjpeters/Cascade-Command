@@ -22,12 +22,12 @@ Het online leaderboard staat in een Sites D1-database en blijft behouden na opni
 De Galaxy toont Tier 3 → Tier 2 → Tier 1 → kritieke dienst → eigen organisatie. De diensten zijn Klantportaal, Betalingen en Operatie. Alle leveranciers, landen, ratings en risico’s vormen één fictief scenario.
 
 - Houd na 75 seconden zoveel mogelijk diensten operationeel. Bij drie uitgevallen diensten eindigt de ronde eerder.
-- CVE is een kritieke kwetsbaarheid (rode ruit, 50 procentpunten schade). INC, GEO, LAW en RAT zijn respectievelijk incident, geopolitiek, regelgeving en cyberrating (oranje driehoek, 25 procentpunten schade). Blauwe LOW-signalen hebben geen bedrijfsimpact in dit scenario en hoeven niet onderschept te worden.
+- Vijf herkenbare categorieën: incident (rode virusvorm), kwetsbaarheid (oranje waarschuwingsdriehoek), geopolitiek (paarse zuilen), regelgeving (blauwe weegschaal) en cyberrating (cyaan oog). Een Critical CVE heeft een extra rode buitenring en geeft 50 procentpunten schade; de andere hoge risico’s geven 25. Kleine grijze LOW-signalen hebben geen bedrijfsimpact in dit scenario en hoeven niet onderschept te worden.
 - Risico’s beginnen in verschillende tiers en volgen bestaande verbindingen. Vanaf golf 2 splitsen relevante dreigingen bij gedeelde leveranciers. Kind, oorsprong en identiteit blijven behouden langs de keten.
 - Klik/tik vóór een dreiging. Een onderschepper reist vanuit het centrum naar een beschermingsveld. Dat kost 20 energie; energie herstelt met 13 per seconde. Het veld kan ook een laag risico raken, wat 50 punten kost.
-- Scan kost 25 energie, vertraagt signalen 5 seconden en herlaadt 18 seconden. De knop onderzoekt de dreiging met de grootste potentiële impact op operationele diensten. Met richten en spatie kun je een specifieke dreiging of node onderzoeken. Zonder dreiging onderzoekt de knop een leveranciersnode.
+- Scan kost 25 energie, vertraagt signalen 5 seconden en herlaadt 18 seconden. De knop onderzoekt de dreiging met de grootste potentiële impact op operationele diensten. Met ‘Kies een leverancier’ selecteer je een dreiging of node met klik/tik. Op de Mac kan dit ook met richten en spatie. Escape annuleert de gerichte selectie; Enter scant in deze modus. Zonder dreiging onderzoekt de knop een leveranciersnode.
 - Scan toont een momentopname van tier, type, ernst, mogelijke bedrijfsimpact, land, jurisdictie en cyberrating. Verborgen uitgaande verbindingen van de onderzochte nodes worden blijvend zichtbaar. Dezelfde verbinding telt maar één keer als ontdekking.
-- Live Risk Feed toont echte gebeurtenissen uit de ronde, met simulatietijd. Iedere dienst heeft een health-bar en percentage. Op mobiel verschijnt na een scan ook een korte kaart op het speelveld.
+- Leaderboard, kritieke diensten en Live Risk Feed zijn tegelijk zichtbaar. Groene, amberkleurige en lege balken tonen de actuele weerbaarheid. De feed toont echte spelgebeurtenissen met simulatietijd. De leverancierskaart staat op desktop naast de Galaxy en op smallere schermen onder de bediening. Op mobiel opent het scanbericht de detailkaart; deze pauzeert de ronde. ‘Terug naar de missie’ hervat de ronde.
 - +50 per onderschepte dreiging; +100 voor een relevante dreiging die vanaf golf 2 vóór de eerste mogelijke splitsing is gestopt; +200 per dienst die na afloop nog operationeel is. De kettingreactiebonus geldt één keer per oorspronkelijke dreiging, nooit na een eerdere splitsing.
 - Snelle reactie binnen 3 seconden: +25. Combo binnen 2,5 seconden: +25 per extra onderschepping, maximaal +100. Een verkeerde onderschepping of inslag op een operationele dienst: −50. Scores worden niet negatief.
 - De eindrapportage toont onderschepte dreigingen, voorkomen kettingreacties, ontdekte afhankelijkheden, operationele diensten, combo en fouten. De kernboodschap: een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.
@@ -47,10 +47,11 @@ De server luistert op het lokale netwerk voor mobiele deelname. Voor lokaal spel
 
 ## Techniek
 
-Dependencyvrije browsergame met native ES-modules, Canvas 2D voor het stabiele netwerk, Image Gen-assets voor het spelbeeld en gewone HTML-bediening. Simulatie en weergave zijn gescheiden. De server en browser gebruiken dezelfde vaste simulatiestappen van 60 Hz. Mobiele indeling vanaf 760px, bediening zonder hoververeiste. Geen externe scripts of fonts.
+Dependencyvrije browsergame met native ES-modules, Canvas 2D voor het stabiele netwerk, Image Gen-assets voor het spelbeeld en gewone HTML-bediening. Simulatie en weergave zijn gescheiden. De server en browser gebruiken dezelfde vaste simulatiestappen van 60 Hz. Gestapelde indeling onder 1100px, bediening zonder hoververeiste. Geen externe scripts of fonts.
 
 - `src/engine.js`: deterministische spelregels en replaycontrole.
-- `src/renderer.js`: canvasweergave en gegenereerde sprites.
+- `src/renderer.js`: canvasweergave, routepijlen, verborgen-linkmarkeringen en gegenereerde sprites.
+- `src/symbols.js`: gedeelde categorie-symbolen voor canvas, legenda en leverancierskaart.
 - `src/main.js`: schermen, bediening en scoreflow.
 - `server.mjs`: lokale webserver, sessies en leaderboard.
 - `design/`: visueel concept en ontwerpkeuzes.
@@ -71,3 +72,9 @@ Er is optionele WebMCP-leestoegang tot hetzelfde leaderboard wanneer de browser 
 ## Controle van de nieuwe spelregels
 
 De regressieset controleert onder meer deterministische replay, energie/cooldown, schade per severity, LOW-signalen, splitsingen met behoud van dreiging, voorkomen kettingreacties, eenmalige ontdekkingen, eindbonus en gescheiden historische klassementen. Browsercontrole omvat speluitleg/pauze, scan-intelligence, Live Risk Feed, mobiele viewport, eindrapportage en opslaan in een apart lokaal testklassement. Geen testscores in de online database geplaatst.
+
+## Ontwerpuitwerking, 1 oktober 2026
+
+Gebaseerd op het door Willem aangeleverde ontwerp: een omlijst commandoscherm, permanent zichtbare contextpanelen, vijf categorie-symbolen, gekleurde actieve ketenroutes met pijlen, kettingreactie-effecten, vraagtekens voor verborgen relaties, een leverancierskaart met gerichte scan en een categorielegenda met punten. Het bestaande eigen logo, de gecentreerde tierlabels in nodevrije zones, QR-code en klassementen blijven behouden. Alle signalen zijn fictieve spelsignalen. De decoratieve genummerde toelichtingskaders uit het ontwerp zijn vertaald naar de bediening, legenda en speluitleg.
+
+Gecontroleerd op schermbreedtes 320, 390, 1280 en 1440 pixels, inclusief gericht scannen, detailkaart, pauzeren/hervatten, ronde-einde en scoreopslag in een geïsoleerd lokaal testklassement. Geen testscores in de online database geplaatst.

@@ -2,27 +2,31 @@ import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, VERSION, THREATS, SCAN_COST, SERVICE_NAMES, clamp } from './engine.js';
 import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
+import { CATEGORIES, symbolMarkup } from './symbols.js';
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
 let state='intro',game=new Game(),session=null,actions=[],lastFrame=0,accumulator=0,toastUntil=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
-let lastFeed=-1,lastIntel=null,boardRequest=0;
+let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
 const formatTime=tick=>`${String(Math.floor(tick/FPS/60)).padStart(2,'0')}:${String(Math.floor(tick/FPS)%60).padStart(2,'0')}`;
 const severityName={critical:'Kritiek',high:'Hoog',low:'Laag',unknown:'Geen signaal in beeld'};
-$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" id="service-${i}"><span>${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
+$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" id="service-${i}"><span class="service-symbol" aria-hidden="true">${['✣','⬡','◇'][i]}</span><span class="service-name">${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
+$('category-list').innerHTML=Object.entries(CATEGORIES).filter(([kind])=>kind!=='low').map(([kind,item])=>`<div class="category" data-kind="${kind}"><span class="category-symbol">${symbolMarkup(kind)}</span><div><strong>${item.title}</strong><span>${item.detail}</span></div></div>`).join('');
+
 const emptyBoard=$('leaderboard').innerHTML;
 async function request(url,options={}){
   const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...options.headers}});
   const data=await response.json();if(!response.ok)throw new Error(data.error||'Verbinding met de gameserver mislukt.');return data;
 }
-function selectSide(name){
-  for(const panel of ['feed','board']){$(panel+'-panel').hidden=panel!==name;$(panel+'-tab').setAttribute('aria-selected',String(panel===name));$(panel+'-tab').tabIndex=panel===name?0:-1;}
-}
-for(const name of ['feed','board']){
-  $(name+'-tab').addEventListener('click',()=>selectSide(name));
-  $(name+'-tab').addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?'feed':event.key==='End'?'board':name==='feed'?'board':'feed';selectSide(next);$(next+'-tab').focus();}});
+// All three panels remain visible together, including during a round.
+function selectSide(name){for(const panel of ['feed','board'])$(panel+'-panel').dataset.active=String(panel===name);}
+function setTargeting(value){
+  scanTargeting=value;renderer.targeting=value;renderer.pointer=null;
+  canvas.classList.toggle('targeting',value);$('target-scan').setAttribute('aria-pressed',String(value));
+  $('target-scan').innerHTML=value?'Annuleer selectie <span>×</span>':'Kies een leverancier <span>⌖</span>';
+  $('target-help').textContent=value?'Tik of klik op een node of dreiging. Esc annuleert.':'De scanknop onderzoekt automatisch het urgentste risico.';
 }
 function showPanel(id){for(const name of ['intro','pause-panel','result'])$(name).hidden=name!==id;}
 function setState(value){
-  state=value;canvas.dataset.state=state;document.body.dataset.state=state;
+  state=value;if(state!=='playing')setTargeting(false);canvas.dataset.state=state;document.body.dataset.state=state;
   $('pause').hidden=state!=='playing';$('demo-label').hidden=state!=='demo';$('scan').disabled=state!=='playing';
   $('feed-mode').textContent=state==='intro'||state==='demo'?'Demo':state==='paused'?'Pauze':state==='result'?'Afgelopen':'Live';
   if(state==='intro')showPanel('intro');else if(state==='paused')showPanel('pause-panel');else if(state==='result')showPanel('result');else showPanel(null);
@@ -44,22 +48,40 @@ $('score-edition').addEventListener('change',refreshBoard);
 function drawIntelligence(){
   const info=game.intelligence;
   if(info===lastIntel)return;lastIntel=info;
-  $('intel-details').replaceChildren();$('intel-details').hidden=!info;$('intel-empty').hidden=!!info;
+  $('intel-details').replaceChildren();$('intel-details').hidden=!info;$('intel-empty').hidden=!!info;$('intel-more').hidden=!info;
+  renderer.selectedNode=info?game.network.nodes.find(node=>node.name===info.supplier)?.id:null;
+  $('intel-card').classList.toggle('has-intel',!!info);
   if(!info)return;
-  const heading=document.createElement('strong');heading.className='intel-supplier';heading.textContent=info.supplier;
-  const badge=document.createElement('p');badge.className='intel-threat '+info.severity;badge.textContent=`${info.label} · ${severityName[info.severity]}`;
+  const heading=document.createElement('div');heading.className='supplier-heading';
+  const supplier=document.createElement('strong');supplier.className='intel-supplier';supplier.textContent=info.supplier;
+  const tier=document.createElement('span');tier.className='tier-badge';tier.textContent='TIER '+info.tier;heading.append(supplier,tier);
+  const country=document.createElement('p');country.className='intel-country';country.textContent='◎ '+info.country;
+  const kind=Object.keys(THREATS).find(key=>THREATS[key].label===info.label),category=kind?CATEGORIES[kind]:null;
+  const badge=document.createElement('p');badge.className='intel-threat '+info.severity;
+  if(category){const icon=document.createElement('span');icon.className='intel-threat-icon';icon.dataset.kind=kind;icon.innerHTML=symbolMarkup(kind);badge.append(icon);}
+  badge.append(document.createTextNode(info.label));
   const table=document.createElement('dl');
-  const entries=[['Tier',String(info.tier)],['Type',info.type],['Land / jurisdictie',`${info.country} / ${info.jurisdiction}`],['Cyberrating',`${info.rating} / 100`],['Business impact',info.damage===0?'Geen in dit scenario':info.activeServices.length===0?'Deze diensten zijn al uitgevallen':`${info.activeServices.join(', ')}${info.damage===null?'':` · −${info.damage*25} procentpunten bij inslag`}`],['Verborgen routes',`${info.discovered} nieuw · ${game.discovered} totaal`]];
-  for(const [label,value] of entries){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;table.append(dt,dd);}
-  const note=document.createElement('p');note.className='intel-time';note.textContent=`Momentopname ${formatTime(info.tick)} · fictief scenario`;
-  $('intel-details').append(heading,badge,table,note);
-  $('scan-peek').textContent=`${info.label} · ${severityName[info.severity]} · Tier ${info.tier}. ${info.damage===0?'Laten passeren.':info.damage===null?'Node onderzocht.':info.activeServices.length===0?'Geen extra impact op operationele diensten.':`${info.activeServices.join(', ')} in gevaar.`} ${info.discovered} verborgen route(s) ontdekt.`;
+  const impact=info.damage===0?'Geen in dit scenario':info.activeServices.length===0?'Diensten al uitgevallen':`${info.activeServices.join(', ')}${info.damage===null?'':` · −${info.damage*25}% bij inslag`}`;
+  const entries=[['Ernst',severityName[info.severity]],['Business impact',impact],['Land / jurisdictie',`${info.country} / ${info.jurisdiction}`],['Cyberrating',`${info.rating} / 100`],['Verborgen links',`${info.discovered} nieuw · ${game.discovered} totaal`]];
+  for(const [label,value] of entries){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;if(label==='Ernst')dd.className=info.severity;table.append(dt,dd);}
+  const note=document.createElement('p');note.className='intel-time';note.textContent=`Scan ${formatTime(info.tick)} · momentopname`;
+  $('intel-details').append(heading,country,badge,table,note);
+  $('scan-peek').textContent=`${info.label} · ${severityName[info.severity]} · Tier ${info.tier} → details`;
 }
+function openIntelligence(){
+  if(!game.intelligence)return;if(state==='playing')pause();
+  $('intel-dialog-content').replaceChildren(...[...$('intel-details').children].map(child=>child.cloneNode(true)));
+  const origin=document.createElement('p');origin.className='intel-origin';origin.textContent='Oorsprong in de keten: '+game.intelligence.origin;$('intel-dialog-content').append(origin);
+  $('intel-dialog').showModal();
+}
+$('intel-more').addEventListener('click',openIntelligence);$('scan-peek').addEventListener('click',openIntelligence);
+$('close-intel').addEventListener('click',()=>$('intel-dialog').close());$('intel-done').addEventListener('click',()=>{$('intel-dialog').close();if(state==='paused')resume();});
+$('target-scan').addEventListener('click',()=>{if(state==='playing'){setTargeting(!scanTargeting);if(scanTargeting){toast('Kies een node of dreiging om te scannen');canvas.focus({preventScroll:true});if(matchMedia('(max-width:1099px)').matches)canvas.scrollIntoView({block:'center',behavior:renderer.reduced?'auto':'smooth'});}}});
 function updateIntelFeed(){
   if(game.feedRevision!==lastFeed){
-    lastFeed=game.feedRevision;$('risk-feed').replaceChildren();
+    lastFeed=game.feedRevision;$('feed-count').textContent=game.feedRevision?`${game.feedRevision} gebeurtenissen in deze ronde`:'Wacht op het eerste signaal';$('risk-feed').replaceChildren();
     if(!game.feed.length){const item=document.createElement('li');item.className='feed-empty';item.textContent='Wachten op signalen uit de keten…';$('risk-feed').append(item);}
-    for(const event of game.feed.slice(0,5)){
+    for(const event of game.feed.slice(0,4)){
       const item=document.createElement('li');item.className='feed-event '+event.severity;
       const time=document.createElement('time');time.textContent=formatTime(event.tick);
       const content=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('span');title.textContent=event.text;detail.textContent=event.detail;content.append(title,detail);item.append(time,content);$('risk-feed').append(item);
@@ -73,20 +95,20 @@ async function start(){
     await renderer.ready;if(renderer.assetError)throw new Error('De spelbeelden zijn niet geladen. Vernieuw de pagina.');
     session=await request('/api/session',{method:'POST',body:'{}'});
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina om te spelen.');
-    game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=null;
+    game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
-    $('score-edition').value=VERSION;setState('playing');selectSide('feed');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat blauwe LOW-signalen passeren.');updateHud();
+    $('score-edition').value=VERSION;setState('playing');selectSide('feed');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');updateHud();
   }catch(error){setState('intro');$('start-error').textContent=error.message;}
   finally{busy=false;$('start').disabled=false;$('retry').disabled=false;}
 }
-function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=null;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');selectSide('board');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
+function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');selectSide('board');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
 function action(type,point={}){
   if(state!=='playing')return false;
   const a={tick:game.tick,type,...point};
   if(type==='scan'&&a.x!==undefined){a.x=clamp(a.x,0,1000);a.y=clamp(a.y,0,1000);}
   if(game.act(a)){
     actions.push(a);audio.play(type);
-    if(type==='scan'){selectSide('feed');toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
+    if(type==='scan'){setTargeting(false);selectSide('feed');toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
     return true;
   }
   if(type==='shot')toast(game.energy<20?'Energie laadt op…':'Even richten, dan opnieuw.');
@@ -116,12 +138,14 @@ function updateHud(){
   const energy=intro?100:Math.floor(game.energy);$('energy-fill').style.width=energy+'%';$('energy-number').textContent=energy+'%';$('energy-meter').setAttribute('aria-valuenow',energy);$('energy-meter').classList.toggle('low',energy<20);
   const cooldown=Math.max(0,Math.ceil((game.scanReady-game.tick)/FPS));
   $('scan').disabled=state!=='playing'||cooldown>0||game.energy<SCAN_COST;
+  $('target-scan').disabled=state!=='playing'||(!scanTargeting&&(cooldown>0||game.energy<SCAN_COST));
   $('scan-text').textContent=state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':'Scan · 25';
   $('scan').title=cooldown>0?`Scan over ${cooldown} seconden beschikbaar`:'Scan kost 25 energie; onderzoekt de gevaarlijkste dreiging';
   $('scan').classList.toggle('active',state==='playing'&&game.tick<game.scanUntil);
   $('combo').hidden=!(state==='playing'&&game.combo>=2);$('combo-value').textContent=game.combo+'×';
   for(let i=0;i<3;i++){
     const health=(intro?4:game.hp[i])*25;$('service-'+i).classList.toggle('down',health===0);
+    $('service-'+i).classList.toggle('warning',health>0&&health<=50);$('service-'+i).classList.toggle('healthy',health>50);
     $('hp-'+i).setAttribute('aria-valuenow',health);$('hp-'+i).firstElementChild.style.width=health+'%';$('health-'+i).textContent=health+'%';
   }
   updateIntelFeed();
@@ -152,7 +176,7 @@ function frame(now){
         }
         if(game.phase!==previousPhase){previousPhase=game.phase;toast(game.phase===2?'Gedeelde leveranciers · dreigingen kunnen splitsen':'Laatste golf · houd je diensten operationeel!');}
         if(game.finished){finish();break;}
-      }else if(game.finished){game=new Game(SEED);lastFeed=-1;lastIntel=null;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
+      }else if(game.finished){game=new Game(SEED);lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
     }
   }
   if(now>toastUntil)$('event-toast').classList.remove('show');renderer.render(game,state);
@@ -161,14 +185,14 @@ function frame(now){
 canvas.addEventListener('pointerdown',event=>{
   if(state!=='playing')return;event.preventDefault();const point=renderer.point(event.clientX,event.clientY);
   if(point.x<0||point.x>1000||point.y<0||point.y>1000)return;
-  renderer.keyboard=false;renderer.pointer=point;canvas.focus({preventScroll:true});action('shot',{x:Math.round(point.x),y:Math.round(point.y)});if(event.pointerType==='touch')renderer.pointer=null;
+  renderer.keyboard=false;renderer.pointer=point;canvas.focus({preventScroll:true});if(scanTargeting){action('scan',{x:Math.round(point.x),y:Math.round(point.y)});return;}action('shot',{x:Math.round(point.x),y:Math.round(point.y)});if(event.pointerType==='touch')renderer.pointer=null;
 });
 canvas.addEventListener('pointermove',event=>{if(event.pointerType!=='touch'&&state==='playing'){renderer.keyboard=false;renderer.pointer=renderer.point(event.clientX,event.clientY);}});
 canvas.addEventListener('pointerleave',()=>{if(!renderer.keyboard)renderer.pointer=null;});
 document.addEventListener('keydown',event=>{
-  if(event.target.matches('input,textarea,select')||$('mobile-dialog').open||$('rules-dialog').open)return;
-  if(event.key==='Escape'){if(state==='playing')pause();else if(state==='paused')resume();return;}
-  if(state!=='playing')return;
+  if(event.target.matches('input,textarea,select')||$('mobile-dialog').open||$('rules-dialog').open||$('intel-dialog').open)return;
+  if(event.key==='Escape'){if(scanTargeting){setTargeting(false);return;}if(state==='playing')pause();else if(state==='paused')resume();return;}
+  if(state!=='playing'||event.target.matches('button,a'))return;
   if(event.code==='Space'){event.preventDefault();if(!event.repeat)action('scan',renderer.pointer?{...renderer.pointer}:{});return;}
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){
     if(event.target.closest('.side-tabs'))return;
@@ -176,12 +200,12 @@ document.addEventListener('keydown',event=>{
     if(event.key==='ArrowUp')renderer.pointer.y-=step;if(event.key==='ArrowDown')renderer.pointer.y+=step;
     if(event.key==='ArrowLeft')renderer.pointer.x-=step;if(event.key==='ArrowRight')renderer.pointer.x+=step;
     renderer.pointer.x=clamp(renderer.pointer.x,30,970);renderer.pointer.y=clamp(renderer.pointer.y,30,970);
-    if(event.key==='Enter'&&!event.repeat)action('shot',{...renderer.pointer});
+    if(event.key==='Enter'&&!event.repeat)action(scanTargeting?'scan':'shot',{...renderer.pointer});
   }
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
 $('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('demo-play').addEventListener('click',start);
-$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=null;accumulator=0;setState('demo');selectSide('feed');});
+$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=undefined;accumulator=0;setState('demo');selectSide('feed');});
 $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
 $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sound').setAttribute('aria-pressed',enabled);$('sound').setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');$('sound').title=enabled?'Geluid uit':'Geluid aan';$('sound').innerHTML=enabled?'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>':'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg>';}catch{toast('Geluid is niet beschikbaar in deze browser.');}});
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
