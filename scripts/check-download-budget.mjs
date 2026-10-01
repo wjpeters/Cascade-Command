@@ -3,6 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
+import { GAME_CONFIG } from '../src/game-config.js';
+
 const browserTypes = new Set(['.html', '.css', '.js', '.svg', '.png', '.webp']);
 const imageTypes = new Set(['.svg', '.png', '.webp']);
 // Count every published browser file, even optional QR code, as a safe upper bound.
@@ -24,6 +26,7 @@ export async function checkDownloadBudget(root) {
   }
   await collect(path.join(root, 'public'));
   await collect(path.join(root, 'src'));
+  if (GAME_CONFIG.easterEggs === true) await collect(path.join(root, 'plugins/easter-eggs'));
   files.sort((a, b) => a.path.localeCompare(b.path));
   const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
   const imageBytes = files.filter(file => file.image).reduce((sum, file) => sum + file.bytes, 0);

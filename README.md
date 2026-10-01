@@ -175,3 +175,16 @@ Lokaal gecontroleerd met iconen en effecten die bewust alle drie de labels overl
 ## Sites-versie 5 gepubliceerd, 1 oktober 2026
 
 De nieuwste lokale versie staat op https://riskstudio-cascade-command.codexwillem.chatgpt.site. Performanceverbetering 2, tierlabels achter spelobjecten en de laatste indeling van de start- en demoknoppen zijn meegenomen. Twintig regressietests, downloadbudget en Worker-bouwcontrole slagen. De laatste HTML/CSS-wijzigingen zijn opnieuw gebouwd en gecontroleerd; spelcode en scorecontrole bleven daarbij gelijk. Openbare toegang, spelinstellingen en online scores zijn behouden.
+
+
+## Easter Egg-plugin: The Force Behind the Galaxy
+
+De tien teamcameo’s, portretten, geluiden en Galactic Council staan zelfstandig in `plugins/easter-eggs/`. Niels is Mace Windu en Willem is Darth Sidious / Emperor Palpatine, Master of the Galaxy.
+
+De huidige instelling in `src/game-config.js` is `easterEggs: true`. Met `false` worden geen pluginmodules, CSS of portretten geladen en zijn geen pluginobservers, listeners of timers actief. De lokale server geeft dan ook 404 voor pluginroutes. Het online bouwpakket laat de plugin en beelden volledig weg. Na aanpassen: lokaal de server herstarten en de pagina vernieuwen; online opnieuw bouwen en publiceren. Een `.env` is niet nodig.
+
+De plugin verandert geen score, energie, risico’s, timing, scenarioseed of klassementidentiteit. De server gebruikt dezelfde ongewijzigde simulatie. Tijdens echte rondes worden alleen korte tekstmeldingen getoond op desktop. Portretten, geluiden en animaties verschijnen in het start-/eindscherm en de Council. Op mobiel worden onthullingen uitgesteld tot het eindscherm. Geen extra renderlus of continue polling.
+
+Op het startscherm staat bij ingeschakelde plugin een ✦-knop voor de Galactic Council. Verborgen kaarten geven een aanwijzing. Ontdekkingen blijven lokaal op dit apparaat bewaard, ook als je de plugin later uitzet. Alle tien gevonden? De finale toont de hele Council rond Willems troon. Geluid volgt de bestaande geluidsknop. Verminderde animatie wordt gerespecteerd.
+
+Zie `plugins/easter-eggs/README.md` voor de triggers, architectuur en grenzen. De oorspronkelijke reviewportretten staan buiten de game; de plugin gebruikt kleinere transparante WebP’s met bestandsvingerafdrukken. Deze uitbreiding is lokaal gebouwd; publicatie is een afzonderlijke stap.
