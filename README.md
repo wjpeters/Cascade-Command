@@ -142,7 +142,32 @@ de optionele QR-bibliotheek. `dist/download-budget.json` bevat het overzicht.
 Op hetzelfde koude, vertraagde mobiele profiel daalde de mediane tijd tot
 speelgereed van 16,14 naar 2,17 seconden. Twintig regressietests, de bouwcontrole
 en Chrome/WebKit-controles slagen, inclusief laadfout en herstelactie.
-De lokale game is herstart. Deze afbeeldingsverbetering is nog niet gepubliceerd.
+De lokale game is herstart. Deze afbeeldingsverbetering is op 1 oktober 2026 succesvol als Sites-versie 4 gepubliceerd op dezelfde openbare RiskStudio-link. Twintig regressietests, de downloadbudgetcontrole en de Worker-bouwcontrole slagen. Toegang, spelinstellingen en online scoregegevens zijn behouden.
 
 [Resultaat en meetmethode](docs/performance-verbetering-1-2026-10-01.md).
 Meetbewijs: `docs/performance-verbetering-1-evidence-2026-10-01/`.
+
+## Performanceverbetering 2, 1 oktober 2026
+
+Pauze en het eindscherm tekenen alleen bij de schermovergang of gewijzigde
+canvasafmetingen. De HUD controleert tijdens animatie maximaal 15 keer per
+seconde en schrijft alleen gewijzigde waarden. Het aantal diensten behoudt
+dezelfde tekstnode. Tijdelijke berichten gebruiken één timer. Ongewijzigde
+leaderboardantwoorden bouwen de lijst niet opnieuw op; automatische polling
+en animatie stoppen wanneer het tabblad verborgen is, ook in intro en demo.
+
+In de stabiele pauze- en eindschermmeting daalde circa 60 tekenrondes/s naar
+0 en circa 1.080 HUD-mutaties/s naar 0. Twintig regressietests, de build en zeven
+browsercontroles slagen, inclusief resize, hervatten en een gesimuleerde
+120 Hz-klok. Het downloadbudget telt nu 414.275 van maximaal 800.000 bytes.
+Spelregels en score-identiteit zijn behouden. Deze tweede wijziging is lokaal
+uitgevoerd en nog niet gepubliceerd. Vernieuw de lokale browserpagina.
+
+[Resultaat en meetmethode](docs/performance-verbetering-2-2026-10-01.md).
+Meetbewijs: `docs/performance-verbetering-2-evidence-2026-10-01/`.
+
+## Tierlabels achter spelobjecten, 1 oktober 2026
+
+De labels TIER 1, TIER 2 en TIER 3 worden als deel van de netwerkachtergrond getekend. Sprites, dreigingsiconen, beschermingsvelden en inslageffecten verschijnen daarna, zodat de labels ze niet meer afdekken. Posities, spelregels en score-identiteit blijven gelijk.
+
+Lokaal gecontroleerd met iconen en effecten die bewust alle drie de labels overlappen. Twintig regressietests en de bouwcontrole slagen. De tijdelijke controlescène is verwijderd en het startscherm is hersteld. Deze wijziging is lokaal uitgevoerd; deze sessie heeft geen Sites-publicatie gedaan.

@@ -5,8 +5,13 @@ import { Audio } from './audio.js';
 import { CATEGORIES, symbolMarkup, SERVICE_VISUALS, serviceSymbolMarkup } from './symbols.js';
 import { loadGameAssets } from './asset-loader.js';
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
-let state='intro',game=new Game(),session=null,actions=[],lastFrame=0,accumulator=0,toastUntil=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
+let state='intro',game=new Game(),session=null,actions=[],lastFrame=null,accumulator=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
+let frameRequest=null,drawing=false,lastHudAt=-Infinity,toastTimer=null,boardTimer=null,lastBoard=null;
+const HUD_INTERVAL=1000/15;
+function requestFrame(){if(!document.hidden&&!drawing&&frameRequest===null)frameRequest=requestAnimationFrame(frame);}
+function stopFrames(){if(frameRequest!==null)cancelAnimationFrame(frameRequest);frameRequest=null;lastFrame=null;}
+renderer.onResize=requestFrame;
 let assetsReady=false,assetsLoading=false;
 function updateLaunchButtons(){
   for(const id of ['start','retry','demo-play','watch-demo'])$(id).disabled=!assetsReady||busy;
@@ -45,6 +50,12 @@ $('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row
 $('category-list').innerHTML=Object.entries(CATEGORIES).filter(([kind])=>kind!=='low').map(([kind,item])=>`<div class="category" data-kind="${kind}"><span class="category-symbol">${symbolMarkup(kind)}</span><div><strong>${item.title}</strong><span>${item.detail}</span></div></div>`).join('');
 
 const emptyBoard=$('leaderboard').innerHTML;
+const hud={score:$('score'),time:$('time'),serviceCount:$('services').firstChild,timer:document.querySelector('.timer'),phase:$('phase'),energyFill:$('energy-fill'),energyNumber:$('energy-number'),energyMeter:$('energy-meter'),scan:$('scan'),targetScan:$('target-scan'),scanText:$('scan-text'),combo:$('combo'),comboValue:$('combo-value'),scanPeek:$('scan-peek')};
+const serviceHud=SERVICE_NAMES.map((_,i)=>({row:$('service-'+i),meter:$('hp-'+i),fill:$('hp-'+i).firstElementChild,value:$('health-'+i)}));
+function setValue(element,key,value){if(element[key]!==value)element[key]=value;}
+function setText(element,value){setValue(element,'textContent',String(value));}
+function setAttribute(element,key,value){value=String(value);if(element.getAttribute(key)!==value)element.setAttribute(key,value);}
+function setClass(element,name,value){if(element.classList.contains(name)!==value)element.classList.toggle(name,value);}
 async function request(url,options={}){
   const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...options.headers}});
   const data=await response.json();if(!response.ok)throw new Error(data.error||'Verbinding met de gameserver mislukt.');return data;
@@ -58,13 +69,18 @@ function setTargeting(value){
 }
 function showPanel(id){for(const name of ['intro','pause-panel','result'])$(name).hidden=name!==id;}
 function setState(value){
+  if(state!==value){lastFrame=null;lastHudAt=-Infinity;}
   state=value;if(state!=='playing')setTargeting(false);canvas.dataset.state=state;document.body.dataset.state=state;
-  $('pause').hidden=state!=='playing';$('demo-label').hidden=state!=='demo';$('scan').disabled=state!=='playing';
+  $('pause').hidden=state!=='playing';$('demo-label').hidden=state!=='demo';
   $('feed-mode').textContent=state==='intro'||state==='demo'?'Demo':state==='paused'?'Pauze':state==='result'?'Afgelopen':'Live';
   if(state==='intro')showPanel('intro');else if(state==='paused')showPanel('pause-panel');else if(state==='result')showPanel('result');else showPanel(null);
+  if(state==='paused'||state==='result')clearToast();
+  updateHud();requestFrame();
 }
-function toast(text,danger=false){$('event-toast').textContent=text;$('event-toast').className='event-toast show'+(danger?' danger':'');toastUntil=performance.now()+2100;}
+function clearToast(){if(toastTimer!==null)clearTimeout(toastTimer);toastTimer=null;setClass($('event-toast'),'show',false);}
+function toast(text,danger=false){clearToast();$('event-toast').textContent=text;$('event-toast').className='event-toast show'+(danger?' danger':'');toastTimer=setTimeout(clearToast,2100);}
 function drawBoard(scores){
+  const signature=JSON.stringify([boardId,scores]);if(signature===lastBoard)return;lastBoard=signature;
   const board=$('leaderboard');if(!scores.length){board.innerHTML=emptyBoard;return;}board.replaceChildren();
   for(const [index,score] of scores.entries()){
     const row=document.createElement('div');row.className='board-row'+(score.id===boardId?' mine':'');
@@ -74,7 +90,11 @@ function drawBoard(scores){
 async function refreshBoard(){
   const revision=++boardRequest;
   try{const data=await request('/api/leaderboard');if(revision===boardRequest)drawBoard(data.scores);}
-  catch{if(revision===boardRequest)$('leaderboard').innerHTML='<div class="empty-board"><strong>Leaderboard even niet bereikbaar.</strong><p>Probeer het zo opnieuw.</p></div>';}
+  catch{if(revision===boardRequest&&lastBoard!=='error'){lastBoard='error';$('leaderboard').innerHTML='<div class="empty-board"><strong>Leaderboard even niet bereikbaar.</strong><p>Probeer het zo opnieuw.</p></div>';}}
+}
+function scheduleBoardRefresh(){
+  if(boardTimer!==null)clearInterval(boardTimer);boardTimer=null;
+  if(!document.hidden)boardTimer=setInterval(()=>{if(!document.hidden&&state!=='playing')refreshBoard();},15000);
 }
 function drawIntelligence(){
   const info=game.intelligence;
@@ -118,7 +138,7 @@ function updateIntelFeed(){
       const content=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('span');title.textContent=event.text;detail.textContent=event.detail;content.append(title,detail);item.append(time,content);$('risk-feed').append(item);
     }
   }
-  drawIntelligence();$('scan-peek').hidden=state!=='playing'||!game.intelligence||game.tick>=game.scanUntil+180;
+  drawIntelligence();setValue(hud.scanPeek,'hidden',state!=='playing'||!game.intelligence||game.tick>=game.scanUntil+180);
 }
 async function start(){
   if(busy||!assetsReady)return;busy=true;updateLaunchButtons();$('start-error').textContent='';
@@ -127,11 +147,11 @@ async function start(){
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
     game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
-    setState('playing');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');updateHud();
+    setState(document.hidden?'paused':'playing');if(!document.hidden){canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');}
   }catch(error){setState('intro');$('start-error').textContent=error.message;}
   finally{busy=false;updateLaunchButtons();}
 }
-function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
+function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('start').focus({preventScroll:true});refreshBoard();}
 function action(type,point={}){
   if(state!=='playing')return false;
   const a={tick:game.tick,type,...point};
@@ -145,38 +165,38 @@ function action(type,point={}){
   if(type==='scan')toast(game.energy<SCAN_COST?`Scan vraagt ${formatNumber(SCAN_COST)} energie.`:'Scan wordt opgeladen.');
   return false;
 }
-function pause(){if(state!=='playing')return;setState('paused');updateHud();$('resume').focus({preventScroll:true});}
+function pause(){if(state!=='playing')return;setState('paused');$('resume').focus({preventScroll:true});}
 function resume(){if(state!=='paused')return;accumulator=0;setState('playing');canvas.focus({preventScroll:true});}
 function openRules(){if(state==='playing')pause();$('rules-dialog').showModal();}
 $('help').addEventListener('click',openRules);$('intro-help').addEventListener('click',openRules);
 $('close-rules').addEventListener('click',()=>$('rules-dialog').close());$('rules-done').addEventListener('click',()=>$('rules-dialog').close());
 $('rules-dialog').addEventListener('click',event=>{if(event.target===$('rules-dialog'))$('rules-dialog').close();});
 function finish(){
-  setState('result');renderer.pointer=null;$('combo').hidden=true;
+  setState('result');
   $('result-title').textContent=game.services===3?'Keten overeind.':game.services===0?'De keten brak.':'Missie voltooid.';
   $('final-score').textContent=game.score.toLocaleString('nl-NL');
   $('result-description').textContent=game.services===3?'Alle drie je diensten zijn nog operationeel.':`${game.services} van de 3 diensten behouden. Elke afhankelijkheid telt.`;
   for(const [id,value] of [['final-hits',game.intercepted],['final-prevented',game.prevented],['final-discovered',game.discovered],['final-services',`${game.services} / 3`],['final-combo',game.bestCombo+'×'],['final-mistakes',game.mistakes],['final-bonus','+'+game.bonus]])$(id).textContent=value;
   $('accessible-status').textContent=`Missie afgelopen. ${game.score} punten. ${game.services} diensten. ${game.prevented} kettingreacties voorkomen.`;
-  $('player-name').focus({preventScroll:true});audio.play('finish');updateHud();refreshBoard();
+  $('player-name').focus({preventScroll:true});audio.play('finish');refreshBoard();
 }
 function updateHud(){
   const intro=state==='intro',t=Math.max(0,DURATION-Math.floor(game.seconds));
-  $('score').textContent=String(intro?0:game.score).padStart(4,'0');$('time').textContent=roundTime(intro?DURATION:t);
-  $('services').innerHTML=`${intro?3:game.services} <span>/ 3</span>`;document.querySelector('.timer').classList.toggle('urgent',!intro&&t<=15);
-  $('phase').textContent=intro?`${formatNumber(DURATION)} seconden. Eén keten.`:state==='demo'?'Demonstratie':`${String(game.phase).padStart(2,'0')} · ${game.wave.name}`;
-  const energy=intro?100:Math.floor(game.energy);$('energy-fill').style.width=energy+'%';$('energy-number').textContent=energy+'%';$('energy-meter').setAttribute('aria-valuenow',energy);$('energy-meter').classList.toggle('low',energy<SHOT_COST);
+  setText(hud.score,String(intro?0:game.score).padStart(4,'0'));setText(hud.time,roundTime(intro?DURATION:t));
+  setValue(hud.serviceCount,'nodeValue',`${intro?3:game.services} `);setClass(hud.timer,'urgent',!intro&&t<=15);
+  setText(hud.phase,intro?`${formatNumber(DURATION)} seconden. Eén keten.`:state==='demo'?'Demonstratie':`${String(game.phase).padStart(2,'0')} · ${game.wave.name}`);
+  const energy=intro?100:Math.floor(game.energy);setValue(hud.energyFill.style,'width',energy+'%');setText(hud.energyNumber,energy+'%');setAttribute(hud.energyMeter,'aria-valuenow',energy);setClass(hud.energyMeter,'low',energy<SHOT_COST);
   const cooldown=Math.max(0,Math.ceil((game.scanReady-game.tick)/FPS));
-  $('scan').disabled=state!=='playing'||cooldown>0||game.energy<SCAN_COST;
-  $('target-scan').disabled=state!=='playing'||(!scanTargeting&&(cooldown>0||game.energy<SCAN_COST));
-  $('scan-text').textContent=state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':`Scan · ${formatNumber(SCAN_COST)}`;
-  $('scan').title=cooldown>0?`Scan over ${cooldown} seconden beschikbaar`:`Scan kost ${formatNumber(SCAN_COST)} energie; onderzoekt de gevaarlijkste dreiging`;
-  $('scan').classList.toggle('active',state==='playing'&&game.tick<game.scanUntil);
-  $('combo').hidden=!(state==='playing'&&game.combo>=2);$('combo-value').textContent=game.combo+'×';
+  setValue(hud.scan,'disabled',state!=='playing'||cooldown>0||game.energy<SCAN_COST);
+  setValue(hud.targetScan,'disabled',state!=='playing'||(!scanTargeting&&(cooldown>0||game.energy<SCAN_COST)));
+  setText(hud.scanText,state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':`Scan · ${formatNumber(SCAN_COST)}`);
+  setValue(hud.scan,'title',cooldown>0?`Scan over ${cooldown} seconden beschikbaar`:`Scan kost ${formatNumber(SCAN_COST)} energie; onderzoekt de gevaarlijkste dreiging`);
+  setClass(hud.scan,'active',state==='playing'&&game.tick<game.scanUntil);
+  const showCombo=state==='playing'&&game.combo>=2;setValue(hud.combo,'hidden',!showCombo);if(showCombo)setText(hud.comboValue,game.combo+'×');
   for(let i=0;i<3;i++){
-    const health=(intro?4:game.hp[i])*25;$('service-'+i).classList.toggle('down',health===0);
-    $('service-'+i).classList.toggle('warning',health>0&&health<=50);$('service-'+i).classList.toggle('healthy',health>50);
-    $('hp-'+i).setAttribute('aria-valuenow',health);$('hp-'+i).firstElementChild.style.width=health+'%';$('health-'+i).textContent=health+'%';
+    const health=(intro?4:game.hp[i])*25,row=serviceHud[i];setClass(row.row,'down',health===0);
+    setClass(row.row,'warning',health>0&&health<=50);setClass(row.row,'healthy',health>50);
+    setAttribute(row.meter,'aria-valuenow',health);setValue(row.fill.style,'width',health+'%');setText(row.value,health+'%');
   }
   updateIntelFeed();
   if(state==='playing'&&game.seconds-lastAnnounced>=15){lastAnnounced=game.seconds;$('accessible-status').textContent=`${t} seconden. ${game.score} punten. ${game.services} diensten. ${energy} procent energie.`;}
@@ -192,8 +212,9 @@ function autoPlay(){
   if(game.tick>300&&game.tick%1100===400)game.act({type:'scan'});
 }
 function frame(now){
-  const dt=Math.min(.25,(now-lastFrame)/1000||0);lastFrame=now;
-  if(['playing','intro','demo'].includes(state)){
+  frameRequest=null;if(document.hidden)return;drawing=true;
+  const dt=lastFrame===null?0:Math.min(.25,(now-lastFrame)/1000);lastFrame=now;
+  if(state==='playing'||state==='intro'||state==='demo'){
     accumulator+=dt;let steps=0;
     while(accumulator>=1/FPS&&steps<15){
       if(state!=='playing')autoPlay();game.update();accumulator-=1/FPS;steps++;
@@ -209,8 +230,9 @@ function frame(now){
       }else if(game.finished){game=new Game(SEED);lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
     }
   }
-  if(now>toastUntil)$('event-toast').classList.remove('show');renderer.render(game,state);
-  if(game.tick%4===0||state==='paused'||state==='result')updateHud();requestAnimationFrame(frame);
+  renderer.render(game,state);
+  if((state==='playing'||state==='intro'||state==='demo')&&now-lastHudAt>=HUD_INTERVAL){updateHud();lastHudAt=now;}
+  drawing=false;if(state==='playing'||state==='intro'||state==='demo')requestFrame();
 }
 canvas.addEventListener('pointerdown',event=>{
   if(state!=='playing')return;event.preventDefault();const point=renderer.point(event.clientX,event.clientY);
@@ -232,7 +254,10 @@ document.addEventListener('keydown',event=>{
     if(event.key==='Enter'&&!event.repeat)action(scanTargeting?'scan':'shot',{...renderer.pointer});
   }
 });
-document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){pause();stopFrames();}else{lastFrame=null;accumulator=0;requestFrame();if(state!=='playing')refreshBoard();}
+  scheduleBoardRefresh();
+});
 $('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('demo-play').addEventListener('click',start);
 $('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=undefined;accumulator=0;setState('demo');});
 $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
@@ -240,7 +265,7 @@ $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sou
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
 $('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
 $('mobile-link').addEventListener('click',()=>{if(state==='playing')pause();renderMobileShare(mobileUrl);$('mobile-dialog').showModal();});$('close-mobile').addEventListener('click',()=>$('mobile-dialog').close());$('mobile-dialog').addEventListener('click',e=>{if(e.target===$('mobile-dialog'))$('mobile-dialog').close();});$('copy-url').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mobileUrl);$('copy-url').textContent='Adres gekopieerd';}catch{$('copy-url').textContent='Selecteer het adres hierboven';}});
-request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Open de game via de link of QR-code. Je begint op je telefoon een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();setInterval(()=>{if(state!=='playing')refreshBoard();},15000);setState('intro');updateHud();requestAnimationFrame(frame);
+request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Open de game via de link of QR-code. Je begint op je telefoon een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();scheduleBoardRefresh();setState('intro');
 
 // Optional page-scoped access uses the same leaderboard as the visible game.
 if(document.modelContext?.registerTool){
