@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-01T20:11:32.748Z",
+  "checks": [
+    {
+      "name": "chrome-desktop",
+      "passed": true,
+      "paused": {
+        "frames": 0,
+        "draws": 0,
+        "mutations": 0,
+        "tick": 10
+      },
+      "result": {
+        "frames": 0,
+        "draws": 0,
+        "mutations": 0,
+        "tick": 20
+      },
+      "resizeDraws": 1,
+      "resumeTicks": 6,
+      "resumeElapsedMs": 122.89999997615814,
+      "errors": []
+    },
+    {
+      "name": "chrome-mobile",
+      "passed": true,
+      "paused": {
+        "frames": 0,
+        "draws": 0,
+        "mutations": 0,
+        "tick": 10
+      },
+      "result": {
+        "frames": 0,
+        "draws": 0,
+        "mutations": 0,
+        "tick": 19
+      },
+      "resizeDraws": 1,
+      "resumeTicks": 5,
+      "resumeElapsedMs": 122.80000001192093,
+      "errors": []
+    },
+    {
+      "name": "webkit-mobile",
+      "passed": true,
+      "paused": {
+        "frames": 0,
+        "draws": 0,
+        "mutations": 0,
+        "tick": 10
+      },
+      "result": {
+        "frames": 0,
+        "draws": 0,
+        "mutations": 0,
+        "tick": 20
+      },
+      "resizeDraws": 1,
+      "resumeTicks": 6,
+      "resumeElapsedMs": 122,
+      "errors": []
+    },
+    {
+      "name": "hidden-tab",
+      "passed": true,
+      "states": [
+        {
+          "state": "intro",
+          "hiddenDraws": 0,
+          "hiddenFrames": 0,
+          "hiddenPolls": 0
+        },
+        {
+          "state": "demo",
+          "hiddenDraws": 0,
+          "hiddenFrames": 0,
+          "hiddenPolls": 0
+        },
+        {
+          "state": "playing",
+          "hiddenDraws": 0,
+          "hiddenFrames": 0,
+          "hiddenPolls": 0
+        }
+      ]
+    },
+    {
+      "name": "unchanged-leaderboard",
+      "passed": true,
+      "polls": 1,
+      "mutations": 0
+    },
+    {
+      "name": "120hz-hud-clock",
+      "passed": true,
+      "frames": 192,
+      "ticks": 95,
+      "energyWrites": 21,
+      "virtualMs": 1600
+    },
+    {
+      "name": "delayed-session-hidden",
+      "passed": true
+    }
+  ]
+}

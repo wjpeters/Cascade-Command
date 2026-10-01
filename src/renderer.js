@@ -11,9 +11,12 @@ export class Renderer {
     this.observer = new ResizeObserver(() => this.resize()); this.observer.observe(canvas); this.resize();
   }
   resize() {
-    const rect = this.canvas.getBoundingClientRect(); this.w = rect.width; this.h = rect.height;
-    this.dpr = Math.min(devicePixelRatio || 1, 2); this.canvas.width = Math.round(this.w * this.dpr); this.canvas.height = Math.round(this.h * this.dpr);
+    const rect = this.canvas.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    if (this.w === rect.width && this.h === rect.height && this.dpr === dpr) return;
+    this.w = rect.width; this.h = rect.height; this.dpr = dpr;
+    this.canvas.width = Math.round(this.w * this.dpr); this.canvas.height = Math.round(this.h * this.dpr);
     this.size = Math.min(this.w, this.h); this.scale = this.size / 1000; this.ox = (this.w - this.size) / 2; this.oy = (this.h - this.size) / 2;
+    this.onResize?.();
   }
   point(clientX, clientY) {
     const r = this.canvas.getBoundingClientRect();
@@ -76,6 +79,20 @@ export class Renderer {
         if(Math.hypot(x-500,y-500)>150&&(Math.abs(x-500)>95||y>425)){c.fillStyle='#071421';c.beginPath();c.arc(x,y,13,0,TAU);c.fill();this.circle(x,y,13,'#a1bace88');c.font='600 18px -apple-system,sans-serif';c.textAlign='center';c.fillStyle='#bed4e4';c.fillText('?',x,y+6);}
       }
     }
+    // Tier labels belong to the network background; sprites and gameplay effects stay in front.
+    c.save();c.globalAlpha=1;c.textAlign='center';c.textBaseline='middle';
+    const labelSize=Math.max(15,10/this.scale),subSize=Math.max(12,7.5/this.scale),showDetails=this.scale>=.5;
+    for(const [tier,outer,inner,description] of [[3,422,309,'Indirecte leveranciers'],[2,309,209,'Subleveranciers'],[1,209,112,'Directe leveranciers']]){
+      const x=500,y=500-(outer+inner)/2,text='TIER '+tier;
+      c.font=`600 ${labelSize}px -apple-system, sans-serif`;
+      const titleWidth=c.measureText(text).width;
+      c.font=`400 ${subSize}px -apple-system, sans-serif`;
+      const width=Math.max(82,titleWidth+20,showDetails?c.measureText(description).width+14:0),height=labelSize+(showDetails?subSize+4:0)+8;
+      c.fillStyle='#071421';c.fillRect(x-width/2,y-height/2,width,height);
+      c.font=`600 ${labelSize}px -apple-system, sans-serif`;c.fillStyle='#c1e3f5';c.fillText(text,x,y-(showDetails?(subSize+4)/2:0));
+      if(showDetails){c.font=`400 ${subSize}px -apple-system, sans-serif`;c.fillStyle='#81a4bf';c.fillText(description,x,y+labelSize/2+2);}
+    }
+    c.restore();
     for(const node of game.network.nodes){
       if(node.tier===0){
         c.beginPath();c.moveTo(500,500);c.lineTo(node.x,node.y);c.strokeStyle=game.hp[node.index]>0?'#79d8ebaa':'#743a4b77';c.lineWidth=2;c.stroke();
@@ -120,19 +137,7 @@ export class Renderer {
     // Reserve the empty bands between node orbits for the tier labels.
     // Their shared centre line matches ORGANISATIE; no node occupies these bands.
     // Draw after moving effects so the opaque backing keeps every label legible.
-    c.save();c.globalAlpha=1;c.textAlign='center';c.textBaseline='middle';
-    const labelSize=Math.max(15,10/this.scale),subSize=Math.max(12,7.5/this.scale),showDetails=this.scale>=.5;
-    for(const [tier,outer,inner,description] of [[3,422,309,'Indirecte leveranciers'],[2,309,209,'Subleveranciers'],[1,209,112,'Directe leveranciers']]){
-      const x=500,y=500-(outer+inner)/2,text='TIER '+tier;
-      c.font=`600 ${labelSize}px -apple-system, sans-serif`;
-      const titleWidth=c.measureText(text).width;
-      c.font=`400 ${subSize}px -apple-system, sans-serif`;
-      const width=Math.max(82,titleWidth+20,showDetails?c.measureText(description).width+14:0),height=labelSize+(showDetails?subSize+4:0)+8;
-      c.fillStyle='#071421';c.fillRect(x-width/2,y-height/2,width,height);
-      c.font=`600 ${labelSize}px -apple-system, sans-serif`;c.fillStyle='#c1e3f5';c.fillText(text,x,y-(showDetails?(subSize+4)/2:0));
-      if(showDetails){c.font=`400 ${subSize}px -apple-system, sans-serif`;c.fillStyle='#81a4bf';c.fillText(description,x,y+labelSize/2+2);}
-    }
-    c.restore();c.globalAlpha=1;
+    c.globalAlpha=1;
     if(this.pointer && state==='playing'){
       const {x,y}=this.pointer;c.setLineDash([4,6]);this.circle(x,y,this.targeting?35:game.config.shot.fieldRadius,game.energy>=game.config.shot.cost?'#96e6f760':'#ff645b80',1.5);c.setLineDash([]);c.strokeStyle=game.energy>=game.config.shot.cost?'#b8f2ff':'#ff645b';c.lineWidth=1.5;c.beginPath();c.moveTo(x-9,y);c.lineTo(x+9,y);c.moveTo(x,y-9);c.lineTo(x,y+9);c.stroke();
     }

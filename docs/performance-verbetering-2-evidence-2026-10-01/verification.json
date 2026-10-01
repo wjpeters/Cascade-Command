@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-01T20:14:08.257931+00:00",
+  "gameVersion": "cascade-3-14f91b15",
+  "regressionTests": {
+    "passed": 20,
+    "failed": 0
+  },
+  "browserChecks": {
+    "passed": 7,
+    "failed": 0
+  },
+  "workerBuildValidation": "passed",
+  "downloadBudget": "passed",
+  "onlineCheck": {
+    "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/src/main.js",
+    "httpStatus": 200,
+    "hasPausedFrameScheduling": false,
+    "hasChangedValueHud": false,
+    "hasAssetLoading": true,
+    "bytes": 25492
+  },
+  "publishedThisChange": false,
+  "physicalPhoneTested": false,
+  "sourceHashes": {
+    "src/main.js": "37a775eb667300f74ca38fbf0a1f8af35f374af025068ab455968a2bc4586cbb",
+    "src/renderer.js": "3983d4e2813a9bfa8bd47336dae4fe20d2dac07d5d25d2f30e2d58cd0d4194c6"
+  }
+}

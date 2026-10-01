@@ -1,0 +1,48 @@
+{
+  "mode": "before",
+  "date": "2026-10-01T19:57:27.270Z",
+  "browser": "154.0.8037.58",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "samples": [
+    {
+      "state": "playing",
+      "duration": 4.003699999988079,
+      "frames": 240,
+      "framesPerSecond": 59.94455129023518,
+      "draws": 240,
+      "drawsPerSecond": 59.94455129023518,
+      "mutations": 1269,
+      "mutationsPerSecond": 316.9568149471185,
+      "hudMutations": 1020,
+      "hudMutationsPerSecond": 254.76434298349952
+    },
+    {
+      "state": "paused",
+      "duration": 4.005100000023842,
+      "frames": 241,
+      "framesPerSecond": 60.173279068828585,
+      "draws": 241,
+      "drawsPerSecond": 60.173279068828585,
+      "mutations": 4820,
+      "mutationsPerSecond": 1203.4655813765717,
+      "hudMutations": 4338,
+      "hudMutationsPerSecond": 1083.1190232389145
+    },
+    {
+      "state": "result",
+      "duration": 4.005600000023842,
+      "frames": 240,
+      "framesPerSecond": 59.916117435233545,
+      "draws": 240,
+      "drawsPerSecond": 59.916117435233545,
+      "mutations": 4800,
+      "mutationsPerSecond": 1198.322348704671,
+      "hudMutations": 4320,
+      "hudMutationsPerSecond": 1078.4901138342038
+    }
+  ],
+  "errors": []
+}
