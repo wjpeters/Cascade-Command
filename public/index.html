@@ -32,10 +32,12 @@
         <div class="intro-rule"></div><h2 id="intro-title">Bescherm je<br><em>galaxy.</em></h2>
         <p>Zie de keten. Herken het risico.<br>Houd je kritieke diensten operationeel.</p>
         <ol class="instructions"><li><span>01</span>Herken de vijf soorten dreigingen.</li><li><span>02</span>Laat kleine LOW-signalen passeren.</li><li><span>03</span>Scan voor intelligence. Bescherm je diensten.</li></ol>
-        <button class="primary" id="start" disabled aria-describedby="asset-status"><span id="start-label">Spel laden…</span> <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+        <div class="intro-actions">
+          <button class="primary" id="start" disabled aria-describedby="asset-status"><span id="start-label">Spel laden…</span> <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+          <button class="text-button" id="watch-demo" disabled>Eerst even kijken <span>↗</span></button>
+        </div>
         <p class="asset-status" id="asset-status" role="status">Spelbeelden worden geladen…</p>
         <button class="text-button" id="retry-assets" hidden>Opnieuw laden <span>↻</span></button>
-        <button class="text-button" id="watch-demo" disabled>Eerst even kijken <span>↗</span></button>
         <button class="text-button rules-link" id="intro-help">Speluitleg &amp; puntentelling</button><p class="micro"><span data-config-duration>75</span> seconden · fictieve leveranciers en risico’s</p>
         <p class="form-message" id="start-error" role="alert"></p>
       </section>
