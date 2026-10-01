@@ -6,8 +6,7 @@ export class Renderer {
     this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.pointer = null; this.keyboard = false; this.targeting = false; this.selectedNode = null;
     this.symbols = Object.fromEntries(Object.entries(CATEGORIES).map(([kind,item])=>[kind,new Path2D(item.path)]));
     this.serviceSymbols = Object.fromEntries(Object.entries(SERVICE_VISUALS).map(([name,item])=>[name,new Path2D(item.path)]));
-    this.image = new Image(); this.image.src = '/assets/sprites.png';
-    this.ready = this.image.decode().catch(() => { this.assetError = true; });
+    this.image = null; // Assigned only after the shared asset loader decodes it.
     this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.observer = new ResizeObserver(() => this.resize()); this.observer.observe(canvas); this.resize();
   }
@@ -21,9 +20,9 @@ export class Renderer {
     return { x: (clientX - r.left - this.ox) / this.scale, y: (clientY - r.top - this.oy) / this.scale };
   }
   sprite(index, x, y, size, alpha = 1) {
-    if (!this.image.complete || !this.image.naturalWidth) return;
-    const c = this.ctx, sw = this.image.naturalWidth / 2, sh = this.image.naturalHeight / 2;
-    c.save(); c.globalAlpha *= alpha; c.drawImage(this.image, (index % 2) * sw, Math.floor(index / 2) * sh, sw, sh, x - size / 2, y - size / 2, size, size); c.restore();
+    if (!this.image?.complete || !this.image.naturalWidth) return;
+    const c = this.ctx, sw = this.image.naturalWidth / 2, sh = this.image.naturalHeight;
+    c.save(); c.globalAlpha *= alpha; c.drawImage(this.image, index * sw, 0, sw, sh, x - size / 2, y - size / 2, size, size); c.restore();
   }
   circle(x,y,r,color,width=1) { const c=this.ctx;c.beginPath();c.arc(x,y,r,0,TAU);c.strokeStyle=color;c.lineWidth=width;c.stroke(); }
   arrow(from,to,t,color) {
@@ -98,7 +97,7 @@ export class Renderer {
     if(scan){const age=300-(game.scanUntil-game.tick);const radius=(age%85)/85*490;this.circle(500,500,radius,'#80e5f866',2);this.circle(500,500,radius*.83,'#80e5f828',1);}
     for(const f of game.fields){
       if(game.tick<f.start){const t=(game.tick-f.born)/Math.max(1,f.start-f.born);const x=500+(f.x-500)*t,y=500+(f.y-500)*t;c.strokeStyle='#8cdded60';c.lineWidth=2;c.beginPath();c.moveTo(500+(f.x-500)*Math.max(0,t-.15),500+(f.y-500)*Math.max(0,t-.15));c.lineTo(x,y);c.stroke();c.fillStyle='#c8f6ff';c.beginPath();c.arc(x,y,4,0,TAU);c.fill();this.circle(f.x,f.y,7,'#8cdded80',1);}
-      else {this.sprite(3,f.x,f.y,f.radius*2.55,Math.min(1,(f.end-game.tick)/25)*.9);c.fillStyle='#70dced0b';c.beginPath();c.arc(f.x,f.y,f.radius,0,TAU);c.fill();}
+      else {this.sprite(1,f.x,f.y,f.radius*2.55,Math.min(1,(f.end-game.tick)/(game.config.shot.fadeSeconds*60))*.9);c.fillStyle='#70dced0b';c.beginPath();c.arc(f.x,f.y,f.radius,0,TAU);c.fill();}
     }
     for(const packet of game.packets){
       const threat=THREATS[packet.kind],low=threat.damage===0,color=CATEGORIES[packet.kind].color;
@@ -135,7 +134,7 @@ export class Renderer {
     }
     c.restore();c.globalAlpha=1;
     if(this.pointer && state==='playing'){
-      const {x,y}=this.pointer;c.setLineDash([4,6]);this.circle(x,y,this.targeting?35:77,game.energy>=20?'#96e6f760':'#ff645b80',1.5);c.setLineDash([]);c.strokeStyle=game.energy>=20?'#b8f2ff':'#ff645b';c.lineWidth=1.5;c.beginPath();c.moveTo(x-9,y);c.lineTo(x+9,y);c.moveTo(x,y-9);c.lineTo(x,y+9);c.stroke();
+      const {x,y}=this.pointer;c.setLineDash([4,6]);this.circle(x,y,this.targeting?35:game.config.shot.fieldRadius,game.energy>=game.config.shot.cost?'#96e6f760':'#ff645b80',1.5);c.setLineDash([]);c.strokeStyle=game.energy>=game.config.shot.cost?'#b8f2ff':'#ff645b';c.lineWidth=1.5;c.beginPath();c.moveTo(x-9,y);c.lineTo(x+9,y);c.moveTo(x,y-9);c.lineTo(x,y+9);c.stroke();
     }
   }
 }

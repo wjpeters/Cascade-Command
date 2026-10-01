@@ -1,0 +1,508 @@
+{
+  "mode": "after",
+  "date": "2026-10-01T19:40:43.185Z",
+  "browser": "154.0.8037.58",
+  "profiles": [
+    {
+      "ready": 2180,
+      "times": [
+        {
+          "url": "http://127.0.0.1:4320/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "time": 1827.800000011921
+        },
+        {
+          "url": "http://127.0.0.1:4320/assets/space.269c230f8b18.webp",
+          "time": 1999.5
+        },
+        {
+          "url": "http://127.0.0.1:4320/assets/sprites.093cb099440e.webp",
+          "time": 2179
+        }
+      ],
+      "resources": [
+        {
+          "path": "/style.css",
+          "bytes": 44250,
+          "end": 1014.1999999880791
+        },
+        {
+          "path": "/assets/sprites.093cb099440e.webp",
+          "bytes": 165050,
+          "end": 2161.199999988079
+        },
+        {
+          "path": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "bytes": 19276,
+          "end": 728.6999999880791
+        },
+        {
+          "path": "/src/main.js",
+          "bytes": 25492,
+          "end": 878.6999999880791
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "bytes": 1340,
+          "end": 1080.9000000357628
+        },
+        {
+          "path": "/src/renderer.js",
+          "bytes": 12250,
+          "end": 1284.699999988079
+        },
+        {
+          "path": "/src/engine.js",
+          "bytes": 15208,
+          "end": 1314.6000000238419
+        },
+        {
+          "path": "/src/audio.js",
+          "bytes": 1053,
+          "end": 1067.199999988079
+        },
+        {
+          "path": "/src/symbols.js",
+          "bytes": 2010,
+          "end": 1223.4000000357628
+        },
+        {
+          "path": "/src/asset-loader.js",
+          "bytes": 1052,
+          "end": 1261.5
+        },
+        {
+          "path": "/tokens.css",
+          "bytes": 242,
+          "end": 1253.5
+        },
+        {
+          "path": "/assets/space.269c230f8b18.webp",
+          "bytes": 50078,
+          "end": 1989.800000011921
+        },
+        {
+          "path": "/src/assets.js",
+          "bytes": 266,
+          "end": 1592.6000000238419
+        },
+        {
+          "path": "/src/game-config.js",
+          "bytes": 2875,
+          "end": 1659.699999988079
+        },
+        {
+          "path": "/src/game-rules.js",
+          "bytes": 4908,
+          "end": 1689.4000000357628
+        },
+        {
+          "path": "/api/meta",
+          "bytes": 85,
+          "end": 1936.1000000238419
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 1944.5
+        },
+        {
+          "path": "/favicon.svg",
+          "bytes": 183,
+          "end": 2326.300000011921
+        }
+      ],
+      "navigation": {
+        "name": "http://127.0.0.1:4320/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 2163,
+        "navigationId": 8153,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.30000001192092896,
+        "domainLookupStart": 0.30000001192092896,
+        "domainLookupEnd": 0.30000001192092896,
+        "connectStart": 0.30000001192092896,
+        "secureConnectionStart": 0,
+        "connectEnd": 0.30000001192092896,
+        "requestStart": 0.800000011920929,
+        "responseStart": 2.400000035762787,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 2.400000035762787,
+        "responseEnd": 233.9000000357628,
+        "transferSize": 15014,
+        "encodedBodySize": 14714,
+        "decodedBodySize": 14714,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 236.60000002384186,
+        "domContentLoadedEventStart": 1769.699999988079,
+        "domContentLoadedEventEnd": 1771.9000000357628,
+        "domComplete": 2162.900000035763,
+        "loadEventStart": 2163,
+        "loadEventEnd": 2163,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "low"
+        }
+      },
+      "loading": "Klaar voor de missie",
+      "startDisabled": false,
+      "overflow": false,
+      "bytes": 360345,
+      "errors": []
+    },
+    {
+      "ready": 2165,
+      "times": [
+        {
+          "url": "http://127.0.0.1:4320/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "time": 1735
+        },
+        {
+          "url": "http://127.0.0.1:4320/assets/space.269c230f8b18.webp",
+          "time": 1991.3999999761581
+        },
+        {
+          "url": "http://127.0.0.1:4320/assets/sprites.093cb099440e.webp",
+          "time": 2165
+        }
+      ],
+      "resources": [
+        {
+          "path": "/style.css",
+          "bytes": 44250,
+          "end": 1007.5999999642372
+        },
+        {
+          "path": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "bytes": 19276,
+          "end": 722.8999999761581
+        },
+        {
+          "path": "/assets/sprites.093cb099440e.webp",
+          "bytes": 165050,
+          "end": 2155.099999964237
+        },
+        {
+          "path": "/src/main.js",
+          "bytes": 25492,
+          "end": 872.7999999523163
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "bytes": 1340,
+          "end": 1074.699999988079
+        },
+        {
+          "path": "/src/audio.js",
+          "bytes": 1053,
+          "end": 1061
+        },
+        {
+          "path": "/src/symbols.js",
+          "bytes": 2010,
+          "end": 1217.699999988079
+        },
+        {
+          "path": "/src/renderer.js",
+          "bytes": 12250,
+          "end": 1278.0999999642372
+        },
+        {
+          "path": "/src/engine.js",
+          "bytes": 15208,
+          "end": 1307.699999988079
+        },
+        {
+          "path": "/src/asset-loader.js",
+          "bytes": 1052,
+          "end": 1254.8999999761581
+        },
+        {
+          "path": "/tokens.css",
+          "bytes": 242,
+          "end": 1248.2999999523163
+        },
+        {
+          "path": "/assets/space.269c230f8b18.webp",
+          "bytes": 50078,
+          "end": 1982.7999999523163
+        },
+        {
+          "path": "/src/assets.js",
+          "bytes": 266,
+          "end": 1548.3999999761581
+        },
+        {
+          "path": "/src/game-config.js",
+          "bytes": 2875,
+          "end": 1615.5999999642372
+        },
+        {
+          "path": "/src/game-rules.js",
+          "bytes": 4908,
+          "end": 1644.5
+        },
+        {
+          "path": "/api/meta",
+          "bytes": 85,
+          "end": 1862.8999999761581
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 1869.8999999761581
+        },
+        {
+          "path": "/favicon.svg",
+          "bytes": 183,
+          "end": 2319.699999988079
+        }
+      ],
+      "navigation": {
+        "name": "http://127.0.0.1:4320/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 2156.399999976158,
+        "navigationId": 1778,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.19999998807907104,
+        "domainLookupStart": 0.19999998807907104,
+        "domainLookupEnd": 0.19999998807907104,
+        "connectStart": 0.19999998807907104,
+        "secureConnectionStart": 0,
+        "connectEnd": 0.19999998807907104,
+        "requestStart": 0.699999988079071,
+        "responseStart": 1.399999976158142,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 1.399999976158142,
+        "responseEnd": 228,
+        "transferSize": 15014,
+        "encodedBodySize": 14714,
+        "decodedBodySize": 14714,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 231.29999995231628,
+        "domContentLoadedEventStart": 1694.7999999523163,
+        "domContentLoadedEventEnd": 1694.8999999761581,
+        "domComplete": 2156.2999999523163,
+        "loadEventStart": 2156.399999976158,
+        "loadEventEnd": 2156.399999976158,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "low"
+        }
+      },
+      "loading": "Klaar voor de missie",
+      "startDisabled": false,
+      "overflow": false,
+      "bytes": 360345,
+      "errors": []
+    },
+    {
+      "ready": 2173,
+      "times": [
+        {
+          "url": "http://127.0.0.1:4320/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "time": 1781.699999988079
+        },
+        {
+          "url": "http://127.0.0.1:4320/assets/space.269c230f8b18.webp",
+          "time": 2000.800000011921
+        },
+        {
+          "url": "http://127.0.0.1:4320/assets/sprites.093cb099440e.webp",
+          "time": 2172.699999988079
+        }
+      ],
+      "resources": [
+        {
+          "path": "/style.css",
+          "bytes": 44250,
+          "end": 1014.3999999761581
+        },
+        {
+          "path": "/assets/sprites.093cb099440e.webp",
+          "bytes": 165050,
+          "end": 2162.800000011921
+        },
+        {
+          "path": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "bytes": 19276,
+          "end": 730.1999999880791
+        },
+        {
+          "path": "/src/main.js",
+          "bytes": 25492,
+          "end": 880.8999999761581
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "bytes": 1340,
+          "end": 1082.300000011921
+        },
+        {
+          "path": "/src/audio.js",
+          "bytes": 1053,
+          "end": 1075.199999988079
+        },
+        {
+          "path": "/src/renderer.js",
+          "bytes": 12250,
+          "end": 1285.199999988079
+        },
+        {
+          "path": "/src/engine.js",
+          "bytes": 15208,
+          "end": 1314.3999999761581
+        },
+        {
+          "path": "/src/symbols.js",
+          "bytes": 2010,
+          "end": 1224.800000011921
+        },
+        {
+          "path": "/src/asset-loader.js",
+          "bytes": 1052,
+          "end": 1262.3999999761581
+        },
+        {
+          "path": "/tokens.css",
+          "bytes": 242,
+          "end": 1255.0999999642372
+        },
+        {
+          "path": "/assets/space.269c230f8b18.webp",
+          "bytes": 50078,
+          "end": 1989.3999999761581
+        },
+        {
+          "path": "/src/assets.js",
+          "bytes": 266,
+          "end": 1592.5
+        },
+        {
+          "path": "/src/game-config.js",
+          "bytes": 2875,
+          "end": 1660.800000011921
+        },
+        {
+          "path": "/src/game-rules.js",
+          "bytes": 4908,
+          "end": 1689.5
+        },
+        {
+          "path": "/api/meta",
+          "bytes": 85,
+          "end": 1906.8999999761581
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 1914.5999999642372
+        },
+        {
+          "path": "/favicon.svg",
+          "bytes": 183,
+          "end": 2327.699999988079
+        }
+      ],
+      "navigation": {
+        "name": "http://127.0.0.1:4320/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 2164.099999964237,
+        "navigationId": 8789,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.3999999761581421,
+        "domainLookupStart": 0.3999999761581421,
+        "domainLookupEnd": 0.3999999761581421,
+        "connectStart": 0.3999999761581421,
+        "secureConnectionStart": 0,
+        "connectEnd": 0.3999999761581421,
+        "requestStart": 0.699999988079071,
+        "responseStart": 1.300000011920929,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 1.300000011920929,
+        "responseEnd": 235.30000001192093,
+        "transferSize": 15014,
+        "encodedBodySize": 14714,
+        "decodedBodySize": 14714,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 238.39999997615814,
+        "domContentLoadedEventStart": 1743.199999988079,
+        "domContentLoadedEventEnd": 1743.300000011921,
+        "domComplete": 2164,
+        "loadEventStart": 2164.099999964237,
+        "loadEventEnd": 2164.099999964237,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "loading": "Klaar voor de missie",
+      "startDisabled": false,
+      "overflow": false,
+      "bytes": 360345,
+      "errors": []
+    }
+  ]
+}

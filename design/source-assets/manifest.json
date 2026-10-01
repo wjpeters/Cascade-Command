@@ -1,0 +1,17 @@
+[
+  {
+    "name": "sprites.png",
+    "bytes": 1349760,
+    "sha256": "dfea0371f97d889279890493225aebaf0d36c65c2972b1977af324a3ed092bbb"
+  },
+  {
+    "name": "space.png",
+    "bytes": 1726816,
+    "sha256": "dbe55d68f0a2e3137c46192c7dc42f3a855e113fe1caab0bab54ce2f44b569e9"
+  },
+  {
+    "name": "riskstudio-logo.png",
+    "bytes": 272082,
+    "sha256": "bbc0ac55bdc0e79856214de8ea9ca0cdf9635d1243f2c3b5beda9296c95e891a"
+  }
+]

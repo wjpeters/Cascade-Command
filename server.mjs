@@ -19,13 +19,13 @@ const body = req => new Promise((resolve, reject) => {
   let text = ''; req.on('data', chunk => { text += chunk; if (text.length > 160000) { reject(new Error('Te veel gegevens.')); req.destroy(); } });
   req.on('end', () => { try { resolve(JSON.parse(text || '{}')); } catch { reject(new Error('Ongeldige invoer.')); } }); req.on('error', reject);
 });
-const topScores = (version = VERSION) => scores.filter(s => s.version === version).sort((a,b) => b.score-a.score || b.services-a.services || a.date.localeCompare(b.date)).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
+const topScores = () => scores.filter(s => s.version === VERSION).sort((a,b) => b.score-a.score || b.services-a.services || a.date.localeCompare(b.date)).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
     if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port });
-    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores(url.searchParams.get('version') === 'cascade-1' ? 'cascade-1' : VERSION) });
+    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
     if (url.pathname === '/api/session' && req.method === 'POST') {
       for (const [key, s] of sessions) if (Date.now() - s.started > 30 * 60 * 1000) sessions.delete(key);
       if (sessions.size >= 500) return json(res, 429, { error: 'Even geduld; er zijn veel rondes actief.' });
@@ -53,10 +53,10 @@ const server = http.createServer(async (req, res) => {
     const base = requested.startsWith('/src/') ? root : path.join(root, 'public');
     const file = path.resolve(base, '.' + requested);
     if (!file.startsWith(base + path.sep) || (!requested.startsWith('/src/') && requested.includes('/.'))) return json(res, 403, { error: 'Niet beschikbaar.' });
-    const ext = path.extname(file), types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
+    const ext = path.extname(file), types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
     if (!types[ext]) return json(res, 404, { error: 'Niet gevonden.' });
     let bytes; try { bytes = readFileSync(file); } catch { return json(res, 404, { error: 'Niet gevonden.' }); }
-    res.writeHead(200, { 'Content-Type': types[ext], 'Cache-Control': ext === '.png' ? 'public, max-age=86400' : 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'" });
+    res.writeHead(200, { 'Content-Type': types[ext], 'Cache-Control': /\.[a-f0-9]{12}\.webp$/.test(requested) ? 'public, max-age=31536000, immutable' : ext === '.png' ? 'public, max-age=86400' : 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'" });
     res.end(req.method === 'HEAD' ? undefined : bytes);
   } catch (e) { if (!res.headersSent) json(res, 500, { error: 'Opslaan lukte niet. Probeer het opnieuw.' }); }
 });

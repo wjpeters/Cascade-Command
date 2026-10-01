@@ -12,6 +12,7 @@ export default {
     const asset = assets[url.pathname === '/' ? '/index.html' : url.pathname];
     if (!asset) return new Response('Niet gevonden.', { status: 404, headers: security });
     const bytes = request.method === 'HEAD' ? null : Uint8Array.from(atob(asset.data), c => c.charCodeAt(0));
-    return new Response(bytes, { headers: { ...security, 'Content-Type': asset.type, 'Cache-Control': asset.type === 'image/png' ? 'private, max-age=86400' : 'no-cache' } });
+    const cache = /\.[a-f0-9]{12}\.webp$/.test(url.pathname) ? 'private, max-age=31536000, immutable' : asset.type === 'image/png' ? 'private, max-age=86400' : 'no-cache';
+    return new Response(bytes, { headers: { ...security, 'Content-Type': asset.type, 'Cache-Control': cache } });
   },
 };

@@ -1,9 +1,13 @@
-export const VERSION = 'cascade-2';
+import { GAME_CONFIG as settings } from './game-config.js';
+import { validateGameConfig, deepFreeze, configFingerprint, pickWeighted } from './game-rules.js';
+export const GAME_CONFIG = deepFreeze(validateGameConfig(settings));
+export const VERSION = 'cascade-3-' + configFingerprint(GAME_CONFIG);
 export const FPS = 60;
-export const DURATION = 75;
-export const SEED = 271026;
-export const SHOT_COST = 20;
-export const SCAN_COST = 25;
+export const DURATION = GAME_CONFIG.round.durationSeconds;
+export const SEED = GAME_CONFIG.round.seed;
+export const SHOT_COST = GAME_CONFIG.shot.cost;
+export const SCAN_COST = GAME_CONFIG.scan.cost;
+const ticks = seconds => Math.round(seconds * FPS);
 export const SERVICE_NAMES = ['Klantportaal', 'Betalingen', 'Operatie'];
 export const THREATS = {
   cve: { code: 'CVE', label: 'Critical CVE', type: 'Kwetsbaarheid', severity: 'critical', damage: 2, color: '#ff6e75', feed: 'Critical CVE detected' },
@@ -50,10 +54,11 @@ export function createNetwork() {
 }
 const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 export class Game {
-  constructor(seed = SEED) {
+  constructor(seed = SEED, config = GAME_CONFIG) {
+    this.config = config === GAME_CONFIG ? config : deepFreeze(validateGameConfig(structuredClone(config)));
     this.network = createNetwork(); this.random = rng(seed); this.tick = 0; this.energy = 100;
     this.hp = [4, 4, 4]; this.score = 0; this.combo = 0; this.bestCombo = 0; this.lastHit = -1000;
-    this.packets = []; this.fields = []; this.fx = []; this.events = []; this.nextSpawn = 90;
+    this.packets = []; this.fields = []; this.fx = []; this.events = []; this.nextSpawn = ticks(this.config.round.firstSpawnSeconds);
     this.lastShot = -1000; this.scanUntil = 0; this.scanReady = 0; this.scans = 0;
     this.intercepted = 0; this.cascades = 0; this.prevented = 0; this.mistakes = 0; this.ignored = 0;
     this.shots = 0; this.lost = 0; this.finished = false; this.bonus = 0; this.id = 0;
@@ -61,7 +66,8 @@ export class Game {
     this.feed = []; this.feedRevision = 0;
   }
   get seconds() { return this.tick / FPS; }
-  get phase() { return Math.min(3, 1 + Math.floor(this.seconds / 25)); }
+  get phase() { return this.config.waves.findLastIndex(wave => this.seconds >= wave.startsAtSeconds) + 1; }
+  get wave() { return this.config.waves[this.phase - 1]; }
   get services() { return this.hp.filter(h => h > 0).length; }
   get discovered() { return this.discoveredLinks.size; }
   emit(type, x, y, value = 0) { this.events.push({ type, x, y, value }); }
@@ -99,15 +105,15 @@ export class Game {
   act(action) {
     if (this.finished) return false;
     if (action.type === 'scan') {
-      if (this.tick < this.scanReady || this.energy < SCAN_COST) return false;
+      if (this.tick < this.scanReady || this.energy < this.config.scan.cost) return false;
       if ((action.x !== undefined || action.y !== undefined) && (!Number.isFinite(action.x) || !Number.isFinite(action.y) || action.x < 0 || action.x > 1000 || action.y < 0 || action.y > 1000)) return false;
-      this.energy -= SCAN_COST; this.scanUntil = this.tick + 300; this.scanReady = this.tick + 1080; this.scans++;
+      this.energy -= this.config.scan.cost; this.scanUntil = this.tick + ticks(this.config.scan.durationSeconds); this.scanReady = this.tick + ticks(this.config.scan.cooldownSeconds); this.scans++;
       this.inspect(action); this.emit('scan', 500, 500); return true;
     }
-    if (action.type !== 'shot' || !Number.isFinite(action.x) || !Number.isFinite(action.y) || action.x < 0 || action.x > 1000 || action.y < 0 || action.y > 1000 || this.energy < SHOT_COST || this.tick - this.lastShot < 12) return false;
-    this.energy -= SHOT_COST; this.lastShot = this.tick; this.shots++;
-    const delay = Math.round(Math.hypot(action.x - 500, action.y - 500) / 1000 * FPS);
-    this.fields.push({ x: action.x, y: action.y, born: this.tick, start: this.tick + delay, end: this.tick + delay + 110, radius: 0, hits: 0 });
+    if (action.type !== 'shot' || !Number.isFinite(action.x) || !Number.isFinite(action.y) || action.x < 0 || action.x > 1000 || action.y < 0 || action.y > 1000 || this.energy < this.config.shot.cost || this.tick - this.lastShot < ticks(this.config.shot.cooldownSeconds)) return false;
+    this.energy -= this.config.shot.cost; this.lastShot = this.tick; this.shots++;
+    const delay = Math.round(Math.hypot(action.x - 500, action.y - 500) / 1000 * FPS * this.config.shot.travelSeconds);
+    this.fields.push({ x: action.x, y: action.y, born: this.tick, start: this.tick + delay, end: this.tick + delay + ticks(this.config.shot.fieldDurationSeconds), radius: 0, hits: 0 });
     this.emit('shot', action.x, action.y); return true;
   }
   spawn(fromId, toId, generation = 0, root = null, kind = 'incident') {
@@ -117,7 +123,7 @@ export class Game {
       this.log(THREATS[kind].feed, `Tier ${from.tier} · ${from.name}`, THREATS[kind].severity);
       if (kind === 'rating') from.rating = Math.max(10, from.rating - 18);
     } else kind = this.risks.get(root).kind;
-    this.packets.push({ id, from: fromId, to: toId, kind, x: from.x, y: from.y, p: 0, length: distance(from, to), generation, root, warning: generation === 0 ? 45 : 0 });
+    this.packets.push({ id, from: fromId, to: toId, kind, x: from.x, y: from.y, p: 0, length: distance(from, to), generation, root, warning: generation === 0 ? ticks(this.wave.warningSeconds) : 0 });
   }
   willBranch(nodeId) {
     const node = this.network.map[nodeId];
@@ -136,7 +142,7 @@ export class Game {
     this.bestCombo = Math.max(this.bestCombo, this.combo); this.lastHit = this.tick;
     let points = 50 + Math.min(4, this.combo - 1) * 25;
     if (this.tick - risk.born <= 180) points += 25;
-    if (this.phase >= 2 && !risk.split && !risk.prevented && this.willBranch(packet.to)) {
+    if (this.wave.maxBranches > 1 && !risk.split && !risk.prevented && this.willBranch(packet.to)) {
       risk.prevented = true; this.prevented++; points += 100;
       this.log('Chain reaction prevented', `${threat.label} · +100 bonus`, 'success');
     }
@@ -146,26 +152,24 @@ export class Game {
   }
   update() {
     if (this.finished) return;
-    this.events = []; this.tick++; this.energy = Math.min(100, this.energy + 13 / FPS);
+    this.events = []; this.tick++; this.energy = Math.min(100, this.energy + this.config.energy.regenerationPerSecond / FPS);
     if (this.tick - this.lastHit > 150) this.combo = 0;
-    if (this.tick >= this.nextSpawn && this.seconds < 72) {
-      const tierRoll = this.random();
-      const tier = this.phase === 1 ? 3 : tierRoll < .65 ? 3 : tierRoll < .92 ? 2 : 1;
+    const wave = this.wave;
+    if (this.tick >= this.nextSpawn && this.seconds < this.config.round.durationSeconds - this.config.round.quietEndSeconds) {
+      const tier = Number(pickWeighted(wave.tierWeights, this.random));
       const prefix = tier === 3 ? 'o' : tier === 2 ? 'm' : 'i', count = tier === 3 ? 18 : tier === 2 ? 9 : 6;
       const n = this.network.map[prefix + Math.floor(this.random() * count)];
-      const roll = this.random(), kinds = ['cve', 'incident', 'geo', 'law', 'rating'];
-      const kind = roll < .22 ? 'low' : kinds[Math.min(4, Math.floor((roll - .22) / .78 * 5))];
+      const kind = pickWeighted(wave.threatWeights, this.random);
       this.spawn(n.id, n.targets[0], 0, null, kind);
-      const interval = this.phase === 1 ? 145 : this.phase === 2 ? 98 : 70;
-      this.nextSpawn = this.tick + interval + Math.floor(this.random() * 32);
+      this.nextSpawn = this.tick + ticks(wave.spawnIntervalSeconds) + Math.floor(this.random() * ticks(wave.spawnJitterSeconds));
     }
     this.fields = this.fields.filter(f => f.end > this.tick);
-    for (const f of this.fields) { const age = this.tick - f.start; f.radius = age < 0 ? 0 : 77 * Math.min(1, age / 12, (f.end - this.tick) / 25); }
+    for (const f of this.fields) { const age = this.tick - f.start; f.radius = age < 0 ? 0 : this.config.shot.fieldRadius * Math.min(1, age / ticks(this.config.shot.growSeconds), (f.end - this.tick) / ticks(this.config.shot.fadeSeconds)); }
     const current = this.packets; this.packets = [];
     for (const p of current) {
       if (p.warning > 0) { p.warning--; this.packets.push(p); continue; }
       const from = this.network.map[p.from], to = this.network.map[p.to], threat = THREATS[p.kind];
-      const speed = (this.phase === 1 ? 45 : this.phase === 2 ? 55 : 65) * (this.tick < this.scanUntil ? .4 : 1);
+      const speed = wave.speed * (this.tick < this.scanUntil ? this.config.scan.speedMultiplier : 1);
       p.p += speed / FPS / p.length;
       p.x = from.x + (to.x - from.x) * Math.min(1, p.p); p.y = from.y + (to.y - from.y) * Math.min(1, p.p);
       const field = this.fields.find(f => f.radius > 0 && distance(f, p) < f.radius + 4);
@@ -180,7 +184,7 @@ export class Game {
           this.log('Critical service impacted', `${to.name} · ${this.hp[to.index] * 25}% · −50 punten`, 'critical');
         }
       } else {
-        const targets = to.targets.slice(0, threat.damage > 0 && this.phase >= 2 ? 2 : 1);
+        const targets = to.targets.slice(0, threat.damage > 0 ? wave.maxBranches : 1);
         if (targets.length > 1) {
           this.risks.get(p.root).split = true; this.cascades++; this.emit('cascade', to.x, to.y);
           this.log('Chain reaction', `${to.name} · ${targets.length} afhankelijkheden geraakt`, 'high');
@@ -190,17 +194,17 @@ export class Game {
       }
     }
     this.fx = this.fx.filter(f => this.tick - f.born < 65);
-    if (this.tick >= DURATION * FPS || this.services === 0) {
+    if (this.tick >= ticks(this.config.round.durationSeconds) || this.services === 0) {
       this.finished = true; this.bonus = this.services * 200; this.score += this.bonus;
       this.log('Mission complete', `${this.services} van 3 diensten operationeel · +${this.bonus}`, 'info'); this.emit('finish', 500, 500);
     }
   }
 }
-export function replay(actions, seed = SEED) {
+export function replay(actions, seed = SEED, config = GAME_CONFIG) {
   if (!Array.isArray(actions) || actions.length > 1000) throw new Error('Ongeldige spelacties.');
-  const game = new Game(seed); let cursor = 0, previous = -1;
+  const game = new Game(seed, config); let cursor = 0, previous = -1;
   for (const a of actions) {
-    if (!a || !Number.isInteger(a.tick) || a.tick < previous || a.tick < 0 || a.tick >= FPS * DURATION) throw new Error('Ongeldige volgorde.');
+    if (!a || !Number.isInteger(a.tick) || a.tick < previous || a.tick < 0 || a.tick >= ticks(game.config.round.durationSeconds)) throw new Error('Ongeldige volgorde.');
     previous = a.tick;
   }
   while (!game.finished) {

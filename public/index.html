@@ -4,10 +4,11 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#030d18"><meta name="description" content="Bescherm je galaxy. Stop kettingreacties en zet de hoogste score neer in RiskStudio Cascade Command.">
 <title>Cascade Command · RiskStudio</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
+<link rel="preload" as="image" href="/assets/sprites.093cb099440e.webp" fetchpriority="high">
 </head>
 <body>
 <header class="header">
-  <a class="brand" href="/" aria-label="RiskStudio Cascade Command start"><img src="/assets/riskstudio-logo.png" alt="RiskStudio" width="2048" height="518"></a>
+  <a class="brand" href="/" aria-label="RiskStudio Cascade Command start"><img src="/assets/riskstudio-logo.87fc5d84cca0.webp" alt="RiskStudio" width="512" height="130"></a>
   <span class="brand-divider"></span><h1>Cascade Command</h1><p class="header-subtitle">Een serious game over digitale ketenrisico’s</p><div class="brand-promise"><strong>Zie de keten. Begrijp het risico.</strong><span>Speel. Ontdek. Bescherm wat belangrijk is.</span></div>
   <div class="header-actions"><button class="icon-button" id="help" aria-label="Speluitleg" title="Speluitleg">?</button>
     <button class="icon-button" id="pause" aria-label="Pauzeer spel" title="Pauze · Esc" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
@@ -31,9 +32,11 @@
         <div class="intro-rule"></div><h2 id="intro-title">Bescherm je<br><em>galaxy.</em></h2>
         <p>Zie de keten. Herken het risico.<br>Houd je kritieke diensten operationeel.</p>
         <ol class="instructions"><li><span>01</span>Herken de vijf soorten dreigingen.</li><li><span>02</span>Laat kleine LOW-signalen passeren.</li><li><span>03</span>Scan voor intelligence. Bescherm je diensten.</li></ol>
-        <button class="primary" id="start">Start missie <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
-        <button class="text-button" id="watch-demo">Eerst even kijken <span>↗</span></button>
-        <button class="text-button rules-link" id="intro-help">Speluitleg &amp; puntentelling</button><p class="micro">75 seconden · fictieve leveranciers en risico’s</p>
+        <button class="primary" id="start" disabled aria-describedby="asset-status"><span id="start-label">Spel laden…</span> <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+        <p class="asset-status" id="asset-status" role="status">Spelbeelden worden geladen…</p>
+        <button class="text-button" id="retry-assets" hidden>Opnieuw laden <span>↻</span></button>
+        <button class="text-button" id="watch-demo" disabled>Eerst even kijken <span>↗</span></button>
+        <button class="text-button rules-link" id="intro-help">Speluitleg &amp; puntentelling</button><p class="micro"><span data-config-duration>75</span> seconden · fictieve leveranciers en risico’s</p>
         <p class="form-message" id="start-error" role="alert"></p>
       </section>
       <section class="center-overlay overlay" id="pause-panel" hidden aria-labelledby="pause-title"><span class="line-icon">Ⅱ</span><h2 id="pause-title">Even op adem.</h2><p>Je galaxy wacht op je.</p><button class="primary" id="resume">Verder spelen</button><button class="text-button" id="quit">Terug naar start</button></section>
@@ -71,9 +74,9 @@
     </section>
   </section>
   <aside class="sidebar" aria-label="Risico-intelligence en scores">
-    <section id="board-panel" aria-labelledby="board-title"><div class="sidebar-title"><h2 id="board-title">Leaderboard</h2><p>Verdien je plek met veerkracht.</p><label class="sr-only" for="score-edition">Spelversie</label><select id="score-edition"><option value="cascade-2">Huidig klassement</option><option value="cascade-1">Eerdere spelregels</option></select></div><div class="leaderboard" id="leaderboard"><div class="empty-board"><span class="podium-mark" aria-hidden="true">01</span><strong>Jouw naam hier?</strong><p>Bescherm de keten. Zet de eerste score.</p></div></div></section>
     <section class="service-status" aria-labelledby="service-title"><h2 id="service-title">Kritieke diensten</h2><div id="service-list"></div></section>
     <section id="feed-panel" aria-labelledby="feed-title"><div class="feed-heading"><h2 id="feed-title">Live Risk Feed</h2><span id="feed-mode">Demo</span></div><p class="feed-count" id="feed-count">Wacht op het eerste signaal</p><ol class="risk-feed" id="risk-feed"></ol></section>
+    <section id="board-panel" aria-labelledby="board-title"><div class="sidebar-title"><h2 id="board-title">Leaderboard</h2><p>Verdien je plek met veerkracht.</p></div><div class="leaderboard" id="leaderboard"><div class="empty-board"><span class="podium-mark" aria-hidden="true">01</span><strong>Jouw naam hier?</strong><p>Bescherm de keten. Zet de eerste score.</p></div></div></section>
     <div class="sidebar-bottom"><button class="mobile-link text-button" id="mobile-link">Speel op je telefoon <span>↗</span></button><p class="footnote">Fictief scenario · echte ketenprincipes</p></div>
   </aside>
 </main>
@@ -84,13 +87,13 @@
 <h2 id="rules-title">Speluitleg</h2><p class="rules-lead">Zie de keten → herken het risico → onderschep de dreiging → bescherm je kritieke diensten.</p>
 <h3>De Galaxy is je leveranciersketen</h3><p>De buitenste ringen zijn Tier 3 en Tier 2. Tier 1 bevat je directe leveranciers. In het midden staat je organisatie, met Klantportaal, Betalingen en Operatie eromheen. Een risico bij een leverancier van een leverancier kan uiteindelijk je eigen bedrijfsvoering raken.</p>
 <div class="rules-chain">Tier 3 → Tier 2 → Tier 1 → Kritieke dienst → Organisatie</div>
-<h3>Herken de dreiging</h3><p>Incidenten (virus), kwetsbaarheden (waarschuwingsdriehoek), geopolitieke risico’s (zuilen), regelgeving (weegschaal) en cyberrating (oog) bewegen via de bestaande verbindingen naar je diensten. Vanaf de tweede golf kunnen ze bij gedeelde leveranciers opsplitsen. Stop ze vroeg om een kettingreactie te voorkomen.</p>
+<h3>Herken de dreiging</h3><p>Incidenten (virus), kwetsbaarheden (waarschuwingsdriehoek), geopolitieke risico’s (zuilen), regelgeving (weegschaal) en cyberrating (oog) bewegen via de bestaande verbindingen naar je diensten. <span id="rules-branching">Vanaf de tweede golf kunnen ze bij gedeelde leveranciers opsplitsen. Stop ze vroeg om een kettingreactie te voorkomen.</span></p>
 <ul><li><strong>Rode buitenring · Critical CVE:</strong> 50 procentpunten schade bij inslag.</li><li><strong>Overige gekleurde dreigingen · hoog risico:</strong> 25 procentpunten schade.</li><li><strong>Kleine grijze cirkel · LOW:</strong> geen bedrijfsimpact in dit scenario. Laat deze signalen passeren.</li></ul>
-<h3>Onderscheppen of eerst onderzoeken?</h3><p>Klik of tik vóór een dreiging om een kort beschermingsveld te plaatsen. De onderschepper reist vanaf het centrum, dus richt een stukje vooruit. Een veld kost 20 energie en kan meerdere signalen raken, ook lage risico’s. Je krijgt 13 energie per seconde terug.</p>
-<p><strong>Scan kost 25 energie.</strong> De scanknop onderzoekt de gevaarlijkste zichtbare dreiging, of een leveranciersnode als er nog geen dreiging is. Met ‘Kies een leverancier’ tik of klik je gericht op een dreiging of node. Op de Mac kun je ook richten en op spatie drukken. De scan toont tier, type, severity, mogelijke bedrijfsimpact, land, jurisdictie, cyberrating en nieuw ontdekte afhankelijkheden. De intelligence is een momentopname.</p>
-<p>Scan vertraagt signalen 5 seconden en kan na 18 seconden opnieuw. Nieuw ontdekte verbindingen blijven zichtbaar. Alle leveranciers en risico’s zijn fictief; dit is een spelmetafoor, geen live RiskStudio-dataset.</p>
+<h3>Onderscheppen of eerst onderzoeken?</h3><p id="rules-shot">Klik of tik vóór een dreiging om een kort beschermingsveld te plaatsen. De onderschepper reist vanaf het centrum, dus richt een stukje vooruit. Een veld kost 20 energie en kan meerdere signalen raken, ook lage risico’s. Je krijgt 13 energie per seconde terug.</p>
+<p><strong id="rules-scan-cost">Scan kost 25 energie.</strong> De scanknop onderzoekt de gevaarlijkste zichtbare dreiging, of een leveranciersnode als er nog geen dreiging is. Met ‘Kies een leverancier’ tik of klik je gericht op een dreiging of node. Op de Mac kun je ook richten en op spatie drukken. De scan toont tier, type, severity, mogelijke bedrijfsimpact, land, jurisdictie, cyberrating en nieuw ontdekte afhankelijkheden. De intelligence is een momentopname.</p>
+<p id="rules-scan-time">Scan vertraagt signalen 5 seconden en kan na 18 seconden opnieuw. Nieuw ontdekte verbindingen blijven zichtbaar. Alle leveranciers en risico’s zijn fictief; dit is een spelmetafoor, geen live RiskStudio-dataset.</p>
 <h3>Zo verdien je punten</h3><dl class="points-rules"><dt>Dreiging onderschept</dt><dd>+50</dd><dt>Vóór de eerste mogelijke splitsing gestopt</dt><dd>+100</dd><dt>Dienst na afloop nog operationeel</dt><dd>+200</dd><dt>Binnen 3 seconden onderschept</dt><dd>+25</dd><dt>Combo binnen 2,5 seconden</dt><dd>+25 tot +100</dd><dt>Laag risico onnodig onderschept</dt><dd>−50</dd><dt>Dreiging raakt een operationele dienst</dt><dd>−50</dd></dl>
-<p>De kettingreactiebonus geldt vanaf golf 2, één keer per oorspronkelijke dreiging en alleen vóórdat deze zich heeft gesplitst. Een score wordt nooit negatief. De ronde duurt 75 seconden, of eindigt eerder als alle diensten uitvallen.</p>
+<p>De kettingreactiebonus geldt wanneer splitsingen mogelijk zijn, één keer per oorspronkelijke dreiging en alleen vóórdat deze zich heeft gesplitst. Een score wordt nooit negatief. De ronde duurt <span data-config-duration>75</span> seconden, of eindigt eerder als alle diensten uitvallen.</p>
 <h3>Bediening</h3><p>Muis of tik om te schieten. Pijltjes om te richten, Enter om te schieten, spatie om te scannen en Escape voor pauze. Met Shift richt je preciezer. Speluitleg openen pauzeert je ronde.</p>
 <p class="riskstudio-message">Een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.</p>
 <button class="primary" id="rules-done">Begrepen</button></dialog>

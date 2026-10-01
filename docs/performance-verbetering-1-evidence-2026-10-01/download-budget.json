@@ -1,0 +1,119 @@
+{
+  "budget": {
+    "maxTotalBytes": 800000,
+    "maxImageBytes": 650000
+  },
+  "totalBytes": 412154,
+  "imageBytes": 234587,
+  "gzipEstimate": 285300,
+  "files": [
+    {
+      "path": "public/assets/riskstudio-logo.87fc5d84cca0.webp",
+      "bytes": 19276,
+      "gzipEstimate": 19276,
+      "image": true
+    },
+    {
+      "path": "public/assets/space.269c230f8b18.webp",
+      "bytes": 50078,
+      "gzipEstimate": 50078,
+      "image": true
+    },
+    {
+      "path": "public/assets/sprites.093cb099440e.webp",
+      "bytes": 165050,
+      "gzipEstimate": 165050,
+      "image": true
+    },
+    {
+      "path": "public/favicon.svg",
+      "bytes": 183,
+      "gzipEstimate": 183,
+      "image": true
+    },
+    {
+      "path": "public/index.html",
+      "bytes": 14714,
+      "gzipEstimate": 5174,
+      "image": false
+    },
+    {
+      "path": "public/style.css",
+      "bytes": 44250,
+      "gzipEstimate": 10241,
+      "image": false
+    },
+    {
+      "path": "public/tokens.css",
+      "bytes": 242,
+      "gzipEstimate": 212,
+      "image": false
+    },
+    {
+      "path": "public/vendor/qrcode.js",
+      "bytes": 51907,
+      "gzipEstimate": 11183,
+      "image": false
+    },
+    {
+      "path": "src/asset-loader.js",
+      "bytes": 1052,
+      "gzipEstimate": 564,
+      "image": false
+    },
+    {
+      "path": "src/assets.js",
+      "bytes": 266,
+      "gzipEstimate": 213,
+      "image": false
+    },
+    {
+      "path": "src/audio.js",
+      "bytes": 1053,
+      "gzipEstimate": 518,
+      "image": false
+    },
+    {
+      "path": "src/engine.js",
+      "bytes": 15208,
+      "gzipEstimate": 4982,
+      "image": false
+    },
+    {
+      "path": "src/game-config.js",
+      "bytes": 2875,
+      "gzipEstimate": 1237,
+      "image": false
+    },
+    {
+      "path": "src/game-rules.js",
+      "bytes": 4908,
+      "gzipEstimate": 1826,
+      "image": false
+    },
+    {
+      "path": "src/main.js",
+      "bytes": 25492,
+      "gzipEstimate": 8515,
+      "image": false
+    },
+    {
+      "path": "src/mobile-share.js",
+      "bytes": 1340,
+      "gzipEstimate": 695,
+      "image": false
+    },
+    {
+      "path": "src/renderer.js",
+      "bytes": 12250,
+      "gzipEstimate": 4324,
+      "image": false
+    },
+    {
+      "path": "src/symbols.js",
+      "bytes": 2010,
+      "gzipEstimate": 1029,
+      "image": false
+    }
+  ]
+}

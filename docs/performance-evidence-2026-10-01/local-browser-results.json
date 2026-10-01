@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-01T19:15:07.070Z",
+  "version": "cascade-3-14f91b15",
+  "errors": [],
+  "samples": [
+    {
+      "name": "playing",
+      "ms": 8000,
+      "fps": 59.877245396702385,
+      "cpuP95": 2.800000011920929,
+      "mutationRate": 320.375
+    },
+    {
+      "name": "paused",
+      "ms": 3000,
+      "fps": 59.66865562185407,
+      "cpuP95": 2.800000011920929,
+      "mutationRate": 1200
+    }
+  ],
+  "hashes": [
+    {
+      "file": "src/main.js",
+      "sha256": "525b735276eb97bb8993e874d6c08effc1a7e95954b84670dda6d639e048b4d2"
+    },
+    {
+      "file": "src/renderer.js",
+      "sha256": "b5b4ad83e99f4930bb6780963e3f8d92ca732e2c05668876eafda085988558a3"
+    },
+    {
+      "file": "src/engine.js",
+      "sha256": "eefa278ae6941cfef2adf3c723da7fd621b431d1beaa24ca30ef2ba25299a4e1"
+    },
+    {
+      "file": "src/game-config.js",
+      "sha256": "d67cc52978a4b57569061715768df48e4ad0114b526ec2cc804c8da4e96e6f5e"
+    },
+    {
+      "file": "src/game-rules.js",
+      "sha256": "bad67d591a528c93921e16024bf25d8dd958551b5b8c6d039ffe490309a5f520"
+    },
+    {
+      "file": "public/style.css",
+      "sha256": "b7cabacb5b967b950db85875f3211d2b894f50d0eac5f52d14ea87f36a0242b2"
+    }
+  ]
+}
