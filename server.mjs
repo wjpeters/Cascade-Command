@@ -53,10 +53,10 @@ const server = http.createServer(async (req, res) => {
     const base = requested.startsWith('/src/') ? root : path.join(root, 'public');
     const file = path.resolve(base, '.' + requested);
     if (!file.startsWith(base + path.sep) || (!requested.startsWith('/src/') && requested.includes('/.'))) return json(res, 403, { error: 'Niet beschikbaar.' });
-    const ext = path.extname(file), types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
+    const ext = path.extname(file), types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
     if (!types[ext]) return json(res, 404, { error: 'Niet gevonden.' });
     let bytes; try { bytes = readFileSync(file); } catch { return json(res, 404, { error: 'Niet gevonden.' }); }
-    res.writeHead(200, { 'Content-Type': types[ext], 'Cache-Control': ext === '.png' ? 'public, max-age=86400' : 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'" });
+    res.writeHead(200, { 'Content-Type': types[ext], 'Cache-Control': /\.[a-f0-9]{12}\.webp$/.test(requested) ? 'public, max-age=31536000, immutable' : ext === '.png' ? 'public, max-age=86400' : 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'" });
     res.end(req.method === 'HEAD' ? undefined : bytes);
   } catch (e) { if (!res.headersSent) json(res, 500, { error: 'Opslaan lukte niet. Probeer het opnieuw.' }); }
 });

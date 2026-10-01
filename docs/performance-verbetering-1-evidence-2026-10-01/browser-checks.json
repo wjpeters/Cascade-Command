@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-01T19:40:07.722Z",
+  "checks": [
+    {
+      "name": "chrome-desktop",
+      "passed": true,
+      "errors": [],
+      "assets": [
+        {
+          "path": "/assets/sprites.093cb099440e.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        },
+        {
+          "path": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        },
+        {
+          "path": "/assets/space.269c230f8b18.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        }
+      ],
+      "spriteSources": [
+        "[0,0,512,512]",
+        "[512,0,512,512]"
+      ]
+    },
+    {
+      "name": "chrome-mobile-320",
+      "passed": true,
+      "errors": [],
+      "assets": [
+        {
+          "path": "/assets/sprites.093cb099440e.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        },
+        {
+          "path": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        },
+        {
+          "path": "/assets/space.269c230f8b18.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        }
+      ],
+      "spriteSources": [
+        "[0,0,512,512]",
+        "[512,0,512,512]"
+      ]
+    },
+    {
+      "name": "webkit-mobile-390",
+      "passed": true,
+      "errors": [],
+      "assets": [
+        {
+          "path": "/assets/sprites.093cb099440e.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        },
+        {
+          "path": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        },
+        {
+          "path": "/assets/space.269c230f8b18.webp",
+          "status": 200,
+          "type": "image/webp",
+          "cache": "public, max-age=31536000, immutable"
+        }
+      ],
+      "spriteSources": [
+        "[0,0,512,512]",
+        "[512,0,512,512]"
+      ]
+    },
+    {
+      "name": "delayed-image",
+      "passed": true,
+      "sessionsBeforeReady": 0
+    },
+    {
+      "name": "failed-image-retry",
+      "passed": true,
+      "spriteRequests": 2,
+      "sessionsAfterRetry": 1,
+      "errors": []
+    },
+    {
+      "name": "decorative-image-fallback",
+      "passed": true
+    }
+  ]
+}

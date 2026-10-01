@@ -3,9 +3,31 @@ import { Game, FPS, DURATION, SEED, VERSION, THREATS, SHOT_COST, SCAN_COST, GAME
 import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
 import { CATEGORIES, symbolMarkup, SERVICE_VISUALS, serviceSymbolMarkup } from './symbols.js';
+import { loadGameAssets } from './asset-loader.js';
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
 let state='intro',game=new Game(),session=null,actions=[],lastFrame=0,accumulator=0,toastUntil=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
+let assetsReady=false,assetsLoading=false;
+function updateLaunchButtons(){
+  for(const id of ['start','retry','demo-play','watch-demo'])$(id).disabled=!assetsReady||busy;
+  $('start-label').textContent=busy?'Missie starten…':assetsReady?'Start missie':document.body.dataset.assets==='error'?'Laden mislukt':'Spel laden…';
+}
+async function prepareAssets(){
+  if(assetsLoading)return;
+  assetsLoading=true;assetsReady=false;document.body.dataset.assets='loading';
+  $('retry-assets').hidden=true;$('start-error').textContent='';updateLaunchButtons();
+  try{
+    const {images}=await loadGameAssets(({completed,total})=>{$('asset-status').textContent=`Spelbeelden laden · ${completed}/${total}`;});
+    renderer.image=images.sprites;assetsReady=true;
+    document.body.dataset.assets='ready';document.body.dataset.assetsReadyMs=String(Math.round(performance.now()));
+    $('asset-status').textContent='Klaar voor de missie';
+  }catch(error){
+    document.body.dataset.assets='error';$('asset-status').textContent=error.message;
+    $('retry-assets').hidden=false;
+  }finally{assetsLoading=false;updateLaunchButtons();}
+}
+$('retry-assets').addEventListener('click',prepareAssets);
+prepareAssets();
 const formatTime=tick=>`${String(Math.floor(tick/FPS/60)).padStart(2,'0')}:${String(Math.floor(tick/FPS)%60).padStart(2,'0')}`;
 const severityName={critical:'Kritiek',high:'Hoog',low:'Laag',unknown:'Geen signaal in beeld'};
 const formatNumber=value=>value.toLocaleString('nl-NL',{maximumFractionDigits:2});
@@ -99,16 +121,15 @@ function updateIntelFeed(){
   drawIntelligence();$('scan-peek').hidden=state!=='playing'||!game.intelligence||game.tick>=game.scanUntil+180;
 }
 async function start(){
-  if(busy)return;busy=true;$('start').disabled=true;$('retry').disabled=true;$('start-error').textContent='';
+  if(busy||!assetsReady)return;busy=true;updateLaunchButtons();$('start-error').textContent='';
   try{
-    await renderer.ready;if(renderer.assetError)throw new Error('De spelbeelden zijn niet geladen. Vernieuw de pagina.');
     session=await request('/api/session',{method:'POST',body:'{}'});
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
     game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
     setState('playing');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');updateHud();
   }catch(error){setState('intro');$('start-error').textContent=error.message;}
-  finally{busy=false;$('start').disabled=false;$('retry').disabled=false;}
+  finally{busy=false;updateLaunchButtons();}
 }
 function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
 function action(type,point={}){

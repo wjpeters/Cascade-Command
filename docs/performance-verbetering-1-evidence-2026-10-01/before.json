@@ -1,0 +1,466 @@
+{
+  "mode": "before",
+  "date": "2026-10-01T19:29:08.902Z",
+  "browser": "154.0.8037.58",
+  "profiles": [
+    {
+      "ready": 16153.100000023842,
+      "times": [
+        {
+          "url": "http://127.0.0.1:4320/assets/sprites.png",
+          "time": 16153.100000023842
+        }
+      ],
+      "resources": [
+        {
+          "path": "/style.css",
+          "bytes": 43968,
+          "end": 905.1999999880791
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "bytes": 272082,
+          "end": 3995.699999988079
+        },
+        {
+          "path": "/src/main.js",
+          "bytes": 24407,
+          "end": 762.4000000357628
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "bytes": 1340,
+          "end": 965.4000000357628
+        },
+        {
+          "path": "/src/engine.js",
+          "bytes": 15208,
+          "end": 1190.6000000238419
+        },
+        {
+          "path": "/src/audio.js",
+          "bytes": 1053,
+          "end": 950.3000000119209
+        },
+        {
+          "path": "/src/renderer.js",
+          "bytes": 12351,
+          "end": 1160.199999988079
+        },
+        {
+          "path": "/src/symbols.js",
+          "bytes": 2010,
+          "end": 1115.199999988079
+        },
+        {
+          "path": "/tokens.css",
+          "bytes": 242,
+          "end": 1138.4000000357628
+        },
+        {
+          "path": "/assets/space.png",
+          "bytes": 1726816,
+          "end": 17721.100000023842
+        },
+        {
+          "path": "/src/game-config.js",
+          "bytes": 2875,
+          "end": 1558
+        },
+        {
+          "path": "/src/game-rules.js",
+          "bytes": 4908,
+          "end": 1588.5
+        },
+        {
+          "path": "/api/meta",
+          "bytes": 85,
+          "end": 1805.4000000357628
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 1812.4000000357628
+        },
+        {
+          "path": "/assets/sprites.png",
+          "bytes": 1349760,
+          "end": 16055.900000035763
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 16804.80000001192
+        },
+        {
+          "path": "/favicon.svg",
+          "bytes": 183,
+          "end": 17908.80000001192
+        }
+      ],
+      "navigation": {
+        "name": "http://127.0.0.1:4320/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 17729,
+        "navigationId": 2252,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 1.300000011920929,
+        "domainLookupStart": 1.300000011920929,
+        "domainLookupEnd": 1.300000011920929,
+        "connectStart": 1.300000011920929,
+        "secureConnectionStart": 0,
+        "connectEnd": 1.300000011920929,
+        "requestStart": 4.400000035762787,
+        "responseStart": 12.300000011920929,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 12.300000011920929,
+        "responseEnd": 230.60000002384186,
+        "transferSize": 14627,
+        "encodedBodySize": 14327,
+        "decodedBodySize": 14327,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 233.80000001192093,
+        "domContentLoadedEventStart": 1642.1000000238419,
+        "domContentLoadedEventEnd": 1642.300000011921,
+        "domComplete": 17728.19999998808,
+        "loadEventStart": 17729,
+        "loadEventEnd": 17729,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "low"
+        }
+      },
+      "startDisabled": false,
+      "overflow": false,
+      "bytes": 3471641,
+      "errors": []
+    },
+    {
+      "ready": 16048.099999964237,
+      "times": [
+        {
+          "url": "http://127.0.0.1:4320/assets/sprites.png",
+          "time": 16048.099999964237
+        }
+      ],
+      "resources": [
+        {
+          "path": "/style.css",
+          "bytes": 43968,
+          "end": 902.3999999761581
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "bytes": 272082,
+          "end": 4000.399999976158
+        },
+        {
+          "path": "/src/main.js",
+          "bytes": 24407,
+          "end": 758.8999999761581
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "bytes": 1340,
+          "end": 962.8999999761581
+        },
+        {
+          "path": "/src/renderer.js",
+          "bytes": 12351,
+          "end": 1157.5
+        },
+        {
+          "path": "/src/engine.js",
+          "bytes": 15208,
+          "end": 1187.5
+        },
+        {
+          "path": "/src/audio.js",
+          "bytes": 1053,
+          "end": 947.5999999642372
+        },
+        {
+          "path": "/src/symbols.js",
+          "bytes": 2010,
+          "end": 1112.8999999761581
+        },
+        {
+          "path": "/tokens.css",
+          "bytes": 242,
+          "end": 1134
+        },
+        {
+          "path": "/assets/space.png",
+          "bytes": 1726816,
+          "end": 17716.299999952316
+        },
+        {
+          "path": "/src/game-config.js",
+          "bytes": 2875,
+          "end": 1532.5999999642372
+        },
+        {
+          "path": "/src/game-rules.js",
+          "bytes": 4908,
+          "end": 1562.5999999642372
+        },
+        {
+          "path": "/api/meta",
+          "bytes": 85,
+          "end": 1779.2999999523163
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 1787.699999988079
+        },
+        {
+          "path": "/assets/sprites.png",
+          "bytes": 1349760,
+          "end": 16036.299999952316
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 16780.69999998808
+        },
+        {
+          "path": "/favicon.svg",
+          "bytes": 183,
+          "end": 17881.799999952316
+        }
+      ],
+      "navigation": {
+        "name": "http://127.0.0.1:4320/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 17719.399999976158,
+        "navigationId": 6341,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.19999998807907104,
+        "domainLookupStart": 0.19999998807907104,
+        "domainLookupEnd": 0.19999998807907104,
+        "connectStart": 0.19999998807907104,
+        "secureConnectionStart": 0,
+        "connectEnd": 0.19999998807907104,
+        "requestStart": 0.699999988079071,
+        "responseStart": 1.5999999642372131,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 1.5999999642372131,
+        "responseEnd": 227.5,
+        "transferSize": 14627,
+        "encodedBodySize": 14327,
+        "decodedBodySize": 14327,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 230.69999998807907,
+        "domContentLoadedEventStart": 1618.199999988079,
+        "domContentLoadedEventEnd": 1618.2999999523163,
+        "domComplete": 17719,
+        "loadEventStart": 17719.399999976158,
+        "loadEventEnd": 17719.399999976158,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "startDisabled": false,
+      "overflow": false,
+      "bytes": 3471641,
+      "errors": []
+    },
+    {
+      "ready": 16137.800000011921,
+      "times": [
+        {
+          "url": "http://127.0.0.1:4320/assets/sprites.png",
+          "time": 16137.800000011921
+        }
+      ],
+      "resources": [
+        {
+          "path": "/style.css",
+          "bytes": 43968,
+          "end": 892.7000000476837
+        },
+        {
+          "path": "/assets/riskstudio-logo.png",
+          "bytes": 272082,
+          "end": 3983.600000023842
+        },
+        {
+          "path": "/src/main.js",
+          "bytes": 24407,
+          "end": 758.4000000357628
+        },
+        {
+          "path": "/src/mobile-share.js",
+          "bytes": 1340,
+          "end": 961.3000000119209
+        },
+        {
+          "path": "/src/renderer.js",
+          "bytes": 12351,
+          "end": 1154.7000000476837
+        },
+        {
+          "path": "/src/engine.js",
+          "bytes": 15208,
+          "end": 1184.7000000476837
+        },
+        {
+          "path": "/src/audio.js",
+          "bytes": 1053,
+          "end": 946.1000000238419
+        },
+        {
+          "path": "/src/symbols.js",
+          "bytes": 2010,
+          "end": 1102.6000000238419
+        },
+        {
+          "path": "/tokens.css",
+          "bytes": 242,
+          "end": 1133.6000000238419
+        },
+        {
+          "path": "/assets/space.png",
+          "bytes": 1726816,
+          "end": 17708.5
+        },
+        {
+          "path": "/src/game-config.js",
+          "bytes": 2875,
+          "end": 1523.300000011921
+        },
+        {
+          "path": "/src/game-rules.js",
+          "bytes": 4908,
+          "end": 1552.7000000476837
+        },
+        {
+          "path": "/api/meta",
+          "bytes": 85,
+          "end": 1771
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 1777.9000000357628
+        },
+        {
+          "path": "/assets/sprites.png",
+          "bytes": 1349760,
+          "end": 16027.700000047684
+        },
+        {
+          "path": "/api/leaderboard",
+          "bytes": 13,
+          "end": 16762.80000001192
+        },
+        {
+          "path": "/favicon.svg",
+          "bytes": 183,
+          "end": 17873.5
+        }
+      ],
+      "navigation": {
+        "name": "http://127.0.0.1:4320/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 17711.30000001192,
+        "navigationId": 5310,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "http/1.1",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.6000000238418579,
+        "domainLookupStart": 0.6000000238418579,
+        "domainLookupEnd": 0.6000000238418579,
+        "connectStart": 0.6000000238418579,
+        "secureConnectionStart": 0,
+        "connectEnd": 0.6000000238418579,
+        "requestStart": 1.5,
+        "responseStart": 4.700000047683716,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 4.700000047683716,
+        "responseEnd": 225.60000002384186,
+        "transferSize": 14627,
+        "encodedBodySize": 14327,
+        "decodedBodySize": 14327,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 228.4000000357628,
+        "domContentLoadedEventStart": 1606.2000000476837,
+        "domContentLoadedEventEnd": 1606.300000011921,
+        "domComplete": 17711.30000001192,
+        "loadEventStart": 17711.30000001192,
+        "loadEventEnd": 17711.30000001192,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "startDisabled": false,
+      "overflow": false,
+      "bytes": 3471641,
+      "errors": []
+    }
+  ]
+}

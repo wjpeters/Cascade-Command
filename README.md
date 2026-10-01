@@ -122,3 +122,27 @@ Willem vraagt één leaderboard volgens de laatste spelregels, onder de Live Ris
 ## Performance-rapport, 1 oktober 2026
 
 [Rapport](docs/performance-rapport-2026-10-01.md) · [PDF](docs/performance-rapport-2026-10-01.pdf). Codecontrole, browsermetingen, mobiele indeling en geprioriteerde verbeterpunten. Meetbewijs staat onder docs/performance-evidence-2026-10-01/. De openbare cascade-2-versie en de nieuwere lokale cascade-3-configuratie zijn apart benoemd.
+
+## Nieuwste Sites-publicatie, 1 oktober 2026
+
+Sites-versie 3 is succesvol op https://riskstudio-cascade-command.codexwillem.chatgpt.site gepubliceerd. Alle nieuwe lokale bestanden zijn meegenomen, inclusief de configureerbare moeilijkheid en de actuele cascade-3-spelinstellingen. Twintig regressietests en de bouwcontrole slagen. Dezelfde openbare toegang en database zijn behouden. Eerdere scores blijven opgeslagen buiten het leaderboard voor de nieuwe spelinstellingen.
+
+## Performanceverbetering 1, 1 oktober 2026
+
+De lokale spelbeelden zijn omgezet naar WebP en verkleind van 3.348.658 naar
+234.404 bytes (93% kleiner). Laadvoortgang, gereedstatus en opnieuw laden na
+een fout zijn toegevoegd. Start- en demoknoppen wachten op de spelbeelden.
+De originele PNG-bestanden zijn bewaard onder `design/source-assets/`.
+
+`rtk proxy npm run check:budget` controleert het downloadbudget. De build voert
+deze controle ook uit en stopt boven 800.000 bytes browserbestanden of
+650.000 bytes afbeeldingen. De huidige build telt 412.154 bytes, inclusief
+de optionele QR-bibliotheek. `dist/download-budget.json` bevat het overzicht.
+
+Op hetzelfde koude, vertraagde mobiele profiel daalde de mediane tijd tot
+speelgereed van 16,14 naar 2,17 seconden. Twintig regressietests, de bouwcontrole
+en Chrome/WebKit-controles slagen, inclusief laadfout en herstelactie.
+De lokale game is herstart. Deze afbeeldingsverbetering is nog niet gepubliceerd.
+
+[Resultaat en meetmethode](docs/performance-verbetering-1-2026-10-01.md).
+Meetbewijs: `docs/performance-verbetering-1-evidence-2026-10-01/`.

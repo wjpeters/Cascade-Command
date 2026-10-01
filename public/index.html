@@ -4,10 +4,11 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#030d18"><meta name="description" content="Bescherm je galaxy. Stop kettingreacties en zet de hoogste score neer in RiskStudio Cascade Command.">
 <title>Cascade Command · RiskStudio</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css">
+<link rel="preload" as="image" href="/assets/sprites.093cb099440e.webp" fetchpriority="high">
 </head>
 <body>
 <header class="header">
-  <a class="brand" href="/" aria-label="RiskStudio Cascade Command start"><img src="/assets/riskstudio-logo.png" alt="RiskStudio" width="2048" height="518"></a>
+  <a class="brand" href="/" aria-label="RiskStudio Cascade Command start"><img src="/assets/riskstudio-logo.87fc5d84cca0.webp" alt="RiskStudio" width="512" height="130"></a>
   <span class="brand-divider"></span><h1>Cascade Command</h1><p class="header-subtitle">Een serious game over digitale ketenrisico’s</p><div class="brand-promise"><strong>Zie de keten. Begrijp het risico.</strong><span>Speel. Ontdek. Bescherm wat belangrijk is.</span></div>
   <div class="header-actions"><button class="icon-button" id="help" aria-label="Speluitleg" title="Speluitleg">?</button>
     <button class="icon-button" id="pause" aria-label="Pauzeer spel" title="Pauze · Esc" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
@@ -31,8 +32,10 @@
         <div class="intro-rule"></div><h2 id="intro-title">Bescherm je<br><em>galaxy.</em></h2>
         <p>Zie de keten. Herken het risico.<br>Houd je kritieke diensten operationeel.</p>
         <ol class="instructions"><li><span>01</span>Herken de vijf soorten dreigingen.</li><li><span>02</span>Laat kleine LOW-signalen passeren.</li><li><span>03</span>Scan voor intelligence. Bescherm je diensten.</li></ol>
-        <button class="primary" id="start">Start missie <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
-        <button class="text-button" id="watch-demo">Eerst even kijken <span>↗</span></button>
+        <button class="primary" id="start" disabled aria-describedby="asset-status"><span id="start-label">Spel laden…</span> <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+        <p class="asset-status" id="asset-status" role="status">Spelbeelden worden geladen…</p>
+        <button class="text-button" id="retry-assets" hidden>Opnieuw laden <span>↻</span></button>
+        <button class="text-button" id="watch-demo" disabled>Eerst even kijken <span>↗</span></button>
         <button class="text-button rules-link" id="intro-help">Speluitleg &amp; puntentelling</button><p class="micro"><span data-config-duration>75</span> seconden · fictieve leveranciers en risico’s</p>
         <p class="form-message" id="start-error" role="alert"></p>
       </section>
