@@ -61,3 +61,12 @@ test('hosted API rejects expired rounds, malformed bodies and cross-site writes'
   assert.equal((await call('/api/score', { session: session.id, name: 'Speler', actions: [] })).status, 400);
   assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM scores').get().n, 0);
 });
+
+test('previous scores survive and remain separate from the new game rules',async t=>{
+  const {sql,call}=setup(t);
+  sql.prepare('INSERT INTO scores(id,session_id,name,score,services,date,version) VALUES(?,?,?,?,?,?,?)').run('old','old-session','Eerdere speler',9700,3,'2026-10-01','cascade-1');
+  assert.equal((await (await call('/api/leaderboard')).json()).scores.length,0);
+  assert.equal((await (await call('/api/leaderboard?version=cascade-1')).json()).scores[0].score,9700);
+  const session=await (await call('/api/session',{})).json();assert.equal(session.version,'cascade-2');
+  assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM scores WHERE version = ?').get('cascade-1').n,1);
+});

@@ -17,23 +17,29 @@ Het online leaderboard staat in een Sites D1-database en blijft behouden na opni
 - Klik in het spel op **Speel op je telefoon** en scan de QR-code, of open het getoonde adres op een telefoon op hetzelfde netwerk. De Mac moet aan blijven; sommige gastnetwerken blokkeren onderling verkeer.
 - Er zijn geen packages te installeren. Node 20 of nieuwer volstaat.
 
-## Spelregels
+## Spelregels: supply-chain intelligence
 
-Houd drie kritieke diensten 75 seconden beschikbaar. Incidenten reizen van externe leveranciers door het netwerk naar je diensten. Vanaf fase twee splitsen ze zich bij gedeelde leveranciers.
+De Galaxy toont Tier 3 → Tier 2 → Tier 1 → kritieke dienst → eigen organisatie. De diensten zijn Klantportaal, Betalingen en Operatie. Alle leveranciers, landen, ratings en risico’s vormen één fictief scenario.
 
-- Klik/tik waar je een beschermingsveld wilt plaatsen. De onderschepper reist eerst vanuit het centrum naar die plek: richt iets vóór het incident.
-- Een veld kost 20 energie. Energie herstelt automatisch met 13 per seconde. Velden blijven kort actief en kunnen meerdere incidenten raken.
-- Scan toont verborgen routes en vertraagt incidenten vijf seconden. Daarna volgt een afkoeltijd; scan is elke 18 seconden beschikbaar.
-- Elke dienst heeft vier gezondheidspunten. Geen diensten over betekent einde van de ronde.
-- Onderscheppingen geven punten. Snelle opeenvolgende onderscheppingen geven combo’s. Behouden gezondheid en diensten geven aan het einde een continuïteitsbonus.
-- Met toetsenbord: pijltjes richten, Enter schieten, spatie scannen, Escape pauzeren. Shift+pijltjes richten preciezer.
-- Geluid is standaard uit; rechtsboven kun je het inschakelen. De demonstratie bij start speelt automatisch. Achtergrondtabbladen pauzeren een echte ronde.
+- Houd na 75 seconden zoveel mogelijk diensten operationeel. Bij drie uitgevallen diensten eindigt de ronde eerder.
+- CVE is een kritieke kwetsbaarheid (rode ruit, 50 procentpunten schade). INC, GEO, LAW en RAT zijn respectievelijk incident, geopolitiek, regelgeving en cyberrating (oranje driehoek, 25 procentpunten schade). Blauwe LOW-signalen hebben geen bedrijfsimpact in dit scenario en hoeven niet onderschept te worden.
+- Risico’s beginnen in verschillende tiers en volgen bestaande verbindingen. Vanaf golf 2 splitsen relevante dreigingen bij gedeelde leveranciers. Kind, oorsprong en identiteit blijven behouden langs de keten.
+- Klik/tik vóór een dreiging. Een onderschepper reist vanuit het centrum naar een beschermingsveld. Dat kost 20 energie; energie herstelt met 13 per seconde. Het veld kan ook een laag risico raken, wat 50 punten kost.
+- Scan kost 25 energie, vertraagt signalen 5 seconden en herlaadt 18 seconden. De knop onderzoekt de dreiging met de grootste potentiële impact op operationele diensten. Met richten en spatie kun je een specifieke dreiging of node onderzoeken. Zonder dreiging onderzoekt de knop een leveranciersnode.
+- Scan toont een momentopname van tier, type, ernst, mogelijke bedrijfsimpact, land, jurisdictie en cyberrating. Verborgen uitgaande verbindingen van de onderzochte nodes worden blijvend zichtbaar. Dezelfde verbinding telt maar één keer als ontdekking.
+- Live Risk Feed toont echte gebeurtenissen uit de ronde, met simulatietijd. Iedere dienst heeft een health-bar en percentage. Op mobiel verschijnt na een scan ook een korte kaart op het speelveld.
+- +50 per onderschepte dreiging; +100 voor een relevante dreiging die vanaf golf 2 vóór de eerste mogelijke splitsing is gestopt; +200 per dienst die na afloop nog operationeel is. De kettingreactiebonus geldt één keer per oorspronkelijke dreiging, nooit na een eerdere splitsing.
+- Snelle reactie binnen 3 seconden: +25. Combo binnen 2,5 seconden: +25 per extra onderschepping, maximaal +100. Een verkeerde onderschepping of inslag op een operationele dienst: −50. Scores worden niet negatief.
+- De eindrapportage toont onderschepte dreigingen, voorkomen kettingreacties, ontdekte afhankelijkheden, operationele diensten, combo en fouten. De kernboodschap: een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.
+- Muis/touch schiet. Pijltjes richten, Enter schiet, spatie scant, Escape pauzeert. Shift+pijltjes richten preciezer. Speluitleg openen en wisselen naar een ander tabblad pauzeren een echte ronde. Geluid staat standaard uit.
+
+De volledige uitleg staat onder **?** in de header en **Speluitleg & puntentelling** op het startscherm.
 
 ## Leaderboard en gegevens
 
-Een lokale Node-server bewaart de top 100 in `data/leaderboard.json`, buiten iCloud. Het scherm toont de top 10. Mac en telefoons op dezelfde server delen dit klassement. Alleen een zelfgekozen naam en spelresultaat worden opgeslagen, geen e-mailadres of account.
+Een lokale Node-server bewaart de top 100 per spelversie in `data/leaderboard.json`, buiten iCloud. Het scherm toont de top 10. Mac en telefoons op dezelfde server delen dit klassement. Alleen een zelfgekozen naam en spelresultaat worden opgeslagen, geen e-mailadres of account.
 
-De server herberekent de score aan de hand van een deterministische replay van de spelacties. De client kan geen eigen score insturen. De server controleert actievolgorde, energie, cooldown, sessie en minimale rondeduur. Een sessie kan één score opslaan en verloopt na 30 minuten. Alle spelers krijgen dezelfde scenarioseed.
+De server herberekent de score aan de hand van een deterministische replay van de spelacties. De client kan geen eigen score insturen. De server controleert actievolgorde, energie, cooldown, sessie en minimale rondeduur. Een sessie kan één score opslaan en verloopt na 30 minuten. Alle spelers binnen dezelfde spelversie krijgen dezelfde scenarioseed. De nieuwe spelregels gebruiken `cascade-2`; eerdere `cascade-1`-scores blijven bewaard en zijn apart op te vragen via de versie-keuze in het leaderboard. Scores met verschillende puntentellingen worden niet gemengd.
 
 **Prototypegrens:** dit is geen productieklare prijsvraag. Replayvalidatie verhindert verzonnen scores, maar geen bots, meerdere namen of meerdere pogingen. Voor echte prijzen ontbreken nog deelnemersidentiteit/deelnameregels, moderatie, beperking van pogingen en een afsluitmoment. De Sites-versie is voorlopig privé. Het is een gedeeld prototypeklassement, geen automatisch dagklassement.
 
@@ -61,3 +67,7 @@ Installeer de ontwikkelpakketten met `rtk proxy npm ci`. `rtk proxy npm run buil
 Het schema staat in `db/schema.ts`; `rtk proxy npm run db:generate` maakt nieuwe migraties. Gepubliceerde migraties nooit wijzigen. De Sites-workflow pusht broncode naar de bij deze site behorende bronrepository; de lokale checkout blijft buiten iCloud. Gegevens en geheimen zijn uitgesloten. `.openai/hosting.json` bevat alleen de sitekoppeling en logische databasebinding.
 
 Er is optionele WebMCP-leestoegang tot hetzelfde leaderboard wanneer de browser dit ondersteunt. Niet vereist voor spelen. WebMCP is lokaal gecontroleerd met geldige en ongeldige invoer. Een fysieke telefoon is niet getest; gebruik daarvoor hetzelfde ingelogde ChatGPT-account.
+
+## Controle van de nieuwe spelregels
+
+De regressieset controleert onder meer deterministische replay, energie/cooldown, schade per severity, LOW-signalen, splitsingen met behoud van dreiging, voorkomen kettingreacties, eenmalige ontdekkingen, eindbonus en gescheiden historische klassementen. Browsercontrole omvat speluitleg/pauze, scan-intelligence, Live Risk Feed, mobiele viewport, eindrapportage en opslaan in een apart lokaal testklassement. Geen testscores in de online database geplaatst.

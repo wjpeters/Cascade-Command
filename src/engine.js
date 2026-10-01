@@ -1,9 +1,21 @@
-export const VERSION = 'cascade-1';
+export const VERSION = 'cascade-2';
 export const FPS = 60;
 export const DURATION = 75;
 export const SEED = 271026;
+export const SHOT_COST = 20;
+export const SCAN_COST = 25;
+export const SERVICE_NAMES = ['Klantportaal', 'Betalingen', 'Operatie'];
+export const THREATS = {
+  cve: { code: 'CVE', label: 'Critical CVE', type: 'Kwetsbaarheid', severity: 'critical', damage: 2, color: '#ff6e75', feed: 'Critical CVE detected' },
+  incident: { code: 'INC', label: 'Leveranciersincident', type: 'Incident', severity: 'high', damage: 1, color: '#ffad65', feed: 'Supplier incident detected' },
+  geo: { code: 'GEO', label: 'Geopolitiek risico', type: 'Geopolitiek', severity: 'high', damage: 1, color: '#ffad65', feed: 'Geopolitical risk increased' },
+  law: { code: 'LAW', label: 'Impactvolle regelgeving', type: 'Wet- en regelgeving', severity: 'high', damage: 1, color: '#ffad65', feed: 'Regulatory change detected' },
+  rating: { code: 'RAT', label: 'Cyberrating gedaald', type: 'Cyberrating', severity: 'high', damage: 1, color: '#ffad65', feed: 'Cyber rating decreased' },
+  low: { code: 'LOW', label: 'Laag risico', type: 'Informatief signaal', severity: 'low', damage: 0, color: '#79c4e0', feed: 'Low-risk signal observed' },
+};
 export const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
 export const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+export const linkKey = link => `${link.from.id}>${link.to.id}`;
 const polar = (r, a) => ({ x: 500 + Math.cos(a) * r, y: 500 + Math.sin(a) * r });
 export function createNetwork() {
   const nodes = [];
@@ -27,6 +39,11 @@ export function createNetwork() {
       if (n.index % 2) n.targets.push('c' + ((next + 1) % 3));
     }
   }
+  const countries = [['Nederland', 'EU'], ['Duitsland', 'EU'], ['Verenigde Staten', 'VS'], ['Taiwan', 'Taiwan'], ['Verenigd Koninkrijk', 'VK'], ['Singapore', 'Singapore']];
+  for (const node of nodes) {
+    const [country, jurisdiction] = countries[(node.index + node.tier) % countries.length];
+    Object.assign(node, { name: node.tier === 0 ? SERVICE_NAMES[node.index] : `Leverancier T${node.tier}-${String(node.index + 1).padStart(2, '0')}`, country, jurisdiction, rating: 58 + (node.index * 7 + node.tier * 11) % 39 });
+  }
   const map = Object.fromEntries(nodes.map(n => [n.id, n]));
   const links = nodes.flatMap(n => n.targets.map((id, index) => ({ from: n, to: map[id], hidden: index > 0 })));
   return { nodes, map, links };
@@ -38,78 +55,144 @@ export class Game {
     this.hp = [4, 4, 4]; this.score = 0; this.combo = 0; this.bestCombo = 0; this.lastHit = -1000;
     this.packets = []; this.fields = []; this.fx = []; this.events = []; this.nextSpawn = 90;
     this.lastShot = -1000; this.scanUntil = 0; this.scanReady = 0; this.scans = 0;
-    this.intercepted = 0; this.cascades = 0; this.shots = 0; this.lost = 0; this.finished = false;
-    this.bonus = 0; this.id = 0;
+    this.intercepted = 0; this.cascades = 0; this.prevented = 0; this.mistakes = 0; this.ignored = 0;
+    this.shots = 0; this.lost = 0; this.finished = false; this.bonus = 0; this.id = 0;
+    this.risks = new Map(); this.discoveredLinks = new Set(); this.intelligence = null;
+    this.feed = []; this.feedRevision = 0;
   }
   get seconds() { return this.tick / FPS; }
   get phase() { return Math.min(3, 1 + Math.floor(this.seconds / 25)); }
   get services() { return this.hp.filter(h => h > 0).length; }
+  get discovered() { return this.discoveredLinks.size; }
   emit(type, x, y, value = 0) { this.events.push({ type, x, y, value }); }
+  log(text, detail = '', severity = 'info') {
+    this.feed.unshift({ id: ++this.feedRevision, tick: this.tick, text, detail, severity });
+    this.feed = this.feed.slice(0, 24);
+  }
+  serviceTargets(nodeId) {
+    const found = new Set();
+    const visit = id => { const node = this.network.map[id]; if (node.tier === 0) found.add(node.index); else node.targets.forEach(visit); };
+    visit(nodeId); return [...found].sort().map(i => SERVICE_NAMES[i]);
+  }
+  activeServices(nodeId) { return this.serviceTargets(nodeId).filter(name => this.hp[SERVICE_NAMES.indexOf(name)] > 0); }
+  inspect(action) {
+    const aimed = Number.isFinite(action.x), point = aimed ? action : null;
+    const candidates = [...this.packets].sort((a, b) => aimed ? distance(a, point) - distance(b, point) :
+      THREATS[b.kind].damage * this.activeServices(b.to).length - THREATS[a.kind].damage * this.activeServices(a.to).length || distance(a, { x: 500, y: 500 }) - distance(b, { x: 500, y: 500 }));
+    const packet = candidates[0] && (!aimed || distance(candidates[0], point) < 90) ? candidates[0] : null;
+    const node = packet ? this.network.map[packet.from] : [...this.network.nodes].filter(n => n.tier > 0)
+      .sort((a, b) => distance(a, point || { x: 500, y: 191 }) - distance(b, point || { x: 500, y: 191 }))[0];
+    const visibleNodes = new Set([node.id, ...(packet ? [packet.to] : [])]);
+    let discovered = 0;
+    for (const link of this.network.links) if (link.hidden && visibleNodes.has(link.from.id) && !this.discoveredLinks.has(linkKey(link))) {
+      this.discoveredLinks.add(linkKey(link)); discovered++;
+      this.log('Hidden dependency discovered', `${link.from.name} → ${link.to.name}`, 'scan');
+    }
+    const threat = packet ? THREATS[packet.kind] : null;
+    this.intelligence = { tick: this.tick, supplier: node.name, tier: node.tier, country: node.country,
+      jurisdiction: node.jurisdiction, rating: node.rating, type: threat?.type || 'Leveranciersnode',
+      label: threat?.label || 'Node onderzocht', severity: threat?.severity || 'unknown',
+      damage: threat?.damage ?? null, services: this.serviceTargets(packet?.to || node.id), activeServices: this.activeServices(packet?.to || node.id), discovered,
+      origin: packet ? this.network.map[this.risks.get(packet.root).origin].name : node.name };
+    this.log('Intelligence collected', `${node.name} · ${threat?.label || 'afhankelijkheden'}`, 'scan');
+  }
   act(action) {
     if (this.finished) return false;
     if (action.type === 'scan') {
-      if (this.tick < this.scanReady) return false;
-      this.scanUntil = this.tick + 300; this.scanReady = this.tick + 1080; this.scans++;
-      this.emit('scan', 500, 500); return true;
+      if (this.tick < this.scanReady || this.energy < SCAN_COST) return false;
+      if ((action.x !== undefined || action.y !== undefined) && (!Number.isFinite(action.x) || !Number.isFinite(action.y) || action.x < 0 || action.x > 1000 || action.y < 0 || action.y > 1000)) return false;
+      this.energy -= SCAN_COST; this.scanUntil = this.tick + 300; this.scanReady = this.tick + 1080; this.scans++;
+      this.inspect(action); this.emit('scan', 500, 500); return true;
     }
-    if (action.type !== 'shot' || !Number.isFinite(action.x) || !Number.isFinite(action.y) || action.x < 0 || action.x > 1000 || action.y < 0 || action.y > 1000 || this.energy < 20 || this.tick - this.lastShot < 12) return false;
-    this.energy -= 20; this.lastShot = this.tick; this.shots++;
+    if (action.type !== 'shot' || !Number.isFinite(action.x) || !Number.isFinite(action.y) || action.x < 0 || action.x > 1000 || action.y < 0 || action.y > 1000 || this.energy < SHOT_COST || this.tick - this.lastShot < 12) return false;
+    this.energy -= SHOT_COST; this.lastShot = this.tick; this.shots++;
     const delay = Math.round(Math.hypot(action.x - 500, action.y - 500) / 1000 * FPS);
     this.fields.push({ x: action.x, y: action.y, born: this.tick, start: this.tick + delay, end: this.tick + delay + 110, radius: 0, hits: 0 });
     this.emit('shot', action.x, action.y); return true;
   }
-  spawn(fromId, toId, generation = 0, root = null) {
-    const from = this.network.map[fromId], to = this.network.map[toId];
-    this.packets.push({ id: this.id++, from: fromId, to: toId, x: from.x, y: from.y, p: 0, length: distance(from, to), generation, root: root ?? this.id, warning: generation === 0 ? 45 : 0 });
+  spawn(fromId, toId, generation = 0, root = null, kind = 'incident') {
+    const from = this.network.map[fromId], to = this.network.map[toId], id = this.id++;
+    if (root === null) {
+      root = id; this.risks.set(root, { origin: fromId, kind, born: this.tick, split: false, prevented: false });
+      this.log(THREATS[kind].feed, `Tier ${from.tier} · ${from.name}`, THREATS[kind].severity);
+      if (kind === 'rating') from.rating = Math.max(10, from.rating - 18);
+    } else kind = this.risks.get(root).kind;
+    this.packets.push({ id, from: fromId, to: toId, kind, x: from.x, y: from.y, p: 0, length: distance(from, to), generation, root, warning: generation === 0 ? 45 : 0 });
+  }
+  willBranch(nodeId) {
+    const node = this.network.map[nodeId];
+    return node.targets.length > 1 || node.targets.some(id => this.willBranch(id));
+  }
+  intercept(packet, field) {
+    field.hits++;
+    const threat = THREATS[packet.kind], risk = this.risks.get(packet.root);
+    if (threat.damage === 0) {
+      this.mistakes++; this.combo = 0; this.score = Math.max(0, this.score - 50);
+      this.fx.push({ type: 'mistake', x: packet.x, y: packet.y, born: this.tick, points: -50 });
+      this.log('Onnodige onderschepping', 'Laag risico · −50 punten', 'low');
+      this.emit('mistake', packet.x, packet.y, -50); return;
+    }
+    this.intercepted++; this.combo = this.tick - this.lastHit < 150 ? this.combo + 1 : 1;
+    this.bestCombo = Math.max(this.bestCombo, this.combo); this.lastHit = this.tick;
+    let points = 50 + Math.min(4, this.combo - 1) * 25;
+    if (this.tick - risk.born <= 180) points += 25;
+    if (this.phase >= 2 && !risk.split && !risk.prevented && this.willBranch(packet.to)) {
+      risk.prevented = true; this.prevented++; points += 100;
+      this.log('Chain reaction prevented', `${threat.label} · +100 bonus`, 'success');
+    }
+    this.score += points; this.fx.push({ type: 'hit', x: packet.x, y: packet.y, born: this.tick, points });
+    this.log('Threat intercepted', `${threat.label} · +${points}`, 'success');
+    this.emit('hit', packet.x, packet.y, points);
   }
   update() {
     if (this.finished) return;
-    this.events = [];
-    this.tick++;
-    this.energy = Math.min(100, this.energy + 13 / FPS);
+    this.events = []; this.tick++; this.energy = Math.min(100, this.energy + 13 / FPS);
     if (this.tick - this.lastHit > 150) this.combo = 0;
     if (this.tick >= this.nextSpawn && this.seconds < 72) {
-      const n = this.network.map['o' + Math.floor(this.random() * 18)];
-      this.spawn(n.id, n.targets[0]);
-      const interval = this.phase === 1 ? 145 : this.phase === 2 ? 98 : 64;
+      const tierRoll = this.random();
+      const tier = this.phase === 1 ? 3 : tierRoll < .65 ? 3 : tierRoll < .92 ? 2 : 1;
+      const prefix = tier === 3 ? 'o' : tier === 2 ? 'm' : 'i', count = tier === 3 ? 18 : tier === 2 ? 9 : 6;
+      const n = this.network.map[prefix + Math.floor(this.random() * count)];
+      const roll = this.random(), kinds = ['cve', 'incident', 'geo', 'law', 'rating'];
+      const kind = roll < .22 ? 'low' : kinds[Math.min(4, Math.floor((roll - .22) / .78 * 5))];
+      this.spawn(n.id, n.targets[0], 0, null, kind);
+      const interval = this.phase === 1 ? 145 : this.phase === 2 ? 98 : 70;
       this.nextSpawn = this.tick + interval + Math.floor(this.random() * 32);
     }
     this.fields = this.fields.filter(f => f.end > this.tick);
-    for (const f of this.fields) {
-      const age = this.tick - f.start;
-      f.radius = age < 0 ? 0 : 77 * Math.min(1, age / 12, (f.end - this.tick) / 25);
-    }
+    for (const f of this.fields) { const age = this.tick - f.start; f.radius = age < 0 ? 0 : 77 * Math.min(1, age / 12, (f.end - this.tick) / 25); }
     const current = this.packets; this.packets = [];
     for (const p of current) {
       if (p.warning > 0) { p.warning--; this.packets.push(p); continue; }
-      const from = this.network.map[p.from], to = this.network.map[p.to];
-      const speed = (this.phase === 1 ? 45 : this.phase === 2 ? 55 : 65) * (this.tick < this.scanUntil ? 0.40 : 1);
+      const from = this.network.map[p.from], to = this.network.map[p.to], threat = THREATS[p.kind];
+      const speed = (this.phase === 1 ? 45 : this.phase === 2 ? 55 : 65) * (this.tick < this.scanUntil ? .4 : 1);
       p.p += speed / FPS / p.length;
       p.x = from.x + (to.x - from.x) * Math.min(1, p.p); p.y = from.y + (to.y - from.y) * Math.min(1, p.p);
-      const shield = this.fields.find(f => f.radius > 0 && distance(f, p) < f.radius + 4);
-      if (shield) {
-        shield.hits++; this.intercepted++; this.combo = this.tick - this.lastHit < 150 ? this.combo + 1 : 1;
-        this.bestCombo = Math.max(this.bestCombo, this.combo); this.lastHit = this.tick;
-        const points = 100 + Math.min(4, this.combo - 1) * 25 + (to.tier > 0 ? 25 : 0);
-        this.score += points; this.fx.push({ type: 'hit', x: p.x, y: p.y, born: this.tick, points });
-        this.emit('hit', p.x, p.y, points); continue;
-      }
+      const field = this.fields.find(f => f.radius > 0 && distance(f, p) < f.radius + 4);
+      if (field) { this.intercept(p, field); continue; }
       if (p.p < 1) { this.packets.push(p); continue; }
       if (to.tier === 0) {
-        if (this.hp[to.index] > 0) {
-          this.hp[to.index]--; this.lost++; this.combo = 0;
-          this.fx.push({ type: 'damage', x: to.x, y: to.y, born: this.tick }); this.emit('damage', to.x, to.y);
+        if (threat.damage === 0) { this.ignored++; this.log('Low-risk signal passed', `${to.name} · geen impact`, 'low'); }
+        else if (this.hp[to.index] > 0) {
+          const damage = Math.min(this.hp[to.index], threat.damage); this.hp[to.index] -= damage; this.lost++; this.combo = 0;
+          this.score = Math.max(0, this.score - 50);
+          this.fx.push({ type: 'damage', x: to.x, y: to.y, born: this.tick }); this.emit('damage', to.x, to.y, damage * 25);
+          this.log('Critical service impacted', `${to.name} · ${this.hp[to.index] * 25}% · −50 punten`, 'critical');
         }
       } else {
-        const targets = to.targets.slice(0, this.phase >= 2 ? 2 : 1);
-        if (targets.length > 1) { this.cascades++; this.emit('cascade', to.x, to.y); this.fx.push({ type: 'cascade', x: to.x, y: to.y, born: this.tick }); }
+        const targets = to.targets.slice(0, threat.damage > 0 && this.phase >= 2 ? 2 : 1);
+        if (targets.length > 1) {
+          this.risks.get(p.root).split = true; this.cascades++; this.emit('cascade', to.x, to.y);
+          this.log('Chain reaction', `${to.name} · ${targets.length} afhankelijkheden geraakt`, 'high');
+          this.fx.push({ type: 'cascade', x: to.x, y: to.y, born: this.tick });
+        }
         for (const next of targets) this.spawn(to.id, next, p.generation + 1, p.root);
       }
     }
     this.fx = this.fx.filter(f => this.tick - f.born < 65);
     if (this.tick >= DURATION * FPS || this.services === 0) {
-      this.finished = true; this.bonus = this.hp.reduce((a, b) => a + b, 0) * 100 + this.services * 300;
-      this.score += this.bonus; this.emit('finish', 500, 500);
+      this.finished = true; this.bonus = this.services * 200; this.score += this.bonus;
+      this.log('Mission complete', `${this.services} van 3 diensten operationeel · +${this.bonus}`, 'info'); this.emit('finish', 500, 500);
     }
   }
 }
@@ -121,9 +204,7 @@ export function replay(actions, seed = SEED) {
     previous = a.tick;
   }
   while (!game.finished) {
-    while (cursor < actions.length && actions[cursor].tick === game.tick) {
-      if (!game.act(actions[cursor++])) throw new Error('Ongeldige spelactie.');
-    }
+    while (cursor < actions.length && actions[cursor].tick === game.tick) if (!game.act(actions[cursor++])) throw new Error('Ongeldige spelactie.');
     game.update();
   }
   if (cursor !== actions.length) throw new Error('Acties na einde van de ronde.');

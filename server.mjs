@@ -11,7 +11,7 @@ const dataDir = process.env.CASCADE_DATA_DIR || path.join(root, 'data');
 mkdirSync(dataDir, { recursive: true, mode: 0o700 });
 const boardPath = path.join(dataDir, 'leaderboard.json');
 let scores = [];
-if (existsSync(boardPath)) { try { const data = JSON.parse(readFileSync(boardPath, 'utf8')); scores = Array.isArray(data) ? data.filter(s => s.version === VERSION && typeof s.name === 'string' && Number.isFinite(s.score)).slice(0, 100) : []; } catch { console.warn('Leaderboard kon niet worden gelezen; nieuw geheugenklassement gestart.'); } }
+if (existsSync(boardPath)) { try { const data = JSON.parse(readFileSync(boardPath, 'utf8')); scores = Array.isArray(data) ? data.filter(s => typeof s.version === 'string' && typeof s.name === 'string' && Number.isFinite(s.score)) : []; } catch { console.warn('Leaderboard kon niet worden gelezen; nieuw geheugenklassement gestart.'); } }
 const sessions = new Map();
 const addresses = [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${port}`))];
 const json = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }); res.end(JSON.stringify(body)); };
@@ -19,13 +19,13 @@ const body = req => new Promise((resolve, reject) => {
   let text = ''; req.on('data', chunk => { text += chunk; if (text.length > 160000) { reject(new Error('Te veel gegevens.')); req.destroy(); } });
   req.on('end', () => { try { resolve(JSON.parse(text || '{}')); } catch { reject(new Error('Ongeldige invoer.')); } }); req.on('error', reject);
 });
-const topScores = () => scores.slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
+const topScores = (version = VERSION) => scores.filter(s => s.version === version).sort((a,b) => b.score-a.score || b.services-a.services || a.date.localeCompare(b.date)).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
     if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port });
-    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
+    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores(url.searchParams.get('version') === 'cascade-1' ? 'cascade-1' : VERSION) });
     if (url.pathname === '/api/session' && req.method === 'POST') {
       for (const [key, s] of sessions) if (Date.now() - s.started > 30 * 60 * 1000) sessions.delete(key);
       if (sessions.size >= 500) return json(res, 429, { error: 'Even geduld; er zijn veel rondes actief.' });
@@ -40,10 +40,11 @@ const server = http.createServer(async (req, res) => {
       let game; try { game = replay(input.actions, session.seed); } catch (e) { return json(res, 400, { error: e.message }); }
       if (Date.now() - session.started < game.tick / FPS * 1000 - 1500) return json(res, 400, { error: 'De ronde is nog niet afgelopen.' });
       const entry = { id: randomUUID(), name, score: game.score, services: game.services, date: new Date().toISOString(), version: VERSION };
-      const updated = [...scores, entry].sort((a, b) => b.score - a.score || b.services - a.services || a.date.localeCompare(b.date));
+      const previousEditions = scores.filter(s => s.version !== VERSION);
+      const updated = [...scores.filter(s => s.version === VERSION), entry].sort((a, b) => b.score - a.score || b.services - a.services || a.date.localeCompare(b.date));
       const rank = updated.findIndex(s => s.id === entry.id) + 1;
-      const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify(updated.slice(0, 100), null, 2), { mode: 0o600 }); renameSync(temp, boardPath);
-      scores = updated.slice(0, 100); sessions.delete(input.session);
+      const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify([...previousEditions, ...updated.slice(0, 100)], null, 2), { mode: 0o600 }); renameSync(temp, boardPath);
+      scores = [...previousEditions, ...updated.slice(0, 100)]; sessions.delete(input.session);
       return json(res, 201, { rank, score: entry.score, id: entry.id, scores: topScores() });
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') return json(res, 405, { error: 'Niet beschikbaar.' });

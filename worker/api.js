@@ -32,7 +32,7 @@ export async function handleApi(request, env) {
     if (url.pathname === '/api/meta' && method === 'GET') {
       return json(200, { version: VERSION, hosting: 'sites', mobileUrls: [url.origin + '/'] });
     }
-    if (url.pathname === '/api/leaderboard' && method === 'GET') return json(200, { scores: await storage(env).top(VERSION) });
+    if (url.pathname === '/api/leaderboard' && method === 'GET') return json(200, { scores: await storage(env).top(url.searchParams.get('version') === 'cascade-1' ? 'cascade-1' : VERSION) });
     if (url.pathname === '/api/session' && method === 'POST') {
       const db = storage(env), now = Date.now(), id = crypto.randomUUID();
       const created = await db.createSession({ id, seed: SEED, version: VERSION, started: now, expires: now + 30 * 60 * 1000 });

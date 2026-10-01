@@ -9,7 +9,7 @@
 <header class="header">
   <a class="brand" href="/" aria-label="RiskStudio Cascade Command start"><img src="/assets/riskstudio-logo.png" alt="RiskStudio" width="2048" height="518"></a>
   <span class="brand-divider"></span><h1>Cascade Command</h1>
-  <div class="header-actions">
+  <div class="header-actions"><button class="icon-button" id="help" aria-label="Speluitleg" title="Speluitleg">?</button>
     <button class="icon-button" id="pause" aria-label="Pauzeer spel" title="Pauze · Esc" hidden><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
     <button class="icon-button" id="sound" aria-label="Geluid aanzetten" aria-pressed="false" title="Geluid aan"><svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg></button>
     <button class="icon-button" id="fullscreen" aria-label="Volledig scherm" title="Volledig scherm"><svg viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button>
@@ -22,40 +22,66 @@
       <div class="timer"><span class="hud-label">Tijd</span><strong id="time">01:15</strong><span id="phase" class="phase">75 seconden. Eén keten.</span></div>
       <div class="services-hud"><span class="hud-label">Diensten</span><strong id="services">3 <span>/ 3</span></strong></div>
     </div>
-    <div class="arena" id="arena">
+    <div class="arena" id="arena"><div class="chain-path" aria-label="De leveranciersketen">Tier 3 <span>→</span> Tier 2 <span>→</span> Tier 1 <span>→</span> Dienst <span>→</span> Organisatie</div><div class="scan-peek" id="scan-peek" hidden></div>
       <canvas id="game" tabindex="0" role="application" aria-label="Galaxy speelveld. Klik of tik om een beschermingsveld te plaatsen. Met toetsenbord: pijltjes om te richten, Enter om te schieten, spatie voor scan, Escape voor pauze." aria-describedby="controls-help"></canvas>
       <div class="demo-label" id="demo-label" hidden><span></span>Demonstratie<button id="demo-play">Zelf spelen</button></div>
       <div class="event-toast" id="event-toast" aria-live="polite"></div>
       <div class="combo" id="combo" hidden><strong id="combo-value">2×</strong><span>CHAIN COMBO</span></div>
       <section class="briefing overlay" id="intro" aria-labelledby="intro-title">
         <div class="intro-rule"></div><h2 id="intro-title">Bescherm je<br><em>galaxy.</em></h2>
-        <p>Eén incident. Een hele keten geraakt.<br>Hoe lang houd jij je diensten overeind?</p>
-        <ol class="instructions"><li><span>01</span>Klik of tik vóór een incident.</li><li><span>02</span>Onderschep het vóór het zich splitst.</li><li><span>03</span>Bewaar energie. Gebruik je scan.</li></ol>
+        <p>Zie de keten. Herken het risico.<br>Houd je kritieke diensten operationeel.</p>
+        <ol class="instructions"><li><span>01</span>Stop rode en oranje dreigingen.</li><li><span>02</span>Laat blauwe LOW-signalen passeren.</li><li><span>03</span>Scan voor intelligence. Bescherm je diensten.</li></ol>
         <button class="primary" id="start">Start missie <svg viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
         <button class="text-button" id="watch-demo">Eerst even kijken <span>↗</span></button>
-        <p class="micro">75 seconden · drie diensten</p>
+        <button class="text-button rules-link" id="intro-help">Speluitleg &amp; puntentelling</button><p class="micro">75 seconden · fictieve leveranciers en risico’s</p>
         <p class="form-message" id="start-error" role="alert"></p>
       </section>
       <section class="center-overlay overlay" id="pause-panel" hidden aria-labelledby="pause-title"><span class="line-icon">Ⅱ</span><h2 id="pause-title">Even op adem.</h2><p>Je galaxy wacht op je.</p><button class="primary" id="resume">Verder spelen</button><button class="text-button" id="quit">Terug naar start</button></section>
       <section class="center-overlay result overlay" id="result" hidden aria-labelledby="result-title">
         <span class="result-orbit" aria-hidden="true">✦</span><h2 id="result-title">Missie voltooid.</h2><div class="result-score" id="final-score">0000</div><p id="result-description"></p>
-        <div class="result-stats"><div><strong id="final-hits">0</strong><span>onderschept</span></div><div><strong id="final-combo">0×</strong><span>beste combo</span></div><div><strong id="final-bonus">0</strong><span>continuïteitsbonus</span></div></div>
+        <div class="result-stats">
+          <div><strong id="final-hits">0</strong><span>dreigingen onderschept</span></div>
+          <div><strong id="final-prevented">0</strong><span>kettingreacties voorkomen</span></div>
+          <div><strong id="final-discovered">0</strong><span>afhankelijkheden ontdekt</span></div>
+          <div><strong id="final-services">0 / 3</strong><span>diensten operationeel</span></div>
+          <div><strong id="final-combo">0×</strong><span>beste combo</span></div>
+          <div><strong id="final-mistakes">0</strong><span>onnodig onderschept</span></div>
+        </div>
+        <p class="result-bonus">Dienstenbonus <strong id="final-bonus">+0</strong></p>
+        <p class="riskstudio-message">Een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.</p>
         <form id="score-form"><label for="player-name">Zet je naam op het leaderboard</label><div class="name-row"><input id="player-name" name="name" maxlength="18" placeholder="Jouw naam" autocomplete="off" required pattern="[\p{L}\p{N} ._\-]{1,18}" aria-describedby="save-message"><button class="primary" id="save-score" type="submit">Bewaar</button></div></form>
         <p id="save-message" class="form-message" aria-live="polite"></p><button class="primary retry" id="retry">Nog een poging <svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2 6M4 4v7h7"/></svg></button><button class="text-button" id="result-home">Terug naar start</button>
       </section>
     </div>
-    <div class="control-rail"><div class="energy-group"><div class="energy-caption"><span class="hud-label">Energie</span><span id="energy-number">100%</span></div><div class="energy-track" role="progressbar" aria-label="Beschikbare energie" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="energy-meter"><div id="energy-fill"></div></div><span class="energy-note" id="energy-note">20 per veld · laadt vanzelf op</span></div><button class="scan-button" id="scan" disabled><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/><circle cx="12" cy="12" r="8"/></svg><span id="scan-text">Scan</span><kbd>Spatie</kbd></button></div>
+    <div class="control-rail"><div class="energy-group"><div class="energy-caption"><span class="hud-label">Energie</span><span id="energy-number">100%</span></div><div class="energy-track" role="progressbar" aria-label="Beschikbare energie" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="energy-meter"><div id="energy-fill"></div></div><span class="energy-note" id="energy-note">Veld 20 · scan 25 · energie herstelt</span></div><button class="scan-button" id="scan" disabled><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/><circle cx="12" cy="12" r="8"/></svg><span id="scan-text">Scan · 25</span><kbd>Spatie</kbd></button></div>
   </section>
-  <aside class="sidebar" aria-label="Scores en missie-informatie">
-    <div class="sidebar-title"><h2>Leaderboard</h2><p>Op deze game-server</p></div>
-    <div class="leaderboard" id="leaderboard"><div class="empty-board"><svg viewBox="0 0 100 85" aria-hidden="true"><path d="M15 80V51h23v29m1 0V35h24v45m1 0V60h23v20M50 3l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z"/></svg><strong>De eerste plek is nog vrij.</strong><p>Speel een ronde en zet <br>jouw naam bovenaan.</p></div></div>
-    <div class="service-status"><span class="hud-label">Jouw kritieke diensten</span><div id="service-list"></div></div>
-    <div class="howto" id="controls-help"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v7m0-11v1"/></svg><p>Klik of tik om te onderscheppen.<br>Stop incidenten vóór ze zich splitsen.</p></div>
+  <aside class="sidebar" aria-label="Risico-intelligence en scores">
+    <div class="service-status"><h2>Kritieke diensten</h2><div id="service-list"></div></div>
+    <div class="side-tabs" role="tablist" aria-label="Risico’s en scores"><button role="tab" id="feed-tab" aria-controls="feed-panel" aria-selected="false">Live Risk Feed</button><button role="tab" id="board-tab" aria-controls="board-panel" aria-selected="true">Leaderboard</button></div>
+    <section id="feed-panel" role="tabpanel" aria-labelledby="feed-tab" hidden><div class="feed-heading"><h2>Live Risk Feed</h2><span id="feed-mode">Demo</span></div><ol class="risk-feed" id="risk-feed"></ol></section>
+    <section id="board-panel" role="tabpanel" aria-labelledby="board-tab"><div class="sidebar-title"><h2>Leaderboard</h2><label class="sr-only" for="score-edition">Spelversie</label><select id="score-edition"><option value="cascade-2">Nieuwe spelregels</option><option value="cascade-1">Eerdere spelregels</option></select></div><div class="leaderboard" id="leaderboard"><div class="empty-board"><strong>De eerste plek is nog vrij.</strong><p>Speel een ronde met de nieuwe spelregels.</p></div></div></section>
+    <section class="intelligence" aria-labelledby="intel-title"><h2 id="intel-title">Scan-intelligence</h2><p id="intel-empty">Een scan kost 25 energie. Ontdek de ernst, bedrijfsimpact en verborgen afhankelijkheden.</p><div id="intel-details" hidden></div></section>
+    <div class="risk-legend" aria-label="Legenda"><span class="critical">◆ Kritiek · −50% health</span><span class="high">▲ Hoog · −25% health</span><span class="low">○ LOW · laten passeren</span></div>
+    <p class="howto" id="controls-help">Klik of tik vóór een dreiging. Een onderschepping kost 20 energie. Scan vertraagt 5 seconden en herlaadt in 18 seconden.</p>
     <button class="mobile-link text-button" id="mobile-link">Speel op je telefoon <span>↗</span></button>
-    <p class="footnote">Een spel over afhankelijkheden.<br>Een wereld aan inzicht.</p>
+    <p class="footnote">Zie de keten · herken het risico · bescherm je diensten.</p>
   </aside>
 </main>
 <dialog id="mobile-dialog" aria-labelledby="mobile-title"><button class="dialog-close icon-button" id="close-mobile" aria-label="Sluiten">×</button><h2 id="mobile-title">Neem je galaxy mee.</h2><p id="mobile-instructions">Scan de QR-code met de camera van je telefoon.</p><img id="mobile-qr" class="mobile-qr" width="264" height="264" alt="QR-code om Cascade Command op je telefoon te openen" hidden><p id="mobile-qr-hint" class="qr-hint" aria-live="polite"></p><a id="mobile-url"></a><button class="primary" id="copy-url">Kopieer adres</button><p class="micro" id="mobile-availability"></p></dialog>
+<dialog id="rules-dialog" aria-labelledby="rules-title"><button class="dialog-close icon-button" id="close-rules" aria-label="Sluit speluitleg">×</button>
+<h2 id="rules-title">Speluitleg</h2><p class="rules-lead">Zie de keten → herken het risico → onderschep de dreiging → bescherm je kritieke diensten.</p>
+<h3>De Galaxy is je leveranciersketen</h3><p>De buitenste ringen zijn Tier 3 en Tier 2. Tier 1 bevat je directe leveranciers. In het midden staat je organisatie, met Klantportaal, Betalingen en Operatie eromheen. Een risico bij een leverancier van een leverancier kan uiteindelijk je eigen bedrijfsvoering raken.</p>
+<div class="rules-chain">Tier 3 → Tier 2 → Tier 1 → Kritieke dienst → Organisatie</div>
+<h3>Herken de dreiging</h3><p>CVE (kwetsbaarheid), INC (incident), GEO (geopolitiek), LAW (regelgeving) en RAT (cyberrating) bewegen via de bestaande verbindingen naar je diensten. Vanaf de tweede golf kunnen ze bij gedeelde leveranciers opsplitsen. Stop ze vroeg om een kettingreactie te voorkomen.</p>
+<ul><li><strong>Rode ruit · Critical CVE:</strong> 50 procentpunten schade bij inslag.</li><li><strong>Oranje driehoek · hoog risico:</strong> 25 procentpunten schade.</li><li><strong>Blauwe cirkel · LOW:</strong> geen bedrijfsimpact in dit scenario. Laat deze signalen passeren.</li></ul>
+<h3>Onderscheppen of eerst onderzoeken?</h3><p>Klik of tik vóór een dreiging om een kort beschermingsveld te plaatsen. De onderschepper reist vanaf het centrum, dus richt een stukje vooruit. Een veld kost 20 energie en kan meerdere signalen raken, ook lage risico’s. Je krijgt 13 energie per seconde terug.</p>
+<p><strong>Scan kost 25 energie.</strong> De scanknop onderzoekt de gevaarlijkste zichtbare dreiging, of een leveranciersnode als er nog geen dreiging is. Op de Mac kun je richten en op spatie drukken om een specifieke dreiging of node te scannen. De scan toont tier, type, severity, mogelijke bedrijfsimpact, land, jurisdictie, cyberrating en nieuw ontdekte afhankelijkheden. De intelligence is een momentopname.</p>
+<p>Scan vertraagt signalen 5 seconden en kan na 18 seconden opnieuw. Nieuw ontdekte verbindingen blijven zichtbaar. Alle leveranciers en risico’s zijn fictief; dit is een spelmetafoor, geen live RiskStudio-dataset.</p>
+<h3>Zo verdien je punten</h3><dl class="points-rules"><dt>Dreiging onderschept</dt><dd>+50</dd><dt>Vóór de eerste mogelijke splitsing gestopt</dt><dd>+100</dd><dt>Dienst na afloop nog operationeel</dt><dd>+200</dd><dt>Binnen 3 seconden onderschept</dt><dd>+25</dd><dt>Combo binnen 2,5 seconden</dt><dd>+25 tot +100</dd><dt>Laag risico onnodig onderschept</dt><dd>−50</dd><dt>Dreiging raakt een operationele dienst</dt><dd>−50</dd></dl>
+<p>De kettingreactiebonus geldt vanaf golf 2, één keer per oorspronkelijke dreiging en alleen vóórdat deze zich heeft gesplitst. Een score wordt nooit negatief. De ronde duurt 75 seconden, of eindigt eerder als alle diensten uitvallen.</p>
+<h3>Bediening</h3><p>Muis of tik om te schieten. Pijltjes om te richten, Enter om te schieten, spatie om te scannen en Escape voor pauze. Met Shift richt je preciezer. Speluitleg openen pauzeert je ronde.</p>
+<p class="riskstudio-message">Een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.</p>
+<button class="primary" id="rules-done">Begrepen</button></dialog>
 <div class="sr-only" id="accessible-status" aria-live="polite"></div>
 <script type="module" src="/src/main.js"></script>
 </body></html>

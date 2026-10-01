@@ -1,49 +1,191 @@
 import { renderMobileShare } from './mobile-share.js';
-import { Game, FPS, DURATION, SEED, clamp } from './engine.js';
+import { Game, FPS, DURATION, SEED, VERSION, THREATS, SCAN_COST, SERVICE_NAMES, clamp } from './engine.js';
 import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
 let state='intro',game=new Game(),session=null,actions=[],lastFrame=0,accumulator=0,toastUntil=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const serviceNames=['Klantportaal','Betalingen','Operatie'];
-$('service-list').innerHTML=serviceNames.map((name,i)=>`<div class="service-row" id="service-${i}"><span><i class="service-dot"></i>${name}</span><span class="hp" id="hp-${i}" aria-label="4 van 4"><i></i><i></i><i></i><i></i></span></div>`).join('');
+let lastFeed=-1,lastIntel=null,boardRequest=0;
+const formatTime=tick=>`${String(Math.floor(tick/FPS/60)).padStart(2,'0')}:${String(Math.floor(tick/FPS)%60).padStart(2,'0')}`;
+const severityName={critical:'Kritiek',high:'Hoog',low:'Laag',unknown:'Geen signaal in beeld'};
+$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" id="service-${i}"><span>${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
 const emptyBoard=$('leaderboard').innerHTML;
-async function request(url, options={}) { const r=await fetch(url,{...options,headers:{'Content-Type':'application/json',...options.headers}}); const data=await r.json();if(!r.ok)throw new Error(data.error||'Verbinding met de gameserver mislukt.');return data; }
-function showPanel(id){ for(const name of ['intro','pause-panel','result'])$(name).hidden=name!==id; }
-function setState(value){state=value;canvas.dataset.state=state;$('pause').hidden=state!=='playing';$('demo-label').hidden=state!=='demo';$('scan').disabled=state!=='playing';if(state==='intro')showPanel('intro');else if(state==='paused')showPanel('pause-panel');else if(state==='result')showPanel('result');else showPanel(null);}
-function toast(text,danger=false){$('event-toast').textContent=text;$('event-toast').className='event-toast show'+(danger?' danger':'');toastUntil=performance.now()+1900;}
-function drawBoard(scores){const board=$('leaderboard');if(!scores.length){board.innerHTML=emptyBoard;return;}board.replaceChildren();for(const [index,s] of scores.entries()){const row=document.createElement('div');row.className='board-row'+(s.id===boardId?' mine':'');for(const [className,text] of [['rank',String(index+1).padStart(2,'0')],['name',s.name],['points',s.score.toLocaleString('nl-NL')]]){const span=document.createElement('span');span.className=className;span.textContent=text;row.append(span);}board.append(row);}}
-async function refreshBoard(){try{const data=await request('/api/leaderboard');drawBoard(data.scores);}catch{$('leaderboard').innerHTML='<div class="empty-board"><strong>Leaderboard even niet bereikbaar.</strong><p>Probeer het zo opnieuw.</p></div>';}}
-async function start(){if(busy)return;busy=true;$('start').disabled=true;$('retry').disabled=true;$('start-error').textContent='';try{
-  await renderer.ready;if(renderer.assetError)throw new Error('De spelbeelden zijn niet geladen. Vernieuw de pagina.');
-  session=await request('/api/session',{method:'POST',body:'{}'});game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;
-  $('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
-  setState('playing');canvas.focus({preventScroll:true});toast('Bescherm alle drie je diensten.');updateHud();
-}catch(e){setState('intro');$('start-error').textContent=e.message;}finally{busy=false;$('start').disabled=false;$('retry').disabled=false;}}
-function goHome(){session=null;actions=[];game=new Game();accumulator=0;setState('intro');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
-function action(type,point={}){if(state!=='playing')return false;const a={tick:game.tick,type,...point};if(game.act(a)){actions.push(a);audio.play(type);if(type==='scan')toast('Scan actief · routes zichtbaar · incidenten vertraagd');return true;}if(type==='shot')toast(game.energy<20?'Energie laadt op…':'Even richten, dan opnieuw.');return false;}
-function pause(){if(state!=='playing')return;setState('paused');$('resume').focus({preventScroll:true});}
+async function request(url,options={}){
+  const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...options.headers}});
+  const data=await response.json();if(!response.ok)throw new Error(data.error||'Verbinding met de gameserver mislukt.');return data;
+}
+function selectSide(name){
+  for(const panel of ['feed','board']){$(panel+'-panel').hidden=panel!==name;$(panel+'-tab').setAttribute('aria-selected',String(panel===name));$(panel+'-tab').tabIndex=panel===name?0:-1;}
+}
+for(const name of ['feed','board']){
+  $(name+'-tab').addEventListener('click',()=>selectSide(name));
+  $(name+'-tab').addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const next=event.key==='Home'?'feed':event.key==='End'?'board':name==='feed'?'board':'feed';selectSide(next);$(next+'-tab').focus();}});
+}
+function showPanel(id){for(const name of ['intro','pause-panel','result'])$(name).hidden=name!==id;}
+function setState(value){
+  state=value;canvas.dataset.state=state;document.body.dataset.state=state;
+  $('pause').hidden=state!=='playing';$('demo-label').hidden=state!=='demo';$('scan').disabled=state!=='playing';
+  $('feed-mode').textContent=state==='intro'||state==='demo'?'Demo':state==='paused'?'Pauze':state==='result'?'Afgelopen':'Live';
+  if(state==='intro')showPanel('intro');else if(state==='paused')showPanel('pause-panel');else if(state==='result')showPanel('result');else showPanel(null);
+}
+function toast(text,danger=false){$('event-toast').textContent=text;$('event-toast').className='event-toast show'+(danger?' danger':'');toastUntil=performance.now()+2100;}
+function drawBoard(scores){
+  const board=$('leaderboard');if(!scores.length){board.innerHTML=$('score-edition').value==='cascade-1'?'<div class="empty-board"><strong>Geen eerdere scores.</strong><p>Dit klassement hoort bij de vorige spelregels.</p></div>':emptyBoard;return;}board.replaceChildren();
+  for(const [index,score] of scores.entries()){
+    const row=document.createElement('div');row.className='board-row'+(score.id===boardId?' mine':'');
+    for(const [className,text] of [['rank',String(index+1).padStart(2,'0')],['name',score.name],['points',score.score.toLocaleString('nl-NL')]]){const span=document.createElement('span');span.className=className;span.textContent=text;row.append(span);}board.append(row);
+  }
+}
+async function refreshBoard(){
+  const revision=++boardRequest,edition=$('score-edition').value;
+  try{const data=await request('/api/leaderboard?version='+encodeURIComponent(edition));if(revision===boardRequest)drawBoard(data.scores);}
+  catch{if(revision===boardRequest)$('leaderboard').innerHTML='<div class="empty-board"><strong>Leaderboard even niet bereikbaar.</strong><p>Probeer het zo opnieuw.</p></div>';}
+}
+$('score-edition').addEventListener('change',refreshBoard);
+function drawIntelligence(){
+  const info=game.intelligence;
+  if(info===lastIntel)return;lastIntel=info;
+  $('intel-details').replaceChildren();$('intel-details').hidden=!info;$('intel-empty').hidden=!!info;
+  if(!info)return;
+  const heading=document.createElement('strong');heading.className='intel-supplier';heading.textContent=info.supplier;
+  const badge=document.createElement('p');badge.className='intel-threat '+info.severity;badge.textContent=`${info.label} · ${severityName[info.severity]}`;
+  const table=document.createElement('dl');
+  const entries=[['Tier',String(info.tier)],['Type',info.type],['Land / jurisdictie',`${info.country} / ${info.jurisdiction}`],['Cyberrating',`${info.rating} / 100`],['Business impact',info.damage===0?'Geen in dit scenario':info.activeServices.length===0?'Deze diensten zijn al uitgevallen':`${info.activeServices.join(', ')}${info.damage===null?'':` · −${info.damage*25} procentpunten bij inslag`}`],['Verborgen routes',`${info.discovered} nieuw · ${game.discovered} totaal`]];
+  for(const [label,value] of entries){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;table.append(dt,dd);}
+  const note=document.createElement('p');note.className='intel-time';note.textContent=`Momentopname ${formatTime(info.tick)} · fictief scenario`;
+  $('intel-details').append(heading,badge,table,note);
+  $('scan-peek').textContent=`${info.label} · ${severityName[info.severity]} · Tier ${info.tier}. ${info.damage===0?'Laten passeren.':info.damage===null?'Node onderzocht.':info.activeServices.length===0?'Geen extra impact op operationele diensten.':`${info.activeServices.join(', ')} in gevaar.`} ${info.discovered} verborgen route(s) ontdekt.`;
+}
+function updateIntelFeed(){
+  if(game.feedRevision!==lastFeed){
+    lastFeed=game.feedRevision;$('risk-feed').replaceChildren();
+    if(!game.feed.length){const item=document.createElement('li');item.className='feed-empty';item.textContent='Wachten op signalen uit de keten…';$('risk-feed').append(item);}
+    for(const event of game.feed.slice(0,5)){
+      const item=document.createElement('li');item.className='feed-event '+event.severity;
+      const time=document.createElement('time');time.textContent=formatTime(event.tick);
+      const content=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('span');title.textContent=event.text;detail.textContent=event.detail;content.append(title,detail);item.append(time,content);$('risk-feed').append(item);
+    }
+  }
+  drawIntelligence();$('scan-peek').hidden=state!=='playing'||!game.intelligence||game.tick>=game.scanUntil+180;
+}
+async function start(){
+  if(busy)return;busy=true;$('start').disabled=true;$('retry').disabled=true;$('start-error').textContent='';
+  try{
+    await renderer.ready;if(renderer.assetError)throw new Error('De spelbeelden zijn niet geladen. Vernieuw de pagina.');
+    session=await request('/api/session',{method:'POST',body:'{}'});
+    if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina om te spelen.');
+    game=new Game(session.seed);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=null;
+    $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
+    $('score-edition').value=VERSION;setState('playing');selectSide('feed');canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat blauwe LOW-signalen passeren.');updateHud();
+  }catch(error){setState('intro');$('start-error').textContent=error.message;}
+  finally{busy=false;$('start').disabled=false;$('retry').disabled=false;}
+}
+function goHome(){session=null;actions=[];game=new Game();lastFeed=-1;lastIntel=null;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');selectSide('board');$('combo').hidden=true;updateHud();$('start').focus({preventScroll:true});refreshBoard();}
+function action(type,point={}){
+  if(state!=='playing')return false;
+  const a={tick:game.tick,type,...point};
+  if(type==='scan'&&a.x!==undefined){a.x=clamp(a.x,0,1000);a.y=clamp(a.y,0,1000);}
+  if(game.act(a)){
+    actions.push(a);audio.play(type);
+    if(type==='scan'){selectSide('feed');toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
+    return true;
+  }
+  if(type==='shot')toast(game.energy<20?'Energie laadt op…':'Even richten, dan opnieuw.');
+  if(type==='scan')toast(game.energy<SCAN_COST?'Scan vraagt 25 energie.':'Scan wordt opgeladen.');
+  return false;
+}
+function pause(){if(state!=='playing')return;setState('paused');updateHud();$('resume').focus({preventScroll:true});}
 function resume(){if(state!=='paused')return;accumulator=0;setState('playing');canvas.focus({preventScroll:true});}
-function finish(){setState('result');renderer.pointer=null;$('combo').hidden=true;$('result-title').textContent=game.services===3?'Keten overeind.':game.services===0?'De keten brak.':'Missie voltooid.';$('final-score').textContent=String(game.score).padStart(4,'0');$('result-description').textContent=game.services===3?'Alle drie je diensten zijn nog beschikbaar.':`${game.services} van de 3 diensten behouden. Elke afhankelijkheid telt.`;$('final-hits').textContent=game.intercepted;$('final-combo').textContent=game.bestCombo+'×';$('final-bonus').textContent='+'+game.bonus;$('accessible-status').textContent=`Missie afgelopen. ${game.score} punten. ${game.services} diensten behouden.`;$('player-name').focus({preventScroll:true});audio.play('finish');refreshBoard();}
-function updateHud(){const intro=state==='intro';const t=Math.max(0,DURATION-Math.floor(game.seconds));$('score').textContent=String(intro?0:game.score).padStart(4,'0');$('time').textContent=intro?'01:15':`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;$('services').innerHTML=`${intro?3:game.services} <span>/ 3</span>`;document.querySelector('.timer').classList.toggle('urgent',!intro&&t<=15);$('phase').textContent=intro?'75 seconden. Eén keten.':state==='demo'?'Demonstratie':game.phase===1?'01 · Eerste signalen':game.phase===2?'02 · Kettingreacties':'03 · Onder druk';const energy=intro?100:Math.floor(game.energy);$('energy-fill').style.width=energy+'%';$('energy-number').textContent=energy+'%';$('energy-meter').setAttribute('aria-valuenow',energy);$('energy-meter').classList.toggle('low',energy<20);const cooldown=Math.ceil((game.scanReady-game.tick)/FPS);$('scan').disabled=state!=='playing'||cooldown>0;$('scan-text').textContent=state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':'Scan';$('scan').classList.toggle('active',state==='playing'&&game.tick<game.scanUntil);$('combo').hidden=!(state==='playing'&&game.combo>=2);$('combo-value').textContent=game.combo+'×';
-  for(let i=0;i<3;i++){const hp=intro?4:game.hp[i];$('service-'+i).classList.toggle('down',hp===0);$('hp-'+i).setAttribute('aria-label',`${hp} van 4`);Array.from($('hp-'+i).children).forEach((dot,j)=>dot.classList.toggle('empty',j>=hp));}
+function openRules(){if(state==='playing')pause();$('rules-dialog').showModal();}
+$('help').addEventListener('click',openRules);$('intro-help').addEventListener('click',openRules);
+$('close-rules').addEventListener('click',()=>$('rules-dialog').close());$('rules-done').addEventListener('click',()=>$('rules-dialog').close());
+$('rules-dialog').addEventListener('click',event=>{if(event.target===$('rules-dialog'))$('rules-dialog').close();});
+function finish(){
+  setState('result');renderer.pointer=null;$('combo').hidden=true;
+  $('result-title').textContent=game.services===3?'Keten overeind.':game.services===0?'De keten brak.':'Missie voltooid.';
+  $('final-score').textContent=game.score.toLocaleString('nl-NL');
+  $('result-description').textContent=game.services===3?'Alle drie je diensten zijn nog operationeel.':`${game.services} van de 3 diensten behouden. Elke afhankelijkheid telt.`;
+  for(const [id,value] of [['final-hits',game.intercepted],['final-prevented',game.prevented],['final-discovered',game.discovered],['final-services',`${game.services} / 3`],['final-combo',game.bestCombo+'×'],['final-mistakes',game.mistakes],['final-bonus','+'+game.bonus]])$(id).textContent=value;
+  $('accessible-status').textContent=`Missie afgelopen. ${game.score} punten. ${game.services} diensten. ${game.prevented} kettingreacties voorkomen.`;
+  $('player-name').focus({preventScroll:true});audio.play('finish');updateHud();refreshBoard();
+}
+function updateHud(){
+  const intro=state==='intro',t=Math.max(0,DURATION-Math.floor(game.seconds));
+  $('score').textContent=String(intro?0:game.score).padStart(4,'0');$('time').textContent=intro?'01:15':`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+  $('services').innerHTML=`${intro?3:game.services} <span>/ 3</span>`;document.querySelector('.timer').classList.toggle('urgent',!intro&&t<=15);
+  $('phase').textContent=intro?'75 seconden. Eén keten.':state==='demo'?'Demonstratie':game.phase===1?'01 · Eerste signalen':game.phase===2?'02 · Kettingreacties':'03 · Onder druk';
+  const energy=intro?100:Math.floor(game.energy);$('energy-fill').style.width=energy+'%';$('energy-number').textContent=energy+'%';$('energy-meter').setAttribute('aria-valuenow',energy);$('energy-meter').classList.toggle('low',energy<20);
+  const cooldown=Math.max(0,Math.ceil((game.scanReady-game.tick)/FPS));
+  $('scan').disabled=state!=='playing'||cooldown>0||game.energy<SCAN_COST;
+  $('scan-text').textContent=state==='playing'&&game.tick<game.scanUntil?'Actief':state==='playing'&&cooldown>0?cooldown+'s':'Scan · 25';
+  $('scan').title=cooldown>0?`Scan over ${cooldown} seconden beschikbaar`:'Scan kost 25 energie; onderzoekt de gevaarlijkste dreiging';
+  $('scan').classList.toggle('active',state==='playing'&&game.tick<game.scanUntil);
+  $('combo').hidden=!(state==='playing'&&game.combo>=2);$('combo-value').textContent=game.combo+'×';
+  for(let i=0;i<3;i++){
+    const health=(intro?4:game.hp[i])*25;$('service-'+i).classList.toggle('down',health===0);
+    $('hp-'+i).setAttribute('aria-valuenow',health);$('hp-'+i).firstElementChild.style.width=health+'%';$('health-'+i).textContent=health+'%';
+  }
+  updateIntelFeed();
   if(state==='playing'&&game.seconds-lastAnnounced>=15){lastAnnounced=game.seconds;$('accessible-status').textContent=`${t} seconden. ${game.score} punten. ${game.services} diensten. ${energy} procent energie.`;}
 }
-function autoPlay(){if(game.tick%21===0&&game.energy>=21){const active=game.packets.filter(p=>p.warning===0);if(active.length){let target=active[0];let best=-1;for(const p of active){const density=active.filter(q=>Math.hypot(q.x-p.x,q.y-p.y)<110).length;const urgency=(500-Math.hypot(p.x-500,p.y-500))/220;const quality=density+urgency;if(quality>best){best=quality;target=p;}}const to=game.network.map[target.to];const len=Math.max(1,Math.hypot(to.x-target.x,to.y-target.y));game.act({type:'shot',x:target.x+(to.x-target.x)/len*23,y:target.y+(to.y-target.y)/len*23});}}if(game.tick>750&&game.tick%1200===0)game.act({type:'scan'});}
-function frame(now){const dt=Math.min(.25,(now-lastFrame)/1000||0);lastFrame=now;if(['playing','intro','demo'].includes(state)){accumulator+=dt;let steps=0;while(accumulator>=1/FPS&&steps<15){if(state!=='playing')autoPlay();game.update();accumulator-=1/FPS;steps++;if(state==='playing'){
-      for(const event of game.events){if(event.type==='hit')audio.play('hit');if(event.type==='damage'){audio.play('damage');toast('Dienst geraakt · bescherm de binnenste ring',true);}if(event.type==='cascade')audio.play('cascade');}
-      if(game.phase!==previousPhase){previousPhase=game.phase;toast(game.phase===2?'Kettingreacties · incidenten splitsen zich':'Laatste golf · houd de keten overeind!');}
-      if(game.finished){finish();break;}
-    }else if(game.finished){game=new Game(SEED);}}
-  }if(now>toastUntil)$('event-toast').classList.remove('show');renderer.render(game,state);if(game.tick%4===0||state==='paused'||state==='result')updateHud();requestAnimationFrame(frame);}
-canvas.addEventListener('pointerdown',e=>{if(state!=='playing')return;e.preventDefault();const point=renderer.point(e.clientX,e.clientY);if(point.x<0||point.x>1000||point.y<0||point.y>1000)return;renderer.keyboard=false;renderer.pointer=point;canvas.focus({preventScroll:true});action('shot',{x:Math.round(point.x),y:Math.round(point.y)});if(e.pointerType==='touch')renderer.pointer=null;});
-canvas.addEventListener('pointermove',e=>{if(e.pointerType!=='touch'&&state==='playing'){renderer.keyboard=false;renderer.pointer=renderer.point(e.clientX,e.clientY);}});canvas.addEventListener('pointerleave',()=>{if(!renderer.keyboard)renderer.pointer=null;});
-document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea')||$('mobile-dialog').open)return;if(e.key==='Escape'){if(state==='playing')pause();else if(state==='paused')resume();return;}if(state!=='playing')return;if(e.code==='Space'){e.preventDefault();if(!e.repeat)action('scan');return;}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(e.key)){e.preventDefault();renderer.keyboard=true;renderer.pointer??={x:500,y:250};const step=e.shiftKey?12:30;if(e.key==='ArrowUp')renderer.pointer.y-=step;if(e.key==='ArrowDown')renderer.pointer.y+=step;if(e.key==='ArrowLeft')renderer.pointer.x-=step;if(e.key==='ArrowRight')renderer.pointer.x+=step;renderer.pointer.x=clamp(renderer.pointer.x,30,970);renderer.pointer.y=clamp(renderer.pointer.y,30,970);if(e.key==='Enter'&&!e.repeat)action('shot',{...renderer.pointer});}});
+function autoPlay(){
+  if(game.tick%21===0&&game.energy>=21){
+    const active=game.packets.filter(packet=>packet.warning===0&&THREATS[packet.kind].damage>0);
+    if(active.length){
+      const target=active.sort((a,b)=>Math.hypot(a.x-500,a.y-500)-Math.hypot(b.x-500,b.y-500))[0],to=game.network.map[target.to],length=Math.max(1,Math.hypot(to.x-target.x,to.y-target.y));
+      game.act({type:'shot',x:target.x+(to.x-target.x)/length*23,y:target.y+(to.y-target.y)/length*23});
+    }
+  }
+  if(game.tick>300&&game.tick%1100===400)game.act({type:'scan'});
+}
+function frame(now){
+  const dt=Math.min(.25,(now-lastFrame)/1000||0);lastFrame=now;
+  if(['playing','intro','demo'].includes(state)){
+    accumulator+=dt;let steps=0;
+    while(accumulator>=1/FPS&&steps<15){
+      if(state!=='playing')autoPlay();game.update();accumulator-=1/FPS;steps++;
+      if(state==='playing'){
+        for(const event of game.events){
+          if(event.type==='hit')audio.play('hit');
+          if(event.type==='damage'){audio.play('damage');toast(`Dienst geraakt · −${event.value} procentpunten weerbaarheid`,true);}
+          if(event.type==='cascade')audio.play('cascade');
+          if(event.type==='mistake')toast('Laag risico geraakt · −50 punten',true);
+        }
+        if(game.phase!==previousPhase){previousPhase=game.phase;toast(game.phase===2?'Gedeelde leveranciers · dreigingen kunnen splitsen':'Laatste golf · houd je diensten operationeel!');}
+        if(game.finished){finish();break;}
+      }else if(game.finished){game=new Game(SEED);lastFeed=-1;lastIntel=null;$('intel-details').hidden=true;$('intel-empty').hidden=false;}
+    }
+  }
+  if(now>toastUntil)$('event-toast').classList.remove('show');renderer.render(game,state);
+  if(game.tick%4===0||state==='paused'||state==='result')updateHud();requestAnimationFrame(frame);
+}
+canvas.addEventListener('pointerdown',event=>{
+  if(state!=='playing')return;event.preventDefault();const point=renderer.point(event.clientX,event.clientY);
+  if(point.x<0||point.x>1000||point.y<0||point.y>1000)return;
+  renderer.keyboard=false;renderer.pointer=point;canvas.focus({preventScroll:true});action('shot',{x:Math.round(point.x),y:Math.round(point.y)});if(event.pointerType==='touch')renderer.pointer=null;
+});
+canvas.addEventListener('pointermove',event=>{if(event.pointerType!=='touch'&&state==='playing'){renderer.keyboard=false;renderer.pointer=renderer.point(event.clientX,event.clientY);}});
+canvas.addEventListener('pointerleave',()=>{if(!renderer.keyboard)renderer.pointer=null;});
+document.addEventListener('keydown',event=>{
+  if(event.target.matches('input,textarea,select')||$('mobile-dialog').open||$('rules-dialog').open)return;
+  if(event.key==='Escape'){if(state==='playing')pause();else if(state==='paused')resume();return;}
+  if(state!=='playing')return;
+  if(event.code==='Space'){event.preventDefault();if(!event.repeat)action('scan',renderer.pointer?{...renderer.pointer}:{});return;}
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter'].includes(event.key)){
+    if(event.target.closest('.side-tabs'))return;
+    event.preventDefault();renderer.keyboard=true;renderer.pointer??={x:500,y:250};const step=event.shiftKey?12:30;
+    if(event.key==='ArrowUp')renderer.pointer.y-=step;if(event.key==='ArrowDown')renderer.pointer.y+=step;
+    if(event.key==='ArrowLeft')renderer.pointer.x-=step;if(event.key==='ArrowRight')renderer.pointer.x+=step;
+    renderer.pointer.x=clamp(renderer.pointer.x,30,970);renderer.pointer.y=clamp(renderer.pointer.y,30,970);
+    if(event.key==='Enter'&&!event.repeat)action('shot',{...renderer.pointer});
+  }
+});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
-$('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('demo-play').addEventListener('click',start);$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);accumulator=0;setState('demo');});$('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
+$('start').addEventListener('click',start);$('retry').addEventListener('click',start);$('demo-play').addEventListener('click',start);
+$('watch-demo').addEventListener('click',()=>{game=new Game(SEED);lastFeed=-1;lastIntel=null;accumulator=0;setState('demo');selectSide('feed');});
+$('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
 $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sound').setAttribute('aria-pressed',enabled);$('sound').setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');$('sound').title=enabled?'Geluid uit':'Geluid aan';$('sound').innerHTML=enabled?'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>':'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg>';}catch{toast('Geluid is niet beschikbaar in deze browser.');}});
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
-$('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
+$('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;$('score-edition').value=VERSION;selectSide('board');drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
 $('mobile-link').addEventListener('click',()=>{if(state==='playing')pause();renderMobileShare(mobileUrl);$('mobile-dialog').showModal();});$('close-mobile').addEventListener('click',()=>$('mobile-dialog').close());$('mobile-dialog').addEventListener('click',e=>{if(e.target===$('mobile-dialog'))$('mobile-dialog').close();});$('copy-url').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mobileUrl);$('copy-url').textContent='Adres gekopieerd';}catch{$('copy-url').textContent='Selecteer het adres hierboven';}});
 request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Privéversie. Log op je telefoon in met hetzelfde ChatGPT-account. Je begint daar een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();setInterval(()=>{if(state!=='playing')refreshBoard();},15000);setState('intro');updateHud();requestAnimationFrame(frame);
 
@@ -58,7 +200,7 @@ if(document.modelContext?.registerTool){
     annotations:{readOnlyHint:true,untrustedContentHint:true},
     async execute(input){
       if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length)throw new Error('Gebruik een leeg object.');
-      const result=await request('/api/leaderboard');drawBoard(result.scores);return result;
+      const result=await request('/api/leaderboard');$('score-edition').value=VERSION;selectSide('board');drawBoard(result.scores);return result;
     }
   },{signal:lifecycle.signal})).catch(()=>{});}catch{}
 }
