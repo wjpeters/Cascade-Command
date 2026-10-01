@@ -48,11 +48,6 @@ export class Renderer {
     for(let i=0;i<6;i++){const a=i*TAU/6-Math.PI/2;c.lineTo(500+Math.cos(a)*26,500+Math.sin(a)*26);}c.closePath();c.fill();c.shadowBlur=0;
     this.circle(500,500,47,'#eea15b70',1.2);
     c.textAlign='center';
-    c.font=`600 ${Math.max(15,10/this.scale)}px -apple-system, sans-serif`;
-    for(const [tier,radius] of [[3,422],[2,309],[1,209]]){
-      const x=500+radius*.62,y=500-radius*.78;
-      c.fillStyle='#071421e8';c.fillRect(x-41,y-12,82,24);c.fillStyle='#aac8db';c.fillText('TIER '+tier,x,y+5);
-    }
     c.font=`600 ${Math.max(13,8/this.scale)}px -apple-system, sans-serif`;c.fillStyle='#ffb87c';c.fillText('ORGANISATIE',500,558);
     if(scan){const age=300-(game.scanUntil-game.tick);const radius=(age%85)/85*490;this.circle(500,500,radius,'#80e5f866',2);this.circle(500,500,radius*.83,'#80e5f828',1);}
     for(const f of game.fields){
@@ -83,7 +78,19 @@ export class Renderer {
       if(effect.type==='cascade'){this.circle(effect.x,effect.y,16+age*.7,'#ff9d4c',2);c.font='10px -apple-system, sans-serif';c.fillStyle='#ffad6b';c.fillText('SPLITSING',effect.x,effect.y-28);}
       if(effect.type==='damage'){this.circle(effect.x,effect.y,20+age,'#ff645b',3);}
     }
-    c.globalAlpha=1;
+    // Reserve the empty bands between node orbits for the tier labels.
+    // Their shared centre line matches ORGANISATIE; no node occupies these bands.
+    // Draw after moving effects so the opaque backing keeps every label legible.
+    c.save();c.globalAlpha=1;c.textAlign='center';c.textBaseline='middle';
+    const labelSize=Math.max(15,10/this.scale),labelHeight=labelSize+8;
+    c.font=`600 ${labelSize}px -apple-system, sans-serif`;
+    for(const [tier,outer,inner] of [[3,422,309],[2,309,209],[1,209,112]]){
+      const x=500,y=500-(outer+inner)/2,text='TIER '+tier;
+      const width=Math.max(82,c.measureText(text).width+20);
+      c.fillStyle='#071421';c.fillRect(x-width/2,y-labelHeight/2,width,labelHeight);
+      c.fillStyle='#aac8db';c.fillText(text,x,y);
+    }
+    c.restore();c.globalAlpha=1;
     if(this.pointer && state==='playing'){
       const {x,y}=this.pointer;c.setLineDash([4,6]);this.circle(x,y,77,game.energy>=20?'#96e6f760':'#ff645b80',1.5);c.setLineDash([]);c.strokeStyle=game.energy>=20?'#b8f2ff':'#ff645b';c.lineWidth=1.5;c.beginPath();c.moveTo(x-9,y);c.lineTo(x+9,y);c.moveTo(x,y-9);c.lineTo(x,y+9);c.stroke();
     }
