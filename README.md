@@ -4,9 +4,9 @@ Speelbaar prototype voor beurs, Mac met groot scherm en mobiel. Projectcode buit
 
 ## Online versie
 
-Sites-locatie: https://riskstudio-cascade-command.black-lamp-2085.chatgpt.site
+Sites-locatie: https://riskstudio-cascade-command.qbset.chatgpt.site
 
-De site wordt privé gepubliceerd. Open de game met je eigen ChatGPT-account. De QR-code opent dezelfde website op je telefoon; log daar met hetzelfde account in. Een telefoon begint een eigen ronde. De Mac hoeft voor de online versie niet aan te blijven. Toegang wordt door Sites afgedwongen; er is geen aparte login gebouwd.
+De site is op 1 oktober 2026 succesvol privé gepubliceerd. Open de game met je eigen ChatGPT-account. De QR-code opent dezelfde website op je telefoon; log daar met hetzelfde account in. Een telefoon begint een eigen ronde. De Mac hoeft voor de online versie niet aan te blijven. Toegang wordt door Sites afgedwongen; er is geen aparte login gebouwd.
 
 Het online leaderboard staat in een Sites D1-database en blijft behouden na opnieuw publiceren. Online sessies verlopen na 30 minuten; scoreopslag is atomair en herhalen na een verloren antwoord levert dezelfde score op. Lokale en online klassementen zijn afzonderlijk. Lokale scores zijn niet naar Sites gekopieerd.
 
@@ -60,4 +60,4 @@ Installeer de ontwikkelpakketten met `rtk proxy npm ci`. `rtk proxy npm run buil
 
 Het schema staat in `db/schema.ts`; `rtk proxy npm run db:generate` maakt nieuwe migraties. Gepubliceerde migraties nooit wijzigen. De Sites-workflow pusht broncode naar de bij deze site behorende bronrepository; de lokale checkout blijft buiten iCloud. Gegevens en geheimen zijn uitgesloten. `.openai/hosting.json` bevat alleen de sitekoppeling en logische databasebinding.
 
-Er is optionele WebMCP-leestoegang tot hetzelfde leaderboard wanneer de browser dit ondersteunt. Niet vereist voor spelen. Platformtoegang en een echte telefoonscan moeten met het eigen ingelogde account worden gebruikt.
+Er is optionele WebMCP-leestoegang tot hetzelfde leaderboard wanneer de browser dit ondersteunt. Niet vereist voor spelen. WebMCP is lokaal gecontroleerd met geldige en ongeldige invoer. Een fysieke telefoon is niet getest; gebruik daarvoor hetzelfde ingelogde ChatGPT-account.
