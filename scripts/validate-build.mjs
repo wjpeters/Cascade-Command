@@ -6,7 +6,7 @@ import { ASSETS } from '../src/assets.js';
 const code = await readFile(new URL('../dist/server/index.js', import.meta.url));
 const { default: worker } = await import('data:text/javascript;base64,' + code.toString('base64'));
 assert.equal(typeof worker.fetch, 'function');
-for (const route of ['/', '/src/main.js', '/src/asset-loader.js', '/src/assets.js', '/src/engine.js', '/src/game-config.js', '/src/game-rules.js', '/style.css', '/tokens.css', ...Object.values(ASSETS), '/vendor/qrcode.js', '/favicon.svg']) {
+for (const route of ['/', '/admin', '/admin/', '/admin.js', '/admin.css', '/src/main.js', '/src/asset-loader.js', '/src/assets.js', '/src/engine.js', '/src/game-config.js', '/src/game-rules.js', '/style.css', '/tokens.css', ...Object.values(ASSETS), '/vendor/qrcode.js', '/favicon.svg']) {
   const result = await worker.fetch(new Request('https://game.example' + route), {});
   assert.equal(result.status, 200, route);
   assert.ok((await result.arrayBuffer()).byteLength > 0, route);
@@ -28,3 +28,9 @@ for (const route of ['/plugins/easter-eggs/index.js', '/plugins/easter-eggs/card
 }
 assert.equal((await worker.fetch(new Request('https://game.example/plugins/easter-eggs/README.md'), {})).status, 404);
 console.log('Easter eggs: ' + (GAME_CONFIG.easterEggs === true ? 'plugin and all ten portraits included' : 'plugin code and portraits absent from Worker') + '.');
+
+assert.equal((await worker.fetch(new Request('https://game.example/api/admin/me'), {})).status, 401);
+for (const route of ['/admin/api.js', '/admin/local-storage.js', '/worker/admin-storage.js']) {
+  assert.equal((await worker.fetch(new Request('https://game.example' + route), {})).status, 404, route);
+}
+console.log('Leaderboard admin: page assets available; anonymous access denied; server code private.');

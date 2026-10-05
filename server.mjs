@@ -1,3 +1,5 @@
+import { handleAdmin, localAdmin } from './admin/api.js';
+import { localAdminStorage } from './admin/local-storage.js';
 import http from 'node:http';
 import { readFileSync, writeFileSync, mkdirSync, renameSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -6,13 +8,17 @@ import { randomUUID } from 'node:crypto';
 import os from 'node:os';
 import { replay, SEED, VERSION, FPS, GAME_CONFIG } from './src/engine.js';
 const root = path.dirname(fileURLToPath(import.meta.url));
-const port = Number(process.env.PORT || 4317), host = process.env.HOST || '0.0.0.0';
+const port = Number(process.env.PORT ?? 4317), host = process.env.HOST || '0.0.0.0';
 const dataDir = process.env.CASCADE_DATA_DIR || path.join(root, 'data');
 mkdirSync(dataDir, { recursive: true, mode: 0o700 });
 const boardPath = path.join(dataDir, 'leaderboard.json');
 let scores = [];
 if (existsSync(boardPath)) { try { const data = JSON.parse(readFileSync(boardPath, 'utf8')); scores = Array.isArray(data) ? data.filter(s => typeof s.version === 'string' && typeof s.name === 'string' && Number.isFinite(s.score)) : []; } catch { console.warn('Leaderboard kon niet worden gelezen; nieuw geheugenklassement gestart.'); } }
 const sessions = new Map();
+const saveScores = next => {
+  const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify(next, null, 2), { mode: 0o600 }); renameSync(temp, boardPath); scores = next;
+};
+const adminStore = localAdminStorage(() => scores, saveScores, sessions, VERSION);
 const addresses = [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${port}`))];
 const json = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }); res.end(JSON.stringify(body)); };
 const body = req => new Promise((resolve, reject) => {
@@ -23,8 +29,13 @@ const topScores = () => scores.filter(s => s.version === VERSION).sort((a,b) => 
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    if (url.pathname.startsWith('/api/admin/')) {
+      const request = new Request(url, { method: req.method, headers: req.headers, ...(!['GET', 'HEAD'].includes(req.method) ? { body: req, duplex: 'half' } : {}) });
+      const response = await handleAdmin(request, () => adminStore, localAdmin(req, url));
+      res.writeHead(response.status, Object.fromEntries(response.headers)); res.end(Buffer.from(await response.arrayBuffer())); return;
+    }
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
-    if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port });
+    if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port, leaderboardAdmin: true });
     if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
     if (url.pathname === '/api/session' && req.method === 'POST') {
       for (const [key, s] of sessions) if (Date.now() - s.started > 30 * 60 * 1000) sessions.delete(key);
@@ -50,6 +61,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') return json(res, 405, { error: 'Niet beschikbaar.' });
     let requested = decodeURIComponent(url.pathname);
     if (requested === '/') requested = '/index.html';
+    if (['/admin', '/admin/'].includes(requested)) requested = '/admin.html';
     const plugin = requested.startsWith('/plugins/easter-eggs/');
     if (plugin && GAME_CONFIG.easterEggs !== true) return json(res, 404, { error: 'Niet gevonden.' });
     const base = plugin ? path.join(root, 'plugins/easter-eggs') : requested.startsWith('/src/') ? root : path.join(root, 'public');
@@ -62,4 +74,4 @@ const server = http.createServer(async (req, res) => {
     res.end(req.method === 'HEAD' ? undefined : bytes);
   } catch (e) { if (!res.headersSent) json(res, 500, { error: 'Opslaan lukte niet. Probeer het opnieuw.' }); }
 });
-server.listen(port, host, () => { console.log(`Cascade Command: http://localhost:${port}`); for (const url of addresses) console.log(`Mobiel op hetzelfde netwerk: ${url}`); });
+server.listen(port, host, () => { console.log(`Cascade Command: http://localhost:${server.address().port}`); for (const url of addresses) console.log(`Mobiel op hetzelfde netwerk: ${url}`); });

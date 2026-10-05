@@ -9,7 +9,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname.startsWith('/api/')) return handleApi(request, env);
     if (!['GET', 'HEAD'].includes(request.method)) return new Response('Niet beschikbaar.', { status: 405 });
-    const asset = assets[url.pathname === '/' ? '/index.html' : url.pathname];
+    const asset = assets[url.pathname === '/' ? '/index.html' : ['/admin', '/admin/'].includes(url.pathname) ? '/admin.html' : url.pathname];
     if (!asset) return new Response('Niet gevonden.', { status: 404, headers: security });
     const bytes = request.method === 'HEAD' ? null : Uint8Array.from(atob(asset.data), c => c.charCodeAt(0));
     const cache = /\.[a-f0-9]{12}\.webp$/.test(url.pathname) ? 'private, max-age=31536000, immutable' : asset.type === 'image/png' ? 'private, max-age=86400' : 'no-cache';

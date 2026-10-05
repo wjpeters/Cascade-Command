@@ -1,3 +1,5 @@
+import { handleAdmin, hostedAdmin } from '../admin/api.js';
+import { adminStorage } from './admin-storage.js';
 import { replay, SEED, VERSION, FPS } from '../src/engine.js';
 import { storage } from './storage.js';
 const json = (status, body) => Response.json(body, {
@@ -24,6 +26,7 @@ async function readBody(request) {
 export async function handleApi(request, env) {
   try {
     const url = new URL(request.url), method = request.method;
+    if (url.pathname.startsWith('/api/admin/')) return handleAdmin(request, () => adminStorage(env), hostedAdmin(request, env));
     if (method === 'POST') {
       const origin = request.headers.get('origin');
       if (origin && origin !== url.origin) return json(403, { error: 'Open de game op deze website.' });

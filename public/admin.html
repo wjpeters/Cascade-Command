@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="nl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Leaderboardbeheer · Cascade Command</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/tokens.css"><link rel="stylesheet" href="/admin.css"><script type="module" src="/admin.js"></script></head>
+<body>
+<header><div><span class="brand">RISKSTUDIO / CASCADE COMMAND</span><h1>Leaderboardbeheer</h1></div><a href="/" target="_blank" rel="noopener">Open game</a></header>
+<main>
+<section id="access" class="panel"><h2>Toegang controleren</h2><p id="access-message">Even geduld…</p><a id="signin" class="button primary" href="/signin-with-chatgpt?return_to=%2Fadmin" target="_top" hidden>Inloggen met ChatGPT</a><a id="switch-account" href="/signout-with-chatgpt?return_to=%2Fadmin" target="_top" hidden>Ander account gebruiken</a></section>
+<section id="manager" hidden>
+<div class="identity"><strong id="environment"></strong><span id="account"></span><a id="signout" href="/signout-with-chatgpt?return_to=%2Fadmin" target="_top" hidden>Uitloggen</a></div>
+<div class="panel">
+<div class="toolbar"><label>Klassement<select id="version"></select></label><label>Zoek speler<input id="search" type="search" placeholder="Naam" maxlength="100"></label><button id="refresh">Vernieuwen</button></div>
+<div class="list-heading"><div><h2 id="board-title">Huidig klassement</h2><p id="count">Laden…</p></div><div class="actions"><button id="export">Exporteren</button><button id="reset" class="danger">Klassement resetten</button></div></div>
+<p class="note">De game toont de beste 10. Hier beheer je alle opgeslagen scores.</p>
+<div id="table-wrap"><table><thead><tr><th scope="col">Speler</th><th scope="col">Score</th><th scope="col">Diensten</th><th scope="col">Gespeeld</th><th scope="col"><span class="sr-only">Acties</span></th></tr></thead><tbody id="rows"></tbody></table></div>
+<p id="empty" hidden>Dit klassement is leeg.</p>
+<div class="pagination"><button id="previous">Vorige</button><span id="page"></span><button id="next">Volgende</button></div>
+</div>
+</section>
+<p id="status" role="status" aria-live="polite"></p>
+</main>
+<dialog id="edit-dialog"><form id="edit-form"><h2>Score bewerken</h2><p>De ranglijst wordt na opslaan opnieuw gesorteerd.</p><label>Speler<input id="edit-name" required maxlength="18" autocomplete="off"></label><label>Score<input id="edit-score" type="number" min="0" max="9999999" step="1" required></label><label>Operationele diensten<select id="edit-services"><option value="0">0 van 3</option><option value="1">1 van 3</option><option value="2">2 van 3</option><option value="3">3 van 3</option></select></label><p class="form-error" id="edit-error" role="alert"></p><div class="actions"><button type="button" data-close>Annuleren</button><button class="primary" type="submit">Opslaan</button></div></form></dialog>
+<dialog id="confirm-dialog"><form id="confirm-form"><h2 id="confirm-title"></h2><p id="confirm-description"></p><label id="reset-label" hidden>Typ RESET om te bevestigen<input id="reset-text" autocomplete="off"></label><p class="form-error" id="confirm-error" role="alert"></p><div class="actions"><button type="button" data-close>Annuleren</button><button id="confirm-button" class="danger" type="submit">Verwijderen</button></div></form></dialog>
+</body></html>

@@ -43,7 +43,7 @@ Een lokale Node-server bewaart de top 100 per spelversie in `data/leaderboard.js
 
 De server herberekent de score aan de hand van een deterministische replay van de spelacties. De client kan geen eigen score insturen. De server controleert actievolgorde, energie, cooldown, sessie en minimale rondeduur. Een sessie kan één score opslaan en verloopt na 30 minuten. Alle spelers binnen dezelfde spelversie krijgen dezelfde scenarioseed. Er is één zichtbaar leaderboard zonder keuze voor eerdere spelregels. Het gebruikt automatisch de actuele spelversie uit `src/engine.js`, nu `cascade-3` met een afdruk van de gameplayconfig, ook wanneer een oud API-adres een andere versie opvraagt. Een numerieke wijziging aan `src/game-config.js` geeft automatisch een nieuwe score-identiteit. Alleen golfnamen en toelichtingen aanpassen laat de scores intact. Bij wijzigingen aan de spelengine zelf moet de vaste versieprefix worden verhoogd. Scores met een eerdere puntentelling blijven bewaard buiten het zichtbare leaderboard. De spelacties van oude rondes zijn niet opgeslagen, dus oude scores kunnen niet eerlijk worden herberekend naar nieuwe regels.
 
-**Prototypegrens:** dit is geen productieklare prijsvraag. Replayvalidatie verhindert verzonnen scores, maar geen bots, meerdere namen of meerdere pogingen. Voor echte prijzen ontbreken nog deelnemersidentiteit/deelnameregels, moderatie, beperking van pogingen en een afsluitmoment. De RiskStudio Sites-versie is openbaar toegankelijk via de link. Het is een gedeeld prototypeklassement, geen automatisch dagklassement.
+**Prototypegrens:** dit is geen productieklare prijsvraag. Replayvalidatie verhindert verzonnen scores, maar geen bots, meerdere namen of meerdere pogingen. Voor echte prijzen ontbreken nog deelnemersidentiteit/deelnameregels, beperking van pogingen en een afsluitmoment. De RiskStudio Sites-versie is openbaar toegankelijk via de link. Het is een gedeeld prototypeklassement, geen automatisch dagklassement.
 
 De server luistert op het lokale netwerk voor mobiele deelname. Voor lokaal spelen is geen portforwarding nodig; de Sites-versie draait onafhankelijk van deze lokale server. De app haalt geen klantdata op en wijzigt RiskStudio niet. Beschermingsvelden zijn een spelmetafoor, geen bestaande RiskStudio-functionaliteit.
 
@@ -187,4 +187,27 @@ De plugin verandert geen score, energie, risico’s, timing, scenarioseed of kla
 
 Op het startscherm staat bij ingeschakelde plugin een ✦-knop voor de Galactic Council. Verborgen kaarten geven een aanwijzing. Ontdekkingen blijven lokaal op dit apparaat bewaard, ook als je de plugin later uitzet. Alle tien gevonden? De finale toont de hele Council rond Willems troon. Geluid volgt de bestaande geluidsknop. Verminderde animatie wordt gerespecteerd.
 
-Zie `plugins/easter-eggs/README.md` voor de triggers, architectuur en grenzen. De oorspronkelijke reviewportretten staan buiten de game; de plugin gebruikt kleinere transparante WebP’s met bestandsvingerafdrukken. Deze uitbreiding is lokaal gebouwd; publicatie is een afzonderlijke stap.
+Zie `plugins/easter-eggs/README.md` voor de triggers, architectuur en grenzen. De oorspronkelijke reviewportretten staan buiten de game; de plugin gebruikt kleinere transparante WebP’s met bestandsvingerafdrukken. Deze uitbreiding is op 2 oktober 2026 succesvol als Sites-versie 6 op de bestaande openbare RiskStudio-link gepubliceerd.
+
+## Sites-versie 6 gepubliceerd, 2 oktober 2026
+
+De laatste versie inclusief Galactic Council, tien collega-portretten en voornamen staat op https://riskstudio-cascade-command.codexwillem.chatgpt.site. Willem bevestigde publicatie na de expliciete vraag over deze portretten. Alle 31 regressietests, downloadbudget en Worker-bouwcontrole slagen; het bouwpakket bevat de ingeschakelde plugin en alle tien portretten. De gecontroleerde publicatiekopie kwam overeen met alle 114 lokale bronbestanden. Openbare toegang, database en spelregels zijn behouden. De browserbestanden tellen 757.725 bytes van maximaal 800.000. Sites bevestigt succesvolle publicatie van broncommit 8661281ed0fddd8360df5d43c37255c116a4ee5d. Geen aanvullende visuele controle of live-performancehermeting.
+
+
+## Leaderboardbeheer, 5 oktober 2026
+
+Open **https://riskstudio-cascade-command.codexwillem.chatgpt.site/admin** of dubbelklik op **Beheer Online Leaderboard.command**. De game hoeft niet open te staan en de Mac hoeft niet als server te draaien. Log in met ChatGPT met het RiskStudio-beheerdersaccount `codex+willem@riskstudio.com`.
+
+- Namen, punten en operationele diensten aanpassen; de ranglijst sorteert daarna automatisch opnieuw.
+- Individuele scores verwijderen, spelers zoeken en door alle scores bladeren.
+- Een eerder klassement kiezen; de game toont nog steeds uitsluitend de actuele spelversie.
+- Het volledige gekozen klassement exporteren als JSON, inclusief datum en spelversie. Dit is een bewaarbestand; automatisch terugzetten is niet ingebouwd.
+- Alleen het gekozen klassement resetten met de bevestiging **RESET**. Dit verwijdert de scores definitief en beëindigt lopende rondes van die spelversie. Andere klassementen blijven bestaan.
+
+Voor lokale scores: **Beheer Lokaal Leaderboard.command**, of `/admin` op de lokale gameserver. Alleen toegang vanaf deze Mac via localhost is toegestaan. Als de oude server nog draait, stop deze eerst met Ctrl+C en start opnieuw. Online en lokaal blijven twee afzonderlijke databases.
+
+**Toegang:** Sites verzorgt de ChatGPT-aanmelding en levert geverifieerde gebruikersheaders. Elke beheer-API controleert deze server-side tegen de expliciete `CASCADE_ADMIN_EMAILS`-lijst in de Sites-omgeving. Zonder configuratie of geldige aanmelding blijft beheer gesloten. De spelpagina blijft openbaar. Het lokale beheer vertrouwt uitsluitend loopbackverbindingen met een lokale hostnaam, nooit ingestuurde Sites-identiteitsheaders. Schrijfacties vereisen bovendien dezelfde website als oorsprong. Er zijn geen nieuwe wachtwoorden of tokens opgeslagen.
+
+Bewerken en verwijderen weigeren achterhaalde invoer wanneer iemand dezelfde score intussen heeft aangepast. De oorspronkelijke speeldatum blijft behouden. Een al ingediende ronde kan een verwijderde score niet opnieuw insturen. Resetten gebeurt online atomair; lokaal wordt eerst het scorebestand veilig vervangen voordat rondes vervallen.
+
+37 tests slagen, inclusief de bestaande speltests en controles voor toegang, invoer, paginering, oude klassementen, opnieuw insturen na verwijderen, reset en lokale opslag na herstart. De Worker-bouwcontrole slaagt. Browsercontrole met uitsluitend tijdelijke testgegevens bevestigt bewerken, hersorteren, eerdere klassementen en resetbevestiging. Geen horizontale overflow bij 320 en 390 pixels. Echte opgeslagen highscores zijn tijdens het bouwen en testen niet gewijzigd. De echte ChatGPT-inlogflow wordt door Sites verzorgd en is niet met een beheerderssessie getest.
