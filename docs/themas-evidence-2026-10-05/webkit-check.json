@@ -1,0 +1,9 @@
+{
+  "browser": "WebKit",
+  "width": 390,
+  "theme": "classic",
+  "assetsLoaded": true,
+  "roundScanPause": true,
+  "noOverflow": true,
+  "errors": []
+}

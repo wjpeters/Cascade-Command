@@ -2,8 +2,8 @@ import { ASSETS } from './assets.js';
 
 // Reuse successfully decoded images when retrying a failed download.
 const decoded = new Map();
-export async function loadGameAssets(onProgress = () => {}) {
-  const images = {}, entries = Object.entries(ASSETS);
+export async function loadGameAssets(onProgress = () => {}, assets = ASSETS) {
+  const images = {}, entries = Object.entries(assets);
   let completed = 0;
   onProgress({ completed, total: entries.length });
   const results = await Promise.allSettled(entries.map(async ([name, url]) => {

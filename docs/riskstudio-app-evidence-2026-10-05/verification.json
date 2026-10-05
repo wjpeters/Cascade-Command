@@ -1,0 +1,118 @@
+{
+  "date": "2026-10-05",
+  "theme": "riskstudio-app",
+  "localUrl": "http://localhost:4317/",
+  "referenceScreenshot": "/Users/wp/Desktop/delete/Scherm­afbeelding 2026-09-22 om 09.52.43.png",
+  "scope": "Local theme; no Sites publication. Original scores preserved; browser tests used separate temporary data.",
+  "checks": {
+    "tests": {
+      "passed": 48,
+      "failed": 0,
+      "includes": "Both renderers preserve simulation state and game coordinates; theme IDs keep the same replay and leaderboard edition."
+    },
+    "browser": [
+      {
+        "check": "app-theme-round",
+        "width": 1685,
+        "search": true,
+        "liveHealth": true,
+        "noOverflow": true,
+        "errors": []
+      },
+      {
+        "check": "app-theme-round",
+        "width": 1440,
+        "search": true,
+        "liveHealth": true,
+        "noOverflow": true,
+        "errors": []
+      },
+      {
+        "check": "app-theme-round",
+        "width": 1024,
+        "search": true,
+        "liveHealth": true,
+        "noOverflow": true,
+        "errors": []
+      },
+      {
+        "check": "app-theme-round",
+        "width": 390,
+        "search": false,
+        "liveHealth": true,
+        "noOverflow": true,
+        "errors": []
+      },
+      {
+        "check": "app-theme-round",
+        "width": 320,
+        "search": false,
+        "liveHealth": true,
+        "noOverflow": true,
+        "errors": []
+      },
+      {
+        "check": "classic-preserved",
+        "width": 1440,
+        "identicalPixels": true
+      },
+      {
+        "check": "classic-preserved",
+        "width": 390,
+        "identicalPixels": true
+      },
+      {
+        "check": "unknown",
+        "fallback": "classic"
+      },
+      {
+        "check": "stylesheet-failure",
+        "fallback": "classic"
+      },
+      {
+        "check": "plugin-app-theme",
+        "lightDialog": true
+      },
+      {
+        "check": "webkit-mobile",
+        "errors": []
+      }
+    ],
+    "final": {
+      "classicHashesUnchanged": true,
+      "checks": [
+        {
+          "width": 1685,
+          "fullTop10": true,
+          "errors": []
+        },
+        {
+          "width": 390,
+          "fullTop10": true,
+          "errors": []
+        },
+        {
+          "compactCouncil": true,
+          "errors": []
+        }
+      ]
+    },
+    "build": {
+      "check": "minified-build-browser",
+      "theme": "riskstudio-app",
+      "qr": true,
+      "start": true,
+      "scan": true,
+      "pause": true,
+      "version": "cascade-3-14f91b15",
+      "errors": [],
+      "totalBytes": 460583,
+      "totalBytesWithCouncil": 795136,
+      "imageBytes": 241082,
+      "imageBytesWithCouncil": 549894
+    },
+    "validation": "Worker routes, exact published file byte counts and QR copyright/MIT notice passed."
+  },
+  "limits": "Browser checks include controlled health values and a forced result to exercise UI states; no physical phone test.",
+  "runtime": "Chromium (installed Google Chrome) plus WebKit mobile. Isolated local backend on 4325 and minified Worker preview on 4326."
+}

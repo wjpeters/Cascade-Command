@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-05",
+  "testsPassed": 48,
+  "scoreVersion": "cascade-3-14f91b15",
+  "classicPixelDifferences": {
+    "1440": 0,
+    "390": 0
+  },
+  "downloadBytes": 799738,
+  "downloadBudgetBytes": 800000,
+  "buildValidation": "passed",
+  "publicDeployment": false,
+  "browserChecks": "browser-checks.json",
+  "testData": "Separate temporary local storage; no existing scores changed.",
+  "webkitCheck": "webkit-check.json"
+}

@@ -3,6 +3,7 @@ import { readdir, readFile, writeFile, mkdir, rm, cp } from 'node:fs/promises';
 import path from 'node:path';
 import { checkDownloadBudget } from './check-download-budget.mjs';
 import { GAME_CONFIG } from '../src/game-config.js';
+import { browserFile } from './browser-file.mjs';
 const root = path.resolve(import.meta.dirname, '..');
 const budget = await checkDownloadBudget(root);
 const types = { '.html':'text/html; charset=utf-8', '.css':'text/css; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.png':'image/png', '.webp':'image/webp', '.svg':'image/svg+xml', '.txt':'text/plain; charset=utf-8', '.md':'text/plain; charset=utf-8' };
@@ -11,7 +12,7 @@ async function collect(directory, prefix) {
   for (const item of await readdir(directory, { withFileTypes: true })) {
     const filename = path.join(directory, item.name), route = prefix + '/' + item.name;
     if (item.isDirectory()) await collect(filename, route);
-    else if (item.isFile() && types[path.extname(item.name)] && !(prefix.startsWith('/plugins/') && item.name.endsWith('.md'))) assets[route] = { type: types[path.extname(item.name)], data: (await readFile(filename)).toString('base64') };
+    else if (item.isFile() && types[path.extname(item.name)] && !(prefix.startsWith('/plugins/') && item.name.endsWith('.md'))) assets[route] = { type: types[path.extname(item.name)], data: (await browserFile(await readFile(filename), filename)).toString('base64') };
   }
 }
 await collect(path.join(root, 'public'), '');

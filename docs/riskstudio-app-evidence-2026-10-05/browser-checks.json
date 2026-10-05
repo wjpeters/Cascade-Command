@@ -1,0 +1,68 @@
+[
+  {
+    "check": "app-theme-round",
+    "width": 1685,
+    "search": true,
+    "liveHealth": true,
+    "noOverflow": true,
+    "errors": []
+  },
+  {
+    "check": "app-theme-round",
+    "width": 1440,
+    "search": true,
+    "liveHealth": true,
+    "noOverflow": true,
+    "errors": []
+  },
+  {
+    "check": "app-theme-round",
+    "width": 1024,
+    "search": true,
+    "liveHealth": true,
+    "noOverflow": true,
+    "errors": []
+  },
+  {
+    "check": "app-theme-round",
+    "width": 390,
+    "search": false,
+    "liveHealth": true,
+    "noOverflow": true,
+    "errors": []
+  },
+  {
+    "check": "app-theme-round",
+    "width": 320,
+    "search": false,
+    "liveHealth": true,
+    "noOverflow": true,
+    "errors": []
+  },
+  {
+    "check": "classic-preserved",
+    "width": 1440,
+    "identicalPixels": true
+  },
+  {
+    "check": "classic-preserved",
+    "width": 390,
+    "identicalPixels": true
+  },
+  {
+    "check": "unknown",
+    "fallback": "classic"
+  },
+  {
+    "check": "stylesheet-failure",
+    "fallback": "classic"
+  },
+  {
+    "check": "plugin-app-theme",
+    "lightDialog": true
+  },
+  {
+    "check": "webkit-mobile",
+    "errors": []
+  }
+]

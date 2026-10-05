@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
 import { GAME_CONFIG } from '../src/game-config.js';
+import { browserFile } from './browser-file.mjs';
 
 const browserTypes = new Set(['.html', '.css', '.js', '.svg', '.png', '.webp']);
 const imageTypes = new Set(['.svg', '.png', '.webp']);
@@ -19,8 +20,8 @@ export async function checkDownloadBudget(root) {
       const filename = path.join(directory, item.name);
       if (item.isDirectory()) await collect(filename);
       else if (item.isFile() && browserTypes.has(path.extname(filename))) {
-        const bytes = await readFile(filename), image = imageTypes.has(path.extname(filename));
-        files.push({ path: path.relative(root, filename), bytes: bytes.length, gzipEstimate: image ? bytes.length : gzipSync(bytes).length, image });
+        const source = await readFile(filename), bytes = await browserFile(source, filename), image = imageTypes.has(path.extname(filename));
+        files.push({ path: path.relative(root, filename), bytes: bytes.length, sourceBytes: source.length, gzipEstimate: image ? bytes.length : gzipSync(bytes).length, image });
       }
     }
   }

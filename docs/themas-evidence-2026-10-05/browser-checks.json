@@ -1,0 +1,53 @@
+[
+  {
+    "check": "classic-preserved",
+    "width": 1440,
+    "layoutIdentical": true,
+    "errors": []
+  },
+  {
+    "check": "classic-preserved",
+    "width": 390,
+    "layoutIdentical": true,
+    "errors": []
+  },
+  {
+    "check": "experiment",
+    "selectedTheme": "experiment",
+    "version": "cascade-3-14f91b15",
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "check": "unknown",
+    "selectedTheme": "classic",
+    "version": "cascade-3-14f91b15",
+    "warnings": [
+      "Onbekend thema not-installed; Classic wordt gebruikt."
+    ],
+    "errors": []
+  },
+  {
+    "check": "stylesheet-failure",
+    "selectedTheme": "classic",
+    "version": "cascade-3-14f91b15",
+    "warnings": [
+      "Thema experiment kon niet laden. Classic wordt gebruikt."
+    ],
+    "errors": []
+  },
+  {
+    "check": "mobile-round",
+    "width": 320,
+    "noOverflow": true,
+    "result": true,
+    "errors": []
+  },
+  {
+    "check": "mobile-round",
+    "width": 390,
+    "noOverflow": true,
+    "result": true,
+    "errors": []
+  }
+]

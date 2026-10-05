@@ -1,0 +1,22 @@
+@import url("/plugins/easter-eggs/themes/classic.css");
+.ee-plugin{--ee-cyan:#4670dd;--ee-purple:#8950d2;--ee-muted:#667085;color:#111827}
+.ee-launcher{background:#fffffff5;border:1px solid #d7e0f1;box-shadow:0 5px 20px #34405420}
+.ee-plugin button:focus-visible,#time:focus-visible{outline:2px solid #4670dd}
+.ee-cameo{background:#fffffff5;box-shadow:0 8px 25px #34405415}
+.ee-dialog{color:#111827;border:1px solid #d7e0f1;background:radial-gradient(ellipse at 20% 0,#f2f6ff,#ffffff 65%);box-shadow:0 24px 100px #34405430}
+.ee-dialog::backdrop{background:#25345144}
+.ee-close{border:1px solid #dde4f1;background:#f8faff;color:#4670dd}
+.ee-back{color:#4670dd}
+.ee-content h2{color:#111827}
+.ee-tile{background:linear-gradient(135deg,#f1f5ff,#ffffff);border:1px solid #dde4f1;color:#111827}
+.ee-tile:hover{border-color:#4670dd;background:#eef3ff}
+.ee-unknown{color:#a4b3ce}
+.ee-art{background:radial-gradient(ellipse,#4670dd0b,transparent 70%)}
+.ee-copy blockquote{color:#8950d2}
+.ee-effect svg{filter:drop-shadow(0 0 8px #4670dd)}
+.ee-effect i{border:1px solid #4670dd77}
+.ee-theme-lightning .ee-eyebrow{color:#7541b5}
+.ee-finale-button,.ee-result-button{border:1px solid #d8c9ed;color:#7541b5;background:#f7f3ff}
+.ee-member figcaption{color:#667085}
+.ee-emperor figcaption{color:#8950d2}
+.ee-holding{outline:2px solid #8950d2!important}

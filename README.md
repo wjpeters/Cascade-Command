@@ -47,6 +47,12 @@ De server herberekent de score aan de hand van een deterministische replay van d
 
 De server luistert op het lokale netwerk voor mobiele deelname. Voor lokaal spelen is geen portforwarding nodig; de Sites-versie draait onafhankelijk van deze lokale server. De app haalt geen klantdata op en wijzigt RiskStudio niet. Beschermingsvelden zijn een spelmetafoor, geen bestaande RiskStudio-functionaliteit.
 
+## Thema kiezen en vormgeving bewaren
+
+De oorspronkelijke look is bewaard als **Classic**. Het nieuwe **RiskStudio App**-thema is lokaal actief met `theme: 'riskstudio-app'`. Het heeft de lichte Explore-layout uit de app, leverancierszoeken, intelligence links en een actuele weerbaarheidsdonut rechts. Kies een thema met `theme: 'classic'` of `theme: 'riskstudio-app'` bovenaan [src/game-config.js](src/game-config.js). De beschikbare thema’s staan in [src/themes/index.js](src/themes/index.js). Nieuwe experimenten krijgen eigen CSS, kleuren, beelden, pictogrammen en eventueel een eigen Galaxy-renderer; Classic blijft behouden. Een onbekende naam valt terug op Classic. Thema’s veranderen de spelregels en het klassement niet.
+
+Herlaad de lokale pagina om een keuze toe te passen. De online versie vereist opnieuw bouwen en publiceren. Zie [themahandleiding](docs/THEMAS.md) voor de bestanden en het toevoegen van een nieuw thema. Het themasysteem is lokaal gebouwd; de huidige openbare versie blijft Sites-versie 9. Alle 48 tests, de build, bouwcontrole en downloadbudget slagen. Classic is op desktop (1440px) en mobiel (390px) pixel voor pixel gelijk aan de vorige weergave. Themaselectie, terugschakelen, een onbekende naam, een ontbrekende stylesheet en mobiele bediening op 320/390px zijn in de browser gecontroleerd met tijdelijke testgegevens. [Controlebewijs](docs/themas-evidence-2026-10-05/verification.json).
+
 ## Moeilijkheid beheren
 
 Het centrale bestand is [src/game-config.js](src/game-config.js). Alle tijden zijn seconden; het speelveld gebruikt 1000 × 1000 afstandseenheden. Browsergame en beide servers gebruiken dezelfde instellingen voor spelen en scorecontrole. De puntentelling blijft gelijk.
@@ -234,3 +240,5 @@ Leaderboardbewerkingen en resets veranderen de historische gebruiksmetingen niet
 **Opslag:** online nieuwe tabellen `analytics_events` en `analytics_daily` via de aanvullende Drizzle-migratie `0001_free_firedrake.sql`; bestaande tabellen en scores worden niet gewijzigd. Lokaal `data/analytics.json`, buiten iCloud, met beperkte bestandsrechten. Een statistiekfout blokkeert het starten of opslaan van een spelronde niet. Een onleesbaar lokaal statistiekbestand wordt niet overschreven met een leeg bestand.
 
 **Controle:** 44 tests slagen, inclusief herhaalde verzoeken, tellen zonder leaderboardinzending, privacygrenzen, Amsterdamse dagfilters, IP- en detailretentie, behoud van totalen, afgeschermde API en lokale HTTP-compatibiliteit. Worker-bouwcontrole en downloadbudget slagen. Een echte lokale browsertestronde is automatisch als bezoek/start/einde geregistreerd zonder scoreopslag; dezelfde statistieken zijn in de beheerinterface bevestigd. Geen horizontale overflow op 320 en 390 pixels. De reeds ingelogde online beheeromgeving is gelezen; bestaande toegang werkt. Er zijn geen bestaande highscores veranderd of IP-adressen naar WPOS gekopieerd.
+
+Het RiskStudio App-thema is op desktop en mobiel gecontroleerd, inclusief de verkleinde lokale build. Classic blijft pixel voor pixel gelijk. [Nieuw controlebewijs](docs/riskstudio-app-evidence-2026-10-05/verification.json). De openbare site is niet opnieuw gepubliceerd.

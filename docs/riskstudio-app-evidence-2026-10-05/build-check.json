@@ -1,0 +1,14 @@
+{
+  "check": "minified-build-browser",
+  "theme": "riskstudio-app",
+  "qr": true,
+  "start": true,
+  "scan": true,
+  "pause": true,
+  "version": "cascade-3-14f91b15",
+  "errors": [],
+  "totalBytes": 460583,
+  "totalBytesWithCouncil": 795136,
+  "imageBytes": 241082,
+  "imageBytesWithCouncil": 549894
+}

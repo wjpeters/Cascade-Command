@@ -1,0 +1,314 @@
+[
+  {
+    "width": 1685,
+    "errors": [],
+    "theme": "riskstudio-app",
+    "overflow": false,
+    "rects": {
+      ".rs-explore-panel": {
+        "x": 22,
+        "y": 86,
+        "width": 300,
+        "height": 890,
+        "top": 86,
+        "right": 322,
+        "bottom": 976,
+        "left": 22
+      },
+      "#intro": {
+        "x": 37,
+        "y": 490,
+        "width": 270,
+        "height": 441.578125,
+        "top": 490,
+        "right": 307,
+        "bottom": 931.578125,
+        "left": 37
+      },
+      "#start": {
+        "x": 43,
+        "y": 685.765625,
+        "width": 258,
+        "height": 40,
+        "top": 685.765625,
+        "right": 301,
+        "bottom": 725.765625,
+        "left": 43
+      },
+      "#game": {
+        "x": 344,
+        "y": 148,
+        "width": 917,
+        "height": 755,
+        "top": 148,
+        "right": 1261,
+        "bottom": 903,
+        "left": 344
+      },
+      ".sidebar": {
+        "x": 1283,
+        "y": 86,
+        "width": 380,
+        "height": 890,
+        "top": 86,
+        "right": 1663,
+        "bottom": 976,
+        "left": 1283
+      },
+      ".rs-summary": {
+        "x": 1302,
+        "y": 105,
+        "width": 342,
+        "height": 523.09375,
+        "top": 105,
+        "right": 1644,
+        "bottom": 628.09375,
+        "left": 1302
+      },
+      ".rs-workflow": {
+        "x": 536.296875,
+        "y": 2.5,
+        "width": 612.390625,
+        "height": 58,
+        "top": 2.5,
+        "right": 1148.6875,
+        "bottom": 60.5,
+        "left": 536.296875
+      }
+    }
+  },
+  {
+    "width": 1440,
+    "errors": [],
+    "theme": "riskstudio-app",
+    "overflow": false,
+    "rects": {
+      ".rs-explore-panel": {
+        "x": 22,
+        "y": 86,
+        "width": 268,
+        "height": 890,
+        "top": 86,
+        "right": 290,
+        "bottom": 976,
+        "left": 22
+      },
+      "#intro": {
+        "x": 37,
+        "y": 518,
+        "width": 238,
+        "height": 435.390625,
+        "top": 518,
+        "right": 275,
+        "bottom": 953.390625,
+        "left": 37
+      },
+      "#start": {
+        "x": 43,
+        "y": 707.578125,
+        "width": 226,
+        "height": 40,
+        "top": 707.578125,
+        "right": 269,
+        "bottom": 747.578125,
+        "left": 43
+      },
+      "#game": {
+        "x": 310,
+        "y": 148,
+        "width": 768,
+        "height": 755,
+        "top": 148,
+        "right": 1078,
+        "bottom": 903,
+        "left": 310
+      },
+      ".sidebar": {
+        "x": 1098,
+        "y": 86,
+        "width": 320,
+        "height": 890,
+        "top": 86,
+        "right": 1418,
+        "bottom": 976,
+        "left": 1098
+      },
+      ".rs-summary": {
+        "x": 1116,
+        "y": 104,
+        "width": 284,
+        "height": 510,
+        "top": 104,
+        "right": 1400,
+        "bottom": 614,
+        "left": 1116
+      },
+      ".rs-workflow": {
+        "x": 413.796875,
+        "y": 2.5,
+        "width": 612.390625,
+        "height": 58,
+        "top": 2.5,
+        "right": 1026.1875,
+        "bottom": 60.5,
+        "left": 413.796875
+      }
+    }
+  },
+  {
+    "width": 390,
+    "errors": [],
+    "theme": "riskstudio-app",
+    "overflow": false,
+    "rects": {
+      ".rs-explore-panel": {
+        "x": 12,
+        "y": 118,
+        "width": 366,
+        "height": 537.0625,
+        "top": 118,
+        "right": 378,
+        "bottom": 655.0625,
+        "left": 12
+      },
+      "#intro": {
+        "x": 28,
+        "y": 330.875,
+        "width": 334,
+        "height": 296.1875,
+        "top": 330.875,
+        "right": 362,
+        "bottom": 627.0625,
+        "left": 28
+      },
+      "#start": {
+        "x": 28,
+        "y": 467.25,
+        "width": 136,
+        "height": 40,
+        "top": 467.25,
+        "right": 164,
+        "bottom": 507.25,
+        "left": 28
+      },
+      "#game": {
+        "x": 12,
+        "y": 728.0625,
+        "width": 366,
+        "height": 449,
+        "top": 728.0625,
+        "right": 378,
+        "bottom": 1177.0625,
+        "left": 12
+      },
+      ".sidebar": {
+        "x": 12,
+        "y": 1263.0625,
+        "width": 366,
+        "height": 924.140625,
+        "top": 1263.0625,
+        "right": 378,
+        "bottom": 2187.203125,
+        "left": 12
+      },
+      ".rs-summary": {
+        "x": 27,
+        "y": 1278.0625,
+        "width": 336,
+        "height": 534.09375,
+        "top": 1278.0625,
+        "right": 363,
+        "bottom": 1812.15625,
+        "left": 27
+      },
+      ".rs-workflow": {
+        "x": 17.515625,
+        "y": 52,
+        "width": 354.96875,
+        "height": 42,
+        "top": 52,
+        "right": 372.484375,
+        "bottom": 94,
+        "left": 17.515625
+      }
+    }
+  },
+  {
+    "width": 320,
+    "errors": [],
+    "theme": "riskstudio-app",
+    "overflow": false,
+    "rects": {
+      ".rs-explore-panel": {
+        "x": 8,
+        "y": 114,
+        "width": 304,
+        "height": 533.0625,
+        "top": 114,
+        "right": 312,
+        "bottom": 647.0625,
+        "left": 8
+      },
+      "#intro": {
+        "x": 22,
+        "y": 324.875,
+        "width": 276,
+        "height": 296.1875,
+        "top": 324.875,
+        "right": 298,
+        "bottom": 621.0625,
+        "left": 22
+      },
+      "#start": {
+        "x": 22,
+        "y": 461.25,
+        "width": 130,
+        "height": 40,
+        "top": 461.25,
+        "right": 152,
+        "bottom": 501.25,
+        "left": 22
+      },
+      "#game": {
+        "x": 8,
+        "y": 720.0625,
+        "width": 304,
+        "height": 399,
+        "top": 720.0625,
+        "right": 312,
+        "bottom": 1119.0625,
+        "left": 8
+      },
+      ".sidebar": {
+        "x": 8,
+        "y": 1205.0625,
+        "width": 304,
+        "height": 924.140625,
+        "top": 1205.0625,
+        "right": 312,
+        "bottom": 2129.203125,
+        "left": 8
+      },
+      ".rs-summary": {
+        "x": 23,
+        "y": 1220.0625,
+        "width": 274,
+        "height": 534.09375,
+        "top": 1220.0625,
+        "right": 297,
+        "bottom": 1754.15625,
+        "left": 23
+      },
+      ".rs-workflow": {
+        "x": 10,
+        "y": 52,
+        "width": 300,
+        "height": 42,
+        "top": 52,
+        "right": 310,
+        "bottom": 94,
+        "left": 10
+      }
+    }
+  }
+]

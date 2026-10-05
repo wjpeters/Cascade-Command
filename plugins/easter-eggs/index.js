@@ -14,7 +14,7 @@ export function mount(host) {
   let helpCount = 0, timeTaps = 0, holdStart = null, pending = [], roundFinds = [];
   let detailId = null, celebration = false, introReveal = null;
   const style = document.createElement('link');
-  style.rel = 'stylesheet'; style.href = '/plugins/easter-eggs/plugin.css';
+  style.rel = 'stylesheet'; style.href = host.theme?.pluginStylesheet || '/plugins/easter-eggs/plugin.css';
   const root = document.createElement('div'); root.className = 'ee-plugin';
   root.innerHTML = `<button class="ee-launcher" aria-label="Galactic Council" title="Galactic Council" type="button"><span aria-hidden="true">✦</span><span class="ee-count"></span></button>
     <aside class="ee-cameo" hidden aria-live="polite"></aside>

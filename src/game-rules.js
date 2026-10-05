@@ -57,7 +57,7 @@ export function deepFreeze(value) {
 const stable = value => Array.isArray(value) ? '[' + value.map(stable).join(',') + ']' :
   value && typeof value === 'object' ? '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + stable(value[key])).join(',') + '}' : JSON.stringify(value);
 export function configFingerprint(config) {
-  const { easterEggs, ...settings } = config;
+  const { easterEggs, theme, ...settings } = config;
   const gameplay = { ...settings, waves: config.waves.map(({ name, message, ...wave }) => wave) };
   let hash = 2166136261;
   for (const char of stable(gameplay)) hash = Math.imul(hash ^ char.charCodeAt(0), 16777619);

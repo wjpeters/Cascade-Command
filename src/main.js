@@ -1,12 +1,16 @@
 import { analyticsContext, recordVisit, recordFinish } from './analytics.js';
-recordVisit();
 import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, VERSION, THREATS, SHOT_COST, SCAN_COST, GAME_CONFIG, SERVICE_NAMES, clamp } from './engine.js';
-import { Renderer } from './renderer.js';
 import { Audio } from './audio.js';
 import { CATEGORIES, symbolMarkup, SERVICE_VISUALS, serviceSymbolMarkup } from './symbols.js';
 import { loadGameAssets } from './asset-loader.js';
-const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas), audio=new Audio();
+import { initializeTheme } from './theme.js';
+const theme = await initializeTheme();
+const themeUi = theme.shell ? await import(theme.shell) : null;
+themeUi?.mount(document);
+const { Renderer } = await import(theme.renderer);
+recordVisit();
+const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas,theme), audio=new Audio();
 let createGame=seed=>new Game(seed);
 let state='intro',game=createGame(),session=null,actions=[],lastFrame=null,accumulator=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
@@ -25,7 +29,7 @@ async function prepareAssets(){
   assetsLoading=true;assetsReady=false;document.body.dataset.assets='loading';
   $('retry-assets').hidden=true;$('start-error').textContent='';updateLaunchButtons();
   try{
-    const {images}=await loadGameAssets(({completed,total})=>{$('asset-status').textContent=`Spelbeelden laden · ${completed}/${total}`;});
+    const {images}=await loadGameAssets(({completed,total})=>{$('asset-status').textContent=`Spelbeelden laden · ${completed}/${total}`;},theme.assets);
     renderer.image=images.sprites;assetsReady=true;
     document.body.dataset.assets='ready';document.body.dataset.assetsReadyMs=String(Math.round(performance.now()));
     $('asset-status').textContent='Klaar voor de missie';
@@ -49,8 +53,8 @@ $('rules-scan-cost').textContent=`Scan kost ${formatNumber(SCAN_COST)} energie.`
 $('rules-scan-time').textContent=`Scan vertraagt signalen ${formatNumber(GAME_CONFIG.scan.durationSeconds)} seconden naar ${formatNumber(GAME_CONFIG.scan.speedMultiplier*100)}% snelheid en kan na ${formatNumber(GAME_CONFIG.scan.cooldownSeconds)} seconden opnieuw. Nieuw ontdekte verbindingen blijven zichtbaar. Alle leveranciers en risico’s zijn fictief; dit is een spelmetafoor, geen live RiskStudio-dataset.`;
 $('rules-branching').textContent=branchWave?`Vanaf seconde ${formatNumber(branchWave.startsAtSeconds)} kunnen ze bij gedeelde leveranciers opsplitsen. Stop ze vroeg om een kettingreactie te voorkomen.`:'Risico’s volgen de keten zonder zich op te splitsen.';
 
-$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" data-service="${SERVICE_VISUALS[name].key}" id="service-${i}"><span class="service-symbol" aria-hidden="true">${serviceSymbolMarkup(name)}</span><span class="service-name">${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
-$('category-list').innerHTML=Object.entries(CATEGORIES).filter(([kind])=>kind!=='low').map(([kind,item])=>`<div class="category" data-kind="${kind}"><span class="category-symbol">${symbolMarkup(kind)}</span><div><strong>${item.title}</strong><span>${item.detail}</span></div></div>`).join('');
+$('service-list').innerHTML=SERVICE_NAMES.map((name,i)=>`<div class="service-row" data-service="${SERVICE_VISUALS[name].key}" id="service-${i}"><span class="service-symbol" aria-hidden="true">${serviceSymbolMarkup(name,theme)}</span><span class="service-name">${name}</span><div class="service-health" role="progressbar" id="hp-${i}" aria-label="Weerbaarheid ${name}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div><strong id="health-${i}">100%</strong></div>`).join('');
+$('category-list').innerHTML=Object.entries(CATEGORIES).filter(([kind])=>kind!=='low').map(([kind,item])=>`<div class="category" data-kind="${kind}"><span class="category-symbol">${symbolMarkup(kind,theme)}</span><div><strong>${item.title}</strong><span>${item.detail}</span></div></div>`).join('');
 
 const emptyBoard=$('leaderboard').innerHTML;
 const hud={score:$('score'),time:$('time'),serviceCount:$('services').firstChild,timer:document.querySelector('.timer'),phase:$('phase'),energyFill:$('energy-fill'),energyNumber:$('energy-number'),energyMeter:$('energy-meter'),scan:$('scan'),targetScan:$('target-scan'),scanText:$('scan-text'),combo:$('combo'),comboValue:$('combo-value'),scanPeek:$('scan-peek')};
@@ -112,7 +116,7 @@ function drawIntelligence(){
   const country=document.createElement('p');country.className='intel-country';country.textContent='◎ '+info.country;
   const kind=Object.keys(THREATS).find(key=>THREATS[key].label===info.label),category=kind?CATEGORIES[kind]:null;
   const badge=document.createElement('p');badge.className='intel-threat '+info.severity;
-  if(category){const icon=document.createElement('span');icon.className='intel-threat-icon';icon.dataset.kind=kind;icon.innerHTML=symbolMarkup(kind);badge.append(icon);}
+  if(category){const icon=document.createElement('span');icon.className='intel-threat-icon';icon.dataset.kind=kind;icon.innerHTML=symbolMarkup(kind,theme);badge.append(icon);}
   badge.append(document.createTextNode(info.label));
   const table=document.createElement('dl');
   const impact=info.damage===0?'Geen in dit scenario':info.activeServices.length===0?'Diensten al uitgevallen':`${info.activeServices.join(', ')}${info.damage===null?'':` · −${info.damage*25}% bij inslag`}`;
@@ -288,11 +292,13 @@ if(document.modelContext?.registerTool){
 }
 
 
+themeUi?.connect({ game: () => game, renderer, requestFrame });
+
 // The disabled path never imports or registers the presentation plugin.
 if (GAME_CONFIG.easterEggs === true) {
   import('/plugins/easter-eggs/index.js').then(({ mount }) => {
     const plugin = mount({
-      state: () => state, pause, canvas,
+      state: () => state, pause, canvas, theme,
       point: (x, y) => renderer.point(x, y),
       audioEnabled: () => audio.enabled, audioContext: () => audio.context,
     });

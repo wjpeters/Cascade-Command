@@ -1,0 +1,19 @@
+{
+  "classicHashesUnchanged": true,
+  "checks": [
+    {
+      "width": 1685,
+      "fullTop10": true,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "fullTop10": true,
+      "errors": []
+    },
+    {
+      "compactCouncil": true,
+      "errors": []
+    }
+  ]
+}
