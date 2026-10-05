@@ -1,3 +1,5 @@
+import { localAnalytics } from './analytics/local-storage.js';
+import { metadata, eventRecord, safely } from './analytics/common.js';
 import { handleAdmin, localAdmin } from './admin/api.js';
 import { localAdminStorage } from './admin/local-storage.js';
 import http from 'node:http';
@@ -18,7 +20,9 @@ const sessions = new Map();
 const saveScores = next => {
   const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify(next, null, 2), { mode: 0o600 }); renameSync(temp, boardPath); scores = next;
 };
-const adminStore = localAdminStorage(() => scores, saveScores, sessions, VERSION);
+const analytics = localAnalytics(path.join(dataDir, 'analytics.json'));
+const adminStore = { ...localAdminStorage(() => scores, saveScores, sessions, VERSION), stats: (...args) => analytics.stats(...args) };
+const requestMetadata = (req, url, input) => metadata(new Request(url, { headers: req.headers }), input?.analytics || {}, req.socket.remoteAddress);
 const addresses = [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${port}`))];
 const json = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }); res.end(JSON.stringify(body)); };
 const body = req => new Promise((resolve, reject) => {
@@ -37,11 +41,28 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
     if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port, leaderboardAdmin: true });
     if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
+    if (url.pathname === '/api/visit' && req.method === 'POST') {
+      if (req.headers.origin !== url.origin) return json(res, 403, { error: 'Open de game op deze server.' });
+      const input = await body(req);
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input?.id || '')) return json(res, 400, { error: 'Ongeldig bezoek.' });
+      analytics.record(eventRecord('visit:' + input.id, 'visit', Date.now(), VERSION, requestMetadata(req, url, input)));
+      return json(res, 201, { recorded: true });
+    }
     if (url.pathname === '/api/session' && req.method === 'POST') {
+      const input = await body(req);
       for (const [key, s] of sessions) if (Date.now() - s.started > 30 * 60 * 1000) sessions.delete(key);
       if (sessions.size >= 500) return json(res, 429, { error: 'Even geduld; er zijn veel rondes actief.' });
-      const id = randomUUID(); sessions.set(id, { started: Date.now(), seed: SEED });
+      const id = randomUUID(), started = Date.now(); sessions.set(id, { started, seed: SEED });
+      await safely(() => analytics.record(eventRecord('round:' + id, 'round', started, VERSION, requestMetadata(req, url, input))));
       return json(res, 201, { id, seed: SEED, version: VERSION });
+    }
+    if (url.pathname === '/api/finish' && req.method === 'POST') {
+      const input = await body(req), session = sessions.get(input?.session);
+      if (!session || Date.now() - session.started > 30 * 60 * 1000) return json(res, 400, { error: 'Deze ronde is verlopen.' });
+      let game; try { game = replay(input.actions, session.seed); } catch (e) { return json(res, 400, { error: e.message }); }
+      if (Date.now() - session.started < game.tick / FPS * 1000 - 1500) return json(res, 400, { error: 'De ronde is nog niet afgelopen.' });
+      analytics.complete('round:' + input.session, game);
+      return json(res, 200, { recorded: true });
     }
     if (url.pathname === '/api/score' && req.method === 'POST') {
       const input = await body(req), session = sessions.get(input.session);
@@ -56,6 +77,7 @@ const server = http.createServer(async (req, res) => {
       const rank = updated.findIndex(s => s.id === entry.id) + 1;
       const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify([...previousEditions, ...updated.slice(0, 100)], null, 2), { mode: 0o600 }); renameSync(temp, boardPath);
       scores = [...previousEditions, ...updated.slice(0, 100)]; sessions.delete(input.session);
+      await safely(() => analytics.complete('round:' + input.session, game, true));
       return json(res, 201, { rank, score: entry.score, id: entry.id, scores: topScores() });
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') return json(res, 405, { error: 'Niet beschikbaar.' });

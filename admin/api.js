@@ -48,6 +48,11 @@ export async function handleAdmin(request, getStore, auth) {
     if (method === 'POST' && origin !== url.origin) return json(403, { error: 'Open beheer op deze website.' });
     if (url.pathname === '/api/admin/me' && method === 'GET') return json(200, auth);
     const db = getStore();
+    if (url.pathname === '/api/admin/stats' && method === 'GET') {
+      const days = Number(url.searchParams.get('days') ?? 7), page = Number(url.searchParams.get('page') || 1);
+      if (![0, 1, 7, 30, 90].includes(days) || !Number.isSafeInteger(page) || page < 1 || page > 100000) throw new InputError('Ongeldige periode.');
+      return json(200, await db.stats(days, page));
+    }
     if (url.pathname === '/api/admin/leaderboard' && method === 'GET') {
       const version = url.searchParams.get('version') || VERSION;
       const page = Number(url.searchParams.get('page') || 1), search = (url.searchParams.get('q') || '').trim();

@@ -211,3 +211,26 @@ Voor lokale scores: **Beheer Lokaal Leaderboard.command**, of `/admin` op de lok
 Bewerken en verwijderen weigeren achterhaalde invoer wanneer iemand dezelfde score intussen heeft aangepast. De oorspronkelijke speeldatum blijft behouden. Een al ingediende ronde kan een verwijderde score niet opnieuw insturen. Resetten gebeurt online atomair; lokaal wordt eerst het scorebestand veilig vervangen voordat rondes vervallen.
 
 37 tests slagen, inclusief de bestaande speltests en controles voor toegang, invoer, paginering, oude klassementen, opnieuw insturen na verwijderen, reset en lokale opslag na herstart. De Worker-bouwcontrole slaagt. Browsercontrole met uitsluitend tijdelijke testgegevens bevestigt bewerken, hersorteren, eerdere klassementen en resetbevestiging. Geen horizontale overflow bij 320 en 390 pixels. Echte opgeslagen highscores zijn tijdens het bouwen en testen niet gewijzigd. De echte ChatGPT-inlogflow wordt door Sites verzorgd en is niet met een beheerderssessie getest.
+
+
+## Gebruiksstatistieken, 5 oktober 2026
+
+Open `/admin#stats` en kies **Statistieken**. Dezelfde beheerdersrechten gelden als voor het leaderboard. De statistieken omvatten alle spelversies; lokaal en online blijven gescheiden.
+
+- Bezoeken: een geopende spelpagina die het meetverzoek verstuurt. Herladen telt opnieuw; een bezoek aan beheer telt niet.
+- Gestarte rondes: succesvol aangemaakte spelsessies. Demo’s tellen niet mee.
+- Afgeronde rondes: het spel stuurt automatisch het einde in, ook zonder een naam of score op het leaderboard. De server controleert de spelacties en minimale rondeduur met dezelfde replay als bij scoreopslag.
+- Opgeslagen scores: eenmalig geteld bij het opslaan van een ronde. Opnieuw proberen na een verloren antwoord telt niet dubbel.
+- Periodekeuze: vandaag, 7, 30, 90 dagen of sinds de start van de metingen. Daggrenzen en tijden volgen Europe/Amsterdam. De grafiek toont maximaal 30 dagen; de totalen volgen de volledige geselecteerde periode.
+- Inzichten: afrondingspercentage, gemiddelde simulatieduur en score, apparaat, browser, besturingssysteem, taal, globale schermbreedteklasse, land, verwijzende website en recente rondes. Alleen de hostnaam van de verwijzer blijft bewaard, zonder URL-pad of zoekparameters.
+- IP-overzicht: maximaal de 20 actiefste adressen in de gekozen periode en maximaal de afgelopen 30 dagen. ‘Unieke IP-adressen’ betreft bezoeken met een beschikbaar adres; dit zijn geen unieke personen. Een gedeelde wifi-verbinding, VPN of wisselend adres beperkt de interpretatie.
+
+Online gebruikt de server uitsluitend `CF-Connecting-IP`, nooit een door de browser ingestuurd IP of een willekeurige `X-Forwarded-For`-waarde. Land gebruikt beschikbare Cloudflare-landmetadata. Het bekende gedeelde Cloudflare-Workeradres wordt als onbekend behandeld. Zie [Cloudflare: HTTP-headers](https://developers.cloudflare.com/fundamentals/reference/http-headers/). Ontbrekende gegevens krijgen ‘Niet beschikbaar’ of ‘Onbekend’; de IP-dekkingsregel maakt dit zichtbaar. De mate waarin Sites oorspronkelijke bezoekersmetadata doorgeeft is een hostingafhankelijkheid. Lokaal komt het IP van de socket; er wordt geen IP-geolocatiedienst aangeroepen.
+
+Volledige IP-adressen zijn 30 dagen zichtbaar, overige details 90 dagen. Opschoning gebeurt bij volgende meet- of statistiekverzoeken. Bij een volledig ongebruikte site is er dus geen apart nachtelijk verwijderproces. Anonieme dagtotalen blijven behouden. Er worden geen analyticscookies, blijvende bezoekerscodes, namen, volledige User-Agent-headers of precieze locaties aan statistieken toegevoegd. De bestaande openbare leaderboardnamen zijn apart opgeslagen. Spelers zien een korte melding met een link naar `/privacy.html`.
+
+Leaderboardbewerkingen en resets veranderen de historische gebruiksmetingen niet. ‘Niet afgerond’ kan nog lopend betekenen of een ontbrekend eindbericht. Metingen zijn geen garantie op menselijke bezoeken: bots, netwerkverlies en geblokkeerde scripts kunnen de cijfers beïnvloeden. Er is geen historische backfill van bestaande scores naar vermeende bezoek- of speeltellingen.
+
+**Opslag:** online nieuwe tabellen `analytics_events` en `analytics_daily` via de aanvullende Drizzle-migratie `0001_free_firedrake.sql`; bestaande tabellen en scores worden niet gewijzigd. Lokaal `data/analytics.json`, buiten iCloud, met beperkte bestandsrechten. Een statistiekfout blokkeert het starten of opslaan van een spelronde niet. Een onleesbaar lokaal statistiekbestand wordt niet overschreven met een leeg bestand.
+
+**Controle:** 44 tests slagen, inclusief herhaalde verzoeken, tellen zonder leaderboardinzending, privacygrenzen, Amsterdamse dagfilters, IP- en detailretentie, behoud van totalen, afgeschermde API en lokale HTTP-compatibiliteit. Worker-bouwcontrole en downloadbudget slagen. Een echte lokale browsertestronde is automatisch als bezoek/start/einde geregistreerd zonder scoreopslag; dezelfde statistieken zijn in de beheerinterface bevestigd. Geen horizontale overflow op 320 en 390 pixels. De reeds ingelogde online beheeromgeving is gelezen; bestaande toegang werkt. Er zijn geen bestaande highscores veranderd of IP-adressen naar WPOS gekopieerd.

@@ -1,3 +1,4 @@
+import { initStats } from './admin-stats.js';
 const $ = id => document.getElementById(id);
 let version = '', currentVersion = '', page = 1, total = 0, versions = [], rows = [], selected = null, action = '', loading = false, loadId = 0;
 const number = new Intl.NumberFormat('nl-NL');
@@ -120,5 +121,5 @@ $('export').addEventListener('click', async () => {
 try {
   const me = await api('me'); $('access').hidden = true; $('manager').hidden = false;
   $('environment').textContent = me.hosting === 'sites' ? 'Online klassement' : 'Lokaal klassement';
-  $('account').textContent = me.email; $('signout').hidden = me.hosting !== 'sites'; await load();
+  $('account').textContent = me.email; $('signout').hidden = me.hosting !== 'sites'; await load(); initStats(api);
 } catch (error) { if (![401, 403].includes(error.status)) { $('access').querySelector('h2').textContent = 'Beheer niet bereikbaar'; $('access-message').textContent = error.message; } }

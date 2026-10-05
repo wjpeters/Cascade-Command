@@ -1,3 +1,5 @@
+import { analyticsStorage } from './analytics-storage.js';
+import { metadata, eventRecord, safely } from '../analytics/common.js';
 import { handleAdmin, hostedAdmin } from '../admin/api.js';
 import { adminStorage } from './admin-storage.js';
 import { replay, SEED, VERSION, FPS } from '../src/engine.js';
@@ -36,10 +38,29 @@ export async function handleApi(request, env) {
       return json(200, { version: VERSION, hosting: 'sites', mobileUrls: [url.origin + '/'] });
     }
     if (url.pathname === '/api/leaderboard' && method === 'GET') return json(200, { scores: await storage(env).top() });
+    if (url.pathname === '/api/visit' && method === 'POST') {
+      if (request.headers.get('origin') !== url.origin) return json(403, { error: 'Open de game op deze website.' });
+      const input = await readBody(request);
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.id || '')) throw new InputError('Ongeldig bezoek.');
+      await analyticsStorage(env).record(eventRecord('visit:' + input.id, 'visit', Date.now(), VERSION, metadata(request, input.analytics || {})));
+      return json(201, { recorded: true });
+    }
     if (url.pathname === '/api/session' && method === 'POST') {
+      const input = await readBody(request);
       const db = storage(env), now = Date.now(), id = crypto.randomUUID();
       const created = await db.createSession({ id, seed: SEED, version: VERSION, started: now, expires: now + 30 * 60 * 1000 });
+      if (created) await safely(() => analyticsStorage(env).record(eventRecord('round:' + id, 'round', now, VERSION, metadata(request, input.analytics || {}))));
       return created ? json(201, { id, seed: SEED, version: VERSION }) : json(429, { error: 'Even geduld; er zijn veel rondes actief.' });
+    }
+    if (url.pathname === '/api/finish' && method === 'POST') {
+      const input = await readBody(request);
+      if (typeof input.session !== 'string' || input.session.length > 64) throw new InputError('Ongeldige ronde.');
+      const session = await storage(env).session(input.session), now = Date.now();
+      if (!session || session.expires < now || session.version !== VERSION) throw new InputError('Deze ronde is verlopen.');
+      let game; try { game = replay(input.actions, session.seed); } catch (error) { throw new InputError(error.message); }
+      if (now - session.started < game.tick / FPS * 1000 - 1500) throw new InputError('De ronde is nog niet afgelopen.');
+      await analyticsStorage(env).complete('round:' + input.session, game);
+      return json(200, { recorded: true });
     }
     if (url.pathname === '/api/score' && method === 'POST') {
       const input = await readBody(request);
@@ -48,16 +69,17 @@ export async function handleApi(request, env) {
       if (!session || session.expires < now || session.version !== VERSION) throw new InputError('Deze ronde is verlopen. Speel opnieuw.');
       // Retrying after a lost response returns the original result instead of adding a score.
       const existing = await db.saved(input.session);
-      if (existing) return json(200, await db.result(existing));
+      if (existing) { await safely(() => analyticsStorage(env).markSaved('round:' + input.session)); return json(200, await db.result(existing)); }
       const name = typeof input.name === 'string' ? input.name.normalize('NFKC').trim().replace(/\s+/g, ' ') : '';
       if (!/^[\p{L}\p{N} ._-]{1,18}$/u.test(name)) throw new InputError('Gebruik 1–18 letters, cijfers, spaties of . _ -');
       let game; try { game = replay(input.actions, session.seed); } catch (error) { throw new InputError(error.message); }
       if (now - session.started < game.tick / FPS * 1000 - 1500) throw new InputError('De ronde is nog niet afgelopen.');
       const entry = await db.save({ id: crypto.randomUUID(), name, score: game.score, services: game.services, date: new Date(now).toISOString(), version: VERSION }, input.session, now);
       if (!entry) throw new InputError('Deze ronde is verlopen. Speel opnieuw.');
+      await safely(() => analyticsStorage(env).complete('round:' + input.session, game, true));
       return json(201, await db.result(entry));
     }
-    return json(['/api/meta', '/api/leaderboard', '/api/session', '/api/score'].includes(url.pathname) ? 405 : 404, { error: 'Niet beschikbaar.' });
+    return json(['/api/meta', '/api/leaderboard', '/api/session', '/api/score', '/api/visit', '/api/finish'].includes(url.pathname) ? 405 : 404, { error: 'Niet beschikbaar.' });
   } catch (error) {
     if (error instanceof InputError) return json(error.status, { error: error.message });
     console.error('Cascade opslag niet beschikbaar:', error.message);

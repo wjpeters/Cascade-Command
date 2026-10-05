@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="nl">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Leaderboardbeheer · Cascade Command</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/tokens.css"><link rel="stylesheet" href="/admin.css"><script type="module" src="/admin.js"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Beheer · Cascade Command</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/tokens.css"><link rel="stylesheet" href="/admin.css"><script type="module" src="/admin.js"></script></head>
 <body>
-<header><div><span class="brand">RISKSTUDIO / CASCADE COMMAND</span><h1>Leaderboardbeheer</h1></div><a href="/" target="_blank" rel="noopener">Open game</a></header>
+<header><div><span class="brand">RISKSTUDIO / CASCADE COMMAND</span><h1>Cascade Command beheer</h1></div><a href="/" target="_blank" rel="noopener">Open game</a></header>
 <main>
 <section id="access" class="panel"><h2>Toegang controleren</h2><p id="access-message">Even geduld…</p><a id="signin" class="button primary" href="/signin-with-chatgpt?return_to=%2Fadmin" target="_top" hidden>Inloggen met ChatGPT</a><a id="switch-account" href="/signout-with-chatgpt?return_to=%2Fadmin" target="_top" hidden>Ander account gebruiken</a></section>
 <section id="manager" hidden>
 <div class="identity"><strong id="environment"></strong><span id="account"></span><a id="signout" href="/signout-with-chatgpt?return_to=%2Fadmin" target="_top" hidden>Uitloggen</a></div>
-<div class="panel">
+<nav class="admin-tabs" aria-label="Beheeronderdelen"><button id="tab-board" aria-pressed="true">Leaderboard</button><button id="tab-stats" aria-pressed="false">Statistieken</button></nav>
+<div class="panel" id="board-panel">
 <div class="toolbar"><label>Klassement<select id="version"></select></label><label>Zoek speler<input id="search" type="search" placeholder="Naam" maxlength="100"></label><button id="refresh">Vernieuwen</button></div>
 <div class="list-heading"><div><h2 id="board-title">Huidig klassement</h2><p id="count">Laden…</p></div><div class="actions"><button id="export">Exporteren</button><button id="reset" class="danger">Klassement resetten</button></div></div>
 <p class="note">De game toont de beste 10. Hier beheer je alle opgeslagen scores.</p>
@@ -15,6 +16,24 @@
 <p id="empty" hidden>Dit klassement is leeg.</p>
 <div class="pagination"><button id="previous">Vorige</button><span id="page"></span><button id="next">Volgende</button></div>
 </div>
+<section id="stats-panel" hidden>
+<div class="stats-header"><div><h2>Gebruik van de game</h2><p id="stats-since">Metingen worden geladen…</p></div><div class="actions"><label>Periode<select id="stats-days"><option value="1">Vandaag</option><option value="7" selected>Laatste 7 dagen</option><option value="30">Laatste 30 dagen</option><option value="90">Laatste 90 dagen</option><option value="0">Sinds de start</option></select></label><button id="stats-refresh">Vernieuwen</button></div></div>
+<p id="stats-error" role="alert" hidden></p>
+<div id="stats-content" hidden>
+<div class="stats-cards">
+<article class="panel"><h3>Bezoeken</h3><strong id="stats-visits">0</strong><p>Elke geopende spelpagina</p></article>
+<article class="panel"><h3>Gestarte rondes</h3><strong id="stats-starts">0</strong><p>Demo’s tellen niet mee</p></article>
+<article class="panel"><h3>Afgeronde rondes</h3><strong id="stats-completed">0</strong><p id="stats-rate"></p></article>
+<article class="panel"><h3>Scores opgeslagen</h3><strong id="stats-saved">0</strong><p>Ingediend na een ronde</p></article>
+</div>
+<div class="stats-summary"><span id="stats-average"></span><span id="stats-network"></span></div>
+<div class="panel stats-chart-panel"><div class="list-heading"><h3>Gebruik per dag</h3><span class="chart-legend"><i></i> Bezoeken <i></i> Rondes</span></div><p class="note">Laatste maximaal 30 dagen binnen de gekozen periode · Nederlandse tijd.</p><div id="stats-chart" class="stats-chart"></div><details><summary>Dagcijfers bekijken</summary><table><thead><tr><th>Datum</th><th>Bezoeken</th><th>Rondes</th><th>Afgerond</th><th>Opgeslagen</th></tr></thead><tbody id="stats-daily"></tbody></table></details></div>
+<div class="stats-breakdowns"><section class="panel"><h3>Apparaten</h3><div id="stats-device"></div></section><section class="panel"><h3>Browsers</h3><div id="stats-browser"></div></section><section class="panel"><h3>Landen</h3><div id="stats-country"></div></section><section class="panel"><h3>Herkomst</h3><div id="stats-referrer"></div></section></div>
+<p class="note">Uitsplitsingen zijn gebaseerd op bezoeken met detailgegevens van de afgelopen 90 dagen. Browser en apparaat zijn schattingen; land is gebaseerd op het netwerk.</p>
+<details class="panel stats-section"><summary>IP-adressen · maximaal de afgelopen 30 dagen</summary><p class="note">De 20 actiefste adressen in de gekozen periode. Eén adres kan bij meerdere spelers horen, bijvoorbeeld op hetzelfde wifi-netwerk. Adressen kunnen ook wisselen.</p><table><thead><tr><th>IP-adres</th><th>Land</th><th>Bezoeken</th><th>Rondes</th><th>Laatst gezien</th></tr></thead><tbody id="stats-ips"></tbody></table><p id="stats-no-ips" hidden>Geen IP-adressen beschikbaar in deze periode.</p></details>
+<section class="panel stats-section"><div class="list-heading"><h3>Recente rondes</h3><span id="stats-round-count"></span></div><p class="note">Alle spelversies · detailgegevens maximaal 90 dagen. ‘Niet afgerond’ kan ook betekenen dat een ronde nog loopt of het eindbericht niet is ontvangen.</p><table class="round-table"><thead><tr><th>Start</th><th>Resultaat</th><th>IP / land</th><th>Apparaat / browser</th><th>Herkomst</th></tr></thead><tbody id="stats-rounds"></tbody></table><p id="stats-no-rounds" hidden>Nog geen rondes gemeten in deze periode.</p><div class="pagination"><button id="stats-prev">Vorige rondes</button><span id="stats-page"></span><button id="stats-next">Volgende rondes</button></div></section>
+<details class="stats-method"><summary>Over deze metingen en bewaartermijnen</summary><p>Bezoeken tellen na het laden van de spelpagina; opnieuw laden telt opnieuw. Rondes tellen bij een geslaagde start. Het einde wordt door de server gecontroleerd, ook zonder leaderboardinzending. Geblokkeerde of verloren meetverzoeken kunnen ontbreken. Totalen omvatten alle spelversies en blijven behouden wanneer je het leaderboard wist of bewerkt.</p><p>IP-adressen zijn 30 dagen zichtbaar en detailgegevens 90 dagen. Verlopen details worden bij een volgend meet- of statistiekverzoek opgeruimd. Dagtotalen zonder IP-adressen blijven bewaard. Er worden geen analyticscookies, blijvende bezoekerscodes of precieze locaties verzameld. Eerdere bezoeken en niet-opgeslagen rondes kunnen niet met terugwerkende kracht worden vastgesteld.</p></details>
+</div></section>
 </section>
 <p id="status" role="status" aria-live="polite"></p>
 </main>

@@ -1,3 +1,5 @@
+import { analyticsContext, recordVisit, recordFinish } from './analytics.js';
+recordVisit();
 import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, VERSION, THREATS, SHOT_COST, SCAN_COST, GAME_CONFIG, SERVICE_NAMES, clamp } from './engine.js';
 import { Renderer } from './renderer.js';
@@ -144,7 +146,7 @@ function updateIntelFeed(){
 async function start(){
   if(busy||!assetsReady)return;busy=true;updateLaunchButtons();$('start-error').textContent='';
   try{
-    session=await request('/api/session',{method:'POST',body:'{}'});
+    session=await request('/api/session',{method:'POST',body:JSON.stringify({analytics:analyticsContext()})});
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
     game=createGame(session.seed,true);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
@@ -173,6 +175,7 @@ $('help').addEventListener('click',openRules);$('intro-help').addEventListener('
 $('close-rules').addEventListener('click',()=>$('rules-dialog').close());$('rules-done').addEventListener('click',()=>$('rules-dialog').close());
 $('rules-dialog').addEventListener('click',event=>{if(event.target===$('rules-dialog'))$('rules-dialog').close();});
 function finish(){
+  recordFinish(session,actions);
   setState('result');
   $('result-title').textContent=game.services===3?'Keten overeind.':game.services===0?'De keten brak.':'Missie voltooid.';
   $('final-score').textContent=game.score.toLocaleString('nl-NL');
