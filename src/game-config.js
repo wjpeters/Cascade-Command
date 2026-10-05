@@ -5,7 +5,7 @@
 // Gewichten zijn verhoudingen: bijvoorbeeld 60 / 30 / 10. Een gewicht 0 schakelt die optie uit.
 
 export const GAME_CONFIG = {
-  theme: 'riskstudio-app',               // Vormgeving. Beschikbare thema’s: src/themes/index.js.
+  theme: 'classic',               // Vormgeving. Beschikbare thema’s: src/themes/index.js.
   // Presentatieplugin: true = aan, false = geen plugincode of portretten laden.
   // Na wijzigen lokaal herstarten + pagina vernieuwen; online opnieuw bouwen/publiceren.
   // Deze schakelaar verandert de spelregels of het leaderboard niet.
