@@ -1,3 +1,5 @@
+import { ensureCanonicalLocation } from '/src/site-location.js';
+await ensureCanonicalLocation();
 import { initStats } from './admin-stats.js';
 const $ = id => document.getElementById(id);
 let prizeDraw = null, drawing = false;

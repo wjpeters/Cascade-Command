@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-06",
+  "customUrl": "https://game.riskstudio.com",
+  "httpNavigationStatus": 200,
+  "redirectLocation": null,
+  "server": "Riskstudio Gateway",
+  "backendOrigin": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "isolatedStartStatus": 403,
+  "isolatedError": "Open de game op deze website.",
+  "productionRequests": [
+    {
+      "timestamp": "2026-10-06T14:35:35.635Z",
+      "requestId": "bec6410e5d9b25e4e2275c3fca255ce8",
+      "method": "POST",
+      "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/api/session",
+      "status": 403
+    },
+    {
+      "timestamp": "2026-10-06T14:35:33.339Z",
+      "requestId": "5b36017d846d3b5ccbc13f0359350167",
+      "method": "POST",
+      "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/api/session",
+      "status": 403
+    },
+    {
+      "timestamp": "2026-10-06T14:35:25.305Z",
+      "requestId": "8bd3e14d0cee57722c6a671f85625152",
+      "method": "POST",
+      "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/api/session",
+      "status": 403
+    },
+    {
+      "timestamp": "2026-10-06T14:35:23.405Z",
+      "requestId": "ed01372c0019e121a1f9eb1d051f34d1",
+      "method": "POST",
+      "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/api/visit",
+      "status": 403
+    }
+  ]
+}

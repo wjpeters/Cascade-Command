@@ -1,3 +1,5 @@
+import { ensureCanonicalLocation } from './site-location.js';
+await ensureCanonicalLocation();
 import { initializePrizes } from './leaderboard-prizes.js';
 import { GAME_CONFIG } from './game-config.js';
 import { initializeTheme } from './theme.js';

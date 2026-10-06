@@ -1,0 +1,22 @@
+{
+  "fixtureOnly": true,
+  "productionWrites": false,
+  "results": [
+    {
+      "entered": "https://game.riskstudio.com/?campaign=demo#intro",
+      "landed": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/?campaign=demo#intro"
+    },
+    {
+      "entered": "https://game.riskstudio.com/leaderboard?theme=classic#prizes",
+      "landed": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard?theme=classic#prizes"
+    },
+    {
+      "entered": "https://game.riskstudio.com/admin#stats",
+      "landed": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/admin#stats"
+    }
+  ],
+  "aliasPosts": [],
+  "canonicalFixtureStart": true,
+  "canonicalOriginHasNoLoop": true,
+  "consoleErrors": []
+}

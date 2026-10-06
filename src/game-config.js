@@ -9,7 +9,7 @@ export const GAME_CONFIG = {
   // Presentatieplugin: true = aan, false = geen plugincode of portretten laden.
   // Na wijzigen lokaal herstarten + pagina vernieuwen; online opnieuw bouwen/publiceren.
   // Deze schakelaar verandert de spelregels of het leaderboard niet.
-  easterEggs: true,
+  easterEggs: false,
   // Prijzen en schermrotatie veranderen het bestaande klassement niet.
   leaderboard: {
     demo: true,                 // false bij echte prijzen: verwijdert het demo-label.

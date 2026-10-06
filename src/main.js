@@ -1,3 +1,5 @@
+import { ensureCanonicalLocation } from './site-location.js';
+await ensureCanonicalLocation();
 import { analyticsContext, recordVisit, recordFinish } from './analytics.js';
 import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, VERSION, THREATS, SHOT_COST, SCAN_COST, GAME_CONFIG, SERVICE_NAMES, clamp } from './engine.js';
