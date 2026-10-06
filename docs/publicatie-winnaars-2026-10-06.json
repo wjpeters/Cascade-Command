@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-06",
+  "version_number": 14,
+  "commit_sha": "4b48903ca1cd78cac01cd704d57338b7b80304a7",
+  "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+  "version_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16~appgver_27bf0e3f37d48191a5b72d52e726d052",
+  "deployment_id": "appgdep_6ac4f0be6c7481919a27c5a8c7dda2cd",
+  "status": "succeeded",
+  "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "evidence": "Native Sites-publicatiesucces; 53 regressietests, Worker-controle en geïsoleerde browsercontrole. Geen nieuwe online schrijftest."
+}

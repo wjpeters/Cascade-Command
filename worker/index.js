@@ -2,7 +2,7 @@ import { handleApi } from './api.js';
 import assets from 'cascade:assets';
 const security = {
   'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin',
-  'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
+  'Content-Security-Policy': "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
 };
 export default {
   async fetch(request, env) {

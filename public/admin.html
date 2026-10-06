@@ -11,6 +11,7 @@
 <div class="panel" id="board-panel">
 <div class="toolbar"><label>Klassement<select id="version"></select></label><label>Zoek speler<input id="search" type="search" placeholder="Naam" maxlength="100"></label><button id="refresh">Vernieuwen</button></div>
 <div class="list-heading"><div><h2 id="board-title">Huidig klassement</h2><p id="count">Laden…</p></div><div class="actions"><button id="export">Exporteren</button><button id="reset" class="danger">Klassement resetten</button></div></div>
+<section class="prize-admin" aria-labelledby="prize-admin-title"><div><h3 id="prize-admin-title">Dagelijkse troostprijs</h3><p>Alle spelersnamen in het huidige klassement doen mee, behalve de top 3. Eén kans per naam. Verloot na afsluiting van de speeldag; de uitslag blijft bewaard.</p><p id="prize-draw-status" role="status">Trekking laden…</p></div><button id="draw-prize" class="primary" disabled>Kies willekeurige winnaar</button></section>
 <p class="note">De game toont de beste 10. Hier beheer je alle opgeslagen scores.</p>
 <div id="table-wrap"><table><thead><tr><th scope="col">Speler</th><th scope="col">Score</th><th scope="col">Diensten</th><th scope="col">Gespeeld</th><th scope="col"><span class="sr-only">Acties</span></th></tr></thead><tbody id="rows"></tbody></table></div>
 <p id="empty" hidden>Dit klassement is leeg.</p>

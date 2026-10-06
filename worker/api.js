@@ -3,6 +3,7 @@ import { metadata, eventRecord, safely } from '../analytics/common.js';
 import { handleAdmin, hostedAdmin } from '../admin/api.js';
 import { adminStorage } from './admin-storage.js';
 import { replay, SEED, VERSION, FPS } from '../src/engine.js';
+import { prizeStorage } from './prize-storage.js';
 import { storage } from './storage.js';
 const json = (status, body) => Response.json(body, {
   status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' },
@@ -37,7 +38,7 @@ export async function handleApi(request, env) {
     if (url.pathname === '/api/meta' && method === 'GET') {
       return json(200, { version: VERSION, hosting: 'sites', mobileUrls: [url.origin + '/'] });
     }
-    if (url.pathname === '/api/leaderboard' && method === 'GET') return json(200, { scores: await storage(env).top() });
+    if (url.pathname === '/api/leaderboard' && method === 'GET') return json(200, { scores: await storage(env).top(), consolation: await prizeStorage(env).publicDraw() });
     if (url.pathname === '/api/visit' && method === 'POST') {
       if (request.headers.get('origin') !== url.origin) return json(403, { error: 'Open de game op deze website.' });
       const input = await readBody(request);

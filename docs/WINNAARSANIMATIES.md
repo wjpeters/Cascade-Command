@@ -23,3 +23,7 @@ De monitorindeling blijft gelijk en toont de top 10 zonder scrollen op de gecont
 De monitorbestanden meten 24.959 van maximaal 25.000 bytes. De bestaande game meet 795.432 van maximaal 800.000 bytes; alle gepubliceerde bestanden samen 820.391 van maximaal 825.000 bytes. Geen nieuwe afbeeldingen of externe bibliotheken.
 
 [Controlebewijs](winners-evidence-2026-10-06/verification.json), [desktopvoorbeeld](winners-evidence-2026-10-06/riskstudio-app-1920.png), [mobielvoorbeeld](winners-evidence-2026-10-06/riskstudio-app-390.png). De beelden bevatten fictieve spelers en een inmiddels gesloten testadres. Publicatie wordt afzonderlijk vastgelegd zodra Sites succes bevestigt.
+
+## Live gepubliceerd
+
+Sites-versie 14 is succesvol gepubliceerd op [het live leaderboard](https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard). Native Sites-status `succeeded`, broncommit `4b48903ca1cd78cac01cd704d57338b7b80304a7`. Bestaande openbare toegang, DB-binding, score-API en spelregels behouden. [Publicatiebewijs](publicatie-winnaars-2026-10-06.json).

@@ -10,6 +10,20 @@ export const GAME_CONFIG = {
   // Na wijzigen lokaal herstarten + pagina vernieuwen; online opnieuw bouwen/publiceren.
   // Deze schakelaar verandert de spelregels of het leaderboard niet.
   easterEggs: true,
+  // Prijzen en schermrotatie veranderen het bestaande klassement niet.
+  leaderboard: {
+    demo: true,                 // false bij echte prijzen: verwijdert het demo-label.
+    flipIntervalSeconds: 12,      // Tijd per kant. 0 = alleen handmatig draaien.
+    timeZone: 'Europe/Amsterdam', // Kalenderdag van de dagelijkse trekking.
+    prizes: {
+      podium: [
+        { title: 'Galaxy koptelefoon', description: 'Draadloos genieten. Demo-prijs.', image: '/assets/prizes/headphones.svg' },
+        { title: 'Orbit speaker', description: 'Een feestje voor onderweg. Demo-prijs.', image: '/assets/prizes/speaker.svg' },
+        { title: 'Cascade thermos', description: 'Warme koffie, koele keten. Demo-prijs.', image: '/assets/prizes/thermos.svg' },
+      ],
+      consolation: { title: 'Mission snackbox', description: 'Een lekkere verrassing. Demo-prijs.', image: '/assets/prizes/snacks.svg' },
+    },
+  },
 
   round: {
     durationSeconds: 75,

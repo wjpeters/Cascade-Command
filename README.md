@@ -262,3 +262,11 @@ De afzonderlijke [live leaderboardpagina](https://riskstudio-cascade-command.cod
 ## Winnaarsanimaties, 6 oktober 2026
 
 Het aparte leaderboard heeft bewegende goud-/zilver-/bronseffecten voor de top 3: kroon, beker, medaille, glans en korte confettipulsen. Nieuwe podiumplekken vieren direct hun entree. De scores en QR blijven vast; pauzeren, minder beweging en beide thema’s zijn gecontroleerd. 53 tests en browsercontrole op zes schermmaten slagen. [Details en bewijs](docs/WINNAARSANIMATIES.md).
+
+## Sites-versie 14 gepubliceerd, 6 oktober 2026
+
+De top 3-winnaarsanimaties staan op [het live leaderboard](https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard): zwevende kroon, beker en medaille, glans, confetti en een entree bij een nieuwe podiumplek. Pauzeknop en minder beweging zijn meegenomen. 53 tests, browsercontrole op zes schermmaten, downloadbudget en Worker-bouwcontrole slagen. Native Sites-publicatiesucces bevestigd voor broncommit `4b48903ca1cd78cac01cd704d57338b7b80304a7`; bestaande toegang en databasebinding behouden. [Details](docs/WINNAARSANIMATIES.md), [publicatiebewijs](docs/publicatie-winnaars-2026-10-06.json).
+
+## Prijzen en dagelijkse troostprijs, 6 oktober 2026
+
+De missiekaart op `/leaderboard` draait iedere twaalf seconden naar configureerbare prijzen met afbeeldingen. Instellingen staan onder `GAME_CONFIG.leaderboard`; demo-prijzen meegeleverd. In `/admin` kiest de beheerder één troostprijswinnaar per Nederlandse kalenderdag uit alle spelersnamen van het huidige klassement, met uitsluiting van alle scores van de podiumspelers. De uitslag verschijnt live en blijft opgeslagen. [Handleiding](docs/PRIJZEN_EN_TREKKING.md).

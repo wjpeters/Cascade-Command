@@ -48,6 +48,14 @@ export async function handleAdmin(request, getStore, auth) {
     if (method === 'POST' && origin !== url.origin) return json(403, { error: 'Open beheer op deze website.' });
     if (url.pathname === '/api/admin/me' && method === 'GET') return json(200, auth);
     const db = getStore();
+    if (url.pathname === '/api/admin/prize-draw' && method === 'GET') return json(200, await db.drawStatus());
+    if (url.pathname === '/api/admin/prize-draw' && method === 'POST') {
+      const input = await readInput(request);
+      const current = await db.publicDraw();
+      if (input.version !== VERSION || input.day !== current.day) throw new InputError('De dag of het klassement is gewijzigd. Vernieuw beheer.');
+      const result = await db.drawPrize(input.day);
+      return result.winner ? json(result.created ? 201 : 200, result) : json(409, { error: 'Geen deelnemers buiten de top 3 beschikbaar, of het podium is gewijzigd. Vernieuw de lijst.' });
+    }
     if (url.pathname === '/api/admin/stats' && method === 'GET') {
       const days = Number(url.searchParams.get('days') ?? 7), page = Number(url.searchParams.get('page') || 1);
       if (![0, 1, 7, 30, 90].includes(days) || !Number.isSafeInteger(page) || page < 1 || page > 100000) throw new InputError('Ongeldige periode.');

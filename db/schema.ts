@@ -16,6 +16,10 @@ export const scores = sqliteTable('scores', {
 ]);
 
 
+export const prizeDraws = sqliteTable('prize_draws', {
+  version: text('version').notNull(), day: text('day').notNull(), result: text('result').notNull(),
+}, table => [uniqueIndex('idx_prize_draws_day').on(table.version, table.day)]);
+
 export const analyticsEvents = sqliteTable('analytics_events', {
   id: text('id').primaryKey(), kind: text('kind').notNull(), started: integer('started').notNull(), day: text('day').notNull(),
   version: text('version').notNull(), finished: integer('finished'), saved: integer('saved').notNull().default(0),

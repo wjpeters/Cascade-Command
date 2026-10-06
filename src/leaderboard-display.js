@@ -1,3 +1,4 @@
+import { initializePrizes } from './leaderboard-prizes.js';
 import { GAME_CONFIG } from './game-config.js';
 import { initializeTheme } from './theme.js';
 import { createLiveLeaderboard, gameShareUrl } from './leaderboard-live.js';
@@ -11,6 +12,7 @@ initializeTheme(new URLSearchParams(location.search).get('theme') || GAME_CONFIG
   $('display-message').textContent = 'Thema kon niet laden. De standaardweergave blijft beschikbaar.';
 });
 $('round-duration').textContent = GAME_CONFIG.round.durationSeconds;
+const prizes = initializePrizes();
 
 async function request(route, signal) {
   const response = await fetch(route, { cache: 'no-store', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000) });
@@ -90,7 +92,7 @@ function status(state) {
     if (!hasScores) placeholder('Even geen verbinding.', 'Het klassement verschijnt vanzelf zodra de verbinding terug is.');
   }
 }
-const live = createLiveLeaderboard({ load: async signal => (await request('/api/leaderboard', signal)).scores, onScores: drawScores, onStatus: status });
+const live = createLiveLeaderboard({ load: signal => request('/api/leaderboard', signal), onScores: drawScores, onUpdate: data => prizes.update(data.consolation), onStatus: status });
 
 async function refreshShare() {
   if (document.hidden || sharePending) return;
@@ -124,7 +126,7 @@ $('winner-motion').addEventListener('click', () => {
   motionPaused = !motionPaused;
   const button = $('winner-motion'), label = motionPaused ? 'Animaties hervatten' : 'Animaties pauzeren';
   button.setAttribute('aria-pressed', motionPaused); button.setAttribute('aria-label', label); button.title = label; button.textContent = motionPaused ? '✦' : 'Ⅱ';
-  document.body.dataset.motionPaused = String(motionPaused || document.hidden);
+  document.body.dataset.motionPaused = String(motionPaused || document.hidden); prizes.pause(motionPaused || document.hidden);
 });
 $('display-fullscreen').addEventListener('click', async () => {
   try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); }
@@ -134,8 +136,8 @@ document.addEventListener('fullscreenchange', () => {
   const label = document.fullscreenElement ? 'Verlaat volledig scherm' : 'Volledig scherm';
   $('display-fullscreen').setAttribute('aria-label', label); $('display-fullscreen').title = label;
 });
-function resume() { if (!document.hidden) { document.body.dataset.motionPaused = String(motionPaused); live.start(); live.refresh(); clearTimeout(shareTimer); void refreshShare(); } }
-function pause() { document.body.dataset.motionPaused = 'true'; live.stop(); clearTimeout(shareTimer); }
+function resume() { if (!document.hidden) { document.body.dataset.motionPaused = String(motionPaused); prizes.pause(motionPaused); live.start(); live.refresh(); clearTimeout(shareTimer); void refreshShare(); } }
+function pause() { document.body.dataset.motionPaused = 'true'; prizes.pause(true); live.stop(); clearTimeout(shareTimer); }
 document.addEventListener('visibilitychange', () => document.hidden ? pause() : resume());
 window.addEventListener('online', resume);
 window.addEventListener('offline', () => { pause(); status('offline'); });

@@ -1,0 +1,217 @@
+{
+  "fixtureOnly": true,
+  "version": "cascade-3-14f91b15",
+  "sizes": [
+    {
+      "theme": "riskstudio-app",
+      "face": "front",
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920,
+      "scrollHeight": 1080,
+      "rows": 10,
+      "cardHeight": 832.0625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "back",
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920,
+      "scrollHeight": 1080,
+      "rows": 10,
+      "cardHeight": 832.0625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "front",
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1366,
+      "scrollHeight": 768,
+      "rows": 10,
+      "cardHeight": 593.640625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "back",
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1366,
+      "scrollHeight": 768,
+      "rows": 10,
+      "cardHeight": 593.640625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "front",
+      "width": 1080,
+      "height": 1920,
+      "scrollWidth": 1080,
+      "scrollHeight": 1920,
+      "rows": 10,
+      "cardHeight": 1645.015625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "back",
+      "width": 1080,
+      "height": 1920,
+      "scrollWidth": 1080,
+      "scrollHeight": 1920,
+      "rows": 10,
+      "cardHeight": 1645.015625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "front",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1823,
+      "rows": 10,
+      "cardHeight": 778.40625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "back",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1823,
+      "rows": 10,
+      "cardHeight": 778.40625
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "front",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 1907,
+      "rows": 10,
+      "cardHeight": 787.28125
+    },
+    {
+      "theme": "riskstudio-app",
+      "face": "back",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 1907,
+      "rows": 10,
+      "cardHeight": 787.28125
+    },
+    {
+      "theme": "classic",
+      "face": "front",
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920,
+      "scrollHeight": 1080,
+      "rows": 10,
+      "cardHeight": 831.890625
+    },
+    {
+      "theme": "classic",
+      "face": "back",
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920,
+      "scrollHeight": 1080,
+      "rows": 10,
+      "cardHeight": 831.890625
+    },
+    {
+      "theme": "classic",
+      "face": "front",
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1366,
+      "scrollHeight": 768,
+      "rows": 10,
+      "cardHeight": 593.640625
+    },
+    {
+      "theme": "classic",
+      "face": "back",
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1366,
+      "scrollHeight": 768,
+      "rows": 10,
+      "cardHeight": 593.640625
+    },
+    {
+      "theme": "classic",
+      "face": "front",
+      "width": 1080,
+      "height": 1920,
+      "scrollWidth": 1080,
+      "scrollHeight": 1920,
+      "rows": 10,
+      "cardHeight": 1645.015625
+    },
+    {
+      "theme": "classic",
+      "face": "back",
+      "width": 1080,
+      "height": 1920,
+      "scrollWidth": 1080,
+      "scrollHeight": 1920,
+      "rows": 10,
+      "cardHeight": 1645.015625
+    },
+    {
+      "theme": "classic",
+      "face": "front",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1823,
+      "rows": 10,
+      "cardHeight": 778.40625
+    },
+    {
+      "theme": "classic",
+      "face": "back",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1823,
+      "rows": 10,
+      "cardHeight": 778.40625
+    },
+    {
+      "theme": "classic",
+      "face": "front",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 1907,
+      "rows": 10,
+      "cardHeight": 787.28125
+    },
+    {
+      "theme": "classic",
+      "face": "back",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 1907,
+      "rows": 10,
+      "cardHeight": 787.28125
+    }
+  ],
+  "configuredAutoFlip": true,
+  "pauseStopsRotation": true,
+  "manualFlip": true,
+  "reducedMotion": true,
+  "images": 4,
+  "brokenImageFallback": true,
+  "drawnWinner": "Julia",
+  "topThreeExcluded": true,
+  "reloadKeepsWinner": true,
+  "liveWinnerUpdateMs": 1847,
+  "consoleErrors": []
+}

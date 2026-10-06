@@ -1,4 +1,5 @@
 import { analyticsStorage } from './analytics-storage.js';
+import { prizeStorage } from './prize-storage.js';
 import { PAGE_SIZE } from '../admin/api.js';
 export function adminStorage(env) {
   if (!env.DB) throw new Error('Leaderboard database unavailable');
@@ -8,6 +9,7 @@ export function adminStorage(env) {
   const expectedWhere = 'id = ? AND version = ? AND name = ? AND score = ? AND services = ?';
   const expectedArgs = (id, version, old) => [id, version, old.name, old.score, old.services];
   return {
+    ...prizeStorage(env),
     stats(days, page) { return analyticsStorage(env).stats(days, page); },
     async versions() { return (await statement('SELECT version, COUNT(*) AS count FROM scores GROUP BY version ORDER BY MAX(date) DESC').all()).results; },
     async list(version, search, page) {

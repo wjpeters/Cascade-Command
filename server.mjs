@@ -1,7 +1,8 @@
+import { localPrizeStorage } from './prizes/local-storage.js';
 import { localAnalytics } from './analytics/local-storage.js';
 import { metadata, eventRecord, safely } from './analytics/common.js';
 import { handleAdmin, localAdmin } from './admin/api.js';
-import { localAdminStorage } from './admin/local-storage.js';
+import { localAdminStorage, compareScores } from './admin/local-storage.js';
 import http from 'node:http';
 import { readFileSync, writeFileSync, mkdirSync, renameSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -21,7 +22,8 @@ const saveScores = next => {
   const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify(next, null, 2), { mode: 0o600 }); renameSync(temp, boardPath); scores = next;
 };
 const analytics = localAnalytics(path.join(dataDir, 'analytics.json'));
-const adminStore = { ...localAdminStorage(() => scores, saveScores, sessions, VERSION), stats: (...args) => analytics.stats(...args) };
+const prizes = localPrizeStorage(path.join(dataDir, 'prize-draws.json'), () => scores, VERSION);
+const adminStore = { ...prizes, ...localAdminStorage(() => scores, saveScores, sessions, VERSION), stats: (...args) => analytics.stats(...args) };
 const requestMetadata = (req, url, input) => metadata(new Request(url, { headers: req.headers }), input?.analytics || {}, req.socket.remoteAddress);
 const addresses = () => [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${server.address()?.port ?? port}`))];
 const json = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }); res.end(JSON.stringify(body)); };
@@ -29,7 +31,7 @@ const body = req => new Promise((resolve, reject) => {
   let text = ''; req.on('data', chunk => { text += chunk; if (text.length > 160000) { reject(new Error('Te veel gegevens.')); req.destroy(); } });
   req.on('end', () => { try { resolve(JSON.parse(text || '{}')); } catch { reject(new Error('Ongeldige invoer.')); } }); req.on('error', reject);
 });
-const topScores = () => scores.filter(s => s.version === VERSION).sort((a,b) => b.score-a.score || b.services-a.services || a.date.localeCompare(b.date)).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
+const topScores = () => scores.filter(s => s.version === VERSION).sort(compareScores).slice(0, 10).map(({ name, score, services, date, id }) => ({ name, score, services, date, id }));
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
@@ -40,7 +42,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
     if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses(), port: server.address().port, leaderboardAdmin: true, leaderboardDisplay: true });
-    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
+    if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores(), consolation: prizes.publicDraw() });
     if (url.pathname === '/api/visit' && req.method === 'POST') {
       if (req.headers.origin !== url.origin) return json(res, 403, { error: 'Open de game op deze server.' });
       const input = await body(req);
@@ -73,10 +75,10 @@ const server = http.createServer(async (req, res) => {
       if (Date.now() - session.started < game.tick / FPS * 1000 - 1500) return json(res, 400, { error: 'De ronde is nog niet afgelopen.' });
       const entry = { id: randomUUID(), name, score: game.score, services: game.services, date: new Date().toISOString(), version: VERSION };
       const previousEditions = scores.filter(s => s.version !== VERSION);
-      const updated = [...scores.filter(s => s.version === VERSION), entry].sort((a, b) => b.score - a.score || b.services - a.services || a.date.localeCompare(b.date));
+      const updated = [...scores.filter(s => s.version === VERSION), entry].sort(compareScores);
       const rank = updated.findIndex(s => s.id === entry.id) + 1;
-      const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify([...previousEditions, ...updated.slice(0, 100)], null, 2), { mode: 0o600 }); renameSync(temp, boardPath);
-      scores = [...previousEditions, ...updated.slice(0, 100)]; sessions.delete(input.session);
+      const temp = boardPath + '.tmp'; writeFileSync(temp, JSON.stringify([...previousEditions, ...updated], null, 2), { mode: 0o600 }); renameSync(temp, boardPath);
+      scores = [...previousEditions, ...updated]; sessions.delete(input.session);
       await safely(() => analytics.complete('round:' + input.session, game, true));
       return json(res, 201, { rank, score: entry.score, id: entry.id, scores: topScores() });
     }
@@ -93,7 +95,7 @@ const server = http.createServer(async (req, res) => {
     const ext = path.extname(file), types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json' };
     if (!types[ext]) return json(res, 404, { error: 'Niet gevonden.' });
     let bytes; try { bytes = readFileSync(file); } catch { return json(res, 404, { error: 'Niet gevonden.' }); }
-    res.writeHead(200, { 'Content-Type': types[ext], 'Cache-Control': /\.[a-f0-9]{12}\.webp$/.test(requested) ? 'public, max-age=31536000, immutable' : ext === '.png' ? 'public, max-age=86400' : 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'Content-Security-Policy': "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'" });
+    res.writeHead(200, { 'Content-Type': types[ext], 'Cache-Control': /\.[a-f0-9]{12}\.webp$/.test(requested) ? 'public, max-age=31536000, immutable' : ext === '.png' ? 'public, max-age=86400' : 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'Content-Security-Policy': "default-src 'self'; img-src 'self' data: https:; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'" });
     res.end(req.method === 'HEAD' ? undefined : bytes);
   } catch (e) { if (!res.headersSent) json(res, 500, { error: 'Opslaan lukte niet. Probeer het opnieuw.' }); }
 });

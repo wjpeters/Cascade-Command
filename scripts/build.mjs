@@ -2,6 +2,7 @@ import { build } from 'esbuild';
 import { readdir, readFile, writeFile, mkdir, rm, cp } from 'node:fs/promises';
 import path from 'node:path';
 import { checkDownloadBudget } from './check-download-budget.mjs';
+import { PRIZE_CONFIG } from '../src/prize-config.js';
 import { GAME_CONFIG } from '../src/game-config.js';
 import { browserFile } from './browser-file.mjs';
 const root = path.resolve(import.meta.dirname, '..');

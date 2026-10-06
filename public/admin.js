@@ -1,5 +1,6 @@
 import { initStats } from './admin-stats.js';
 const $ = id => document.getElementById(id);
+let prizeDraw = null, drawing = false;
 let version = '', currentVersion = '', page = 1, total = 0, versions = [], rows = [], selected = null, action = '', loading = false, loadId = 0;
 const number = new Intl.NumberFormat('nl-NL');
 const date = new Intl.DateTimeFormat('nl-NL', { dateStyle: 'short', timeStyle: 'short' });
@@ -21,7 +22,30 @@ async function api(path, body) {
   }
   return data;
 }
+function drawControls() {
+  const done = prizeDraw?.winner?.day === prizeDraw?.day;
+  $('draw-prize').disabled = loading || drawing || !prizeDraw || done || !prizeDraw.eligibleCount || version !== currentVersion;
+  $('draw-prize').textContent = drawing ? 'Winnaar kiezen…' : done ? 'Vandaag al verloot' : 'Kies willekeurige winnaar';
+}
+function renderDraw() {
+  const winner = prizeDraw?.winner, today = winner?.day === prizeDraw?.day;
+  $('prize-draw-status').textContent = today ? `${winner.name} wint ${winner.prize.title}! Verloot op ${winner.day}.`
+    : `${prizeDraw.eligibleCount} spelersnamen kunnen vandaag meedoen. ` + (winner ? `Vorige winnaar: ${winner.name} (${winner.day}).` : 'Nog geen winnaar gekozen.');
+  drawControls();
+}
+$('draw-prize').addEventListener('click', async () => {
+  if (drawing || !prizeDraw) return;
+  drawing = true; drawControls();
+  try {
+    const result = await api('prize-draw', { version: currentVersion, day: prizeDraw.day });
+    prizeDraw.winner = result.winner; renderDraw();
+    status(`${result.winner.name} wint de troostprijs. Het leaderboard wordt automatisch bijgewerkt.`);
+    await load();
+  } catch (error) { status(error.message, true); await load(); }
+  finally { drawing = false; drawControls(); }
+});
 function controls() {
+  drawControls();
   for (const id of ['version', 'search', 'refresh', 'export', 'reset']) $(id).disabled = loading;
   $('previous').disabled = loading || page <= 1;
   $('next').disabled = loading || page * 50 >= total;
@@ -61,6 +85,9 @@ async function load() {
   try {
     const data = await api('leaderboard?' + new URLSearchParams({ version, page, q: $('search').value.trim() }));
     if (id !== loadId) return;
+    const draw = await api('prize-draw');
+    if (id !== loadId) return;
+    prizeDraw = draw; renderDraw();
     ({ version, currentVersion, total, versions } = data); rows = data.scores;
     if (page > 1 && !rows.length) { page = Math.max(1, Math.ceil(total / 50)); return await load(); }
     render();
@@ -80,7 +107,7 @@ function remove(entry) {
 $('reset').addEventListener('click', () => {
   action = 'reset'; selected = null; $('confirm-title').textContent = 'Klassement resetten?';
   const count = versions.find(v => v.version === version)?.count || 0;
-  $('confirm-description').textContent = `Alle ${count} scores in dit ${version === currentVersion ? 'huidige' : 'eerdere'} klassement worden definitief verwijderd. Ook lopende rondes van dit klassement vervallen. Andere klassementen blijven staan. Exporteer eerst als je een kopie wilt bewaren.`;
+  $('confirm-description').textContent = `Alle ${count} scores in dit ${version === currentVersion ? 'huidige' : 'eerdere'} klassement worden definitief verwijderd. Ook lopende rondes van dit klassement vervallen. Andere klassementen en uitgevoerde prijstrekkingen blijven staan. Exporteer eerst als je een kopie wilt bewaren.`;
   $('reset-label').hidden = false; $('reset-text').value = ''; $('reset-text').required = true; $('confirm-button').textContent = 'Definitief resetten'; $('confirm-error').textContent = '';
   $('confirm-dialog').showModal(); $('reset-text').focus();
 });

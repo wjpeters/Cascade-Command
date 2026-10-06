@@ -1,5 +1,5 @@
 // One request at a time; pause hidden displays and keep the last good scores on failure.
-export function createLiveLeaderboard({ load, onScores, onStatus, visible = () => !document.hidden,
+export function createLiveLeaderboard({ load, onScores, onStatus, onUpdate = () => {}, visible = () => !document.hidden,
   setTimer = setTimeout, clearTimer = clearTimeout, interval = 2000, retry = 5000 }) {
   let active = false, generation = 0, timer = null, pending = false, controller;
   function schedule(delay) { clearTimer(timer); timer = active && visible() ? setTimer(update, delay) : null; }
@@ -10,10 +10,11 @@ export function createLiveLeaderboard({ load, onScores, onStatus, visible = () =
     controller = new AbortController();
     let delay = interval;
     try {
-      const scores = await load(controller.signal);
+      const data = await load(controller.signal);
+      const scores = Array.isArray(data) ? data : data?.scores;
       if (!active || run !== generation) return;
       if (!Array.isArray(scores)) throw new Error('Ongeldig klassement.');
-      onScores(scores.slice(0, 10)); onStatus('live');
+      onScores(scores.slice(0, 10)); onUpdate(data); onStatus('live');
     } catch {
       if (!active || run !== generation) return;
       onStatus('offline'); delay = retry;

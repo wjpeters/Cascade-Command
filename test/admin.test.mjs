@@ -36,7 +36,7 @@ function setup(t) {
 }
 test('admin defaults closed, requires a configured authenticated owner and checks every endpoint', async t => {
   const { call, env } = setup(t);
-  for (const route of ['me', 'leaderboard', 'export', 'update', 'delete', 'reset']) {
+  for (const route of ['me', 'leaderboard', 'export', 'update', 'delete', 'reset', 'prize-draw']) {
     assert.equal((await call('/api/admin/' + route, ['update', 'delete', 'reset'].includes(route) ? {} : undefined, {})).status, 401, route);
     assert.equal((await call('/api/admin/' + route, undefined, { ...owner, 'oai-authenticated-user-email': 'other@example.com' })).status, 403, route);
   }
@@ -124,4 +124,71 @@ test('local HTTP admin edits and deletes real JSON storage, rejects cross-site w
   assert.equal((await request('/api/admin/delete', { id: stored.id, version: VERSION, expected: stored })).status, 200);
   assert.equal((await (await request('/api/leaderboard')).json()).scores.length, 0);
   assert.equal(JSON.parse(readFileSync(path.join(directory, 'leaderboard.json'))).length, 1);
+});
+
+// Use the actual D1 statements and migration against SQLite, including races.
+test('daily prize draw covers the full board, excludes podium names and cannot be redrawn', async t => {
+  const { call, add, sql } = setup(t);
+  add('a', VERSION, 900); add('b', VERSION, 800); add('c', VERSION, 700);
+  for (let i = 0; i < 20; i++) {
+    add('repeat-' + i, VERSION, 600 - i);
+    sql.prepare('UPDATE scores SET name = ? WHERE id = ?').run(i % 2 ? 'SPELER A' : 'Speler b', 'repeat-' + i);
+  }
+  const last = add('last', VERSION, 1);
+  add('old', 'old-version', 99999);
+  const info = await (await call('/api/admin/prize-draw')).json();
+  assert.equal(info.eligibleCount, 1);
+  assert.equal(info.winner, null);
+  assert.equal((await call('/api/admin/prize-draw', { version: 'old-version', day: info.day })).status, 400);
+  assert.equal((await call('/api/admin/prize-draw', { version: VERSION, day: '2000-01-01' })).status, 400);
+  assert.equal((await call('/api/admin/prize-draw', { version: VERSION, day: info.day }, {})).status, 401);
+  assert.equal((await call('/api/admin/prize-draw', { version: VERSION, day: info.day }, { ...owner, Origin: 'https://evil.example' })).status, 403);
+  const responses = await Promise.all(Array.from({ length: 4 }, () => call('/api/admin/prize-draw', { version: VERSION, day: info.day })));
+  assert.equal(responses.filter(r => r.status === 201).length, 1);
+  const results = await Promise.all(responses.map(r => r.json()));
+  assert.ok(results.every(r => r.winner.name === last.name));
+  assert.equal(new Set(results.map(r => r.winner.drawnAt)).size, 1);
+  assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM prize_draws').get().n, 1);
+  assert.equal(results[0].winner.eligibleCount, 1);
+  const publicBoard = await (await call('/api/leaderboard')).json();
+  assert.equal(publicBoard.scores.length, 10);
+  assert.equal(publicBoard.consolation.winner.scoreId, last.id, 'winner beyond the top 10 is shown');
+  // A stored draw is an immutable result, independent of later score edits/resets.
+  await call('/api/admin/delete', { id: last.id, version: VERSION, expected: last });
+  await call('/api/admin/reset', { version: VERSION, confirmation: 'RESET' });
+  const retry = await (await call('/api/admin/prize-draw', { version: VERSION, day: info.day })).json();
+  assert.deepEqual(retry.winner, results[0].winner);
+});
+test('daily draw with only a podium does not consume the daily draw', async t => {
+  const { call, add, sql } = setup(t);
+  add('1'); add('2'); add('3');
+  const info = await (await call('/api/admin/prize-draw')).json();
+  assert.equal((await call('/api/admin/prize-draw', { version: VERSION, day: info.day })).status, 409);
+  assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM prize_draws').get().n, 0);
+  add('4', VERSION, 0);
+  assert.equal((await call('/api/admin/prize-draw', { version: VERSION, day: info.day })).status, 201);
+});
+
+test('a podium change during the draw rejects the stale pool before saving a winner', async t => {
+  const { call, add, sql, env } = setup(t);
+  add('a', VERSION, 900); add('b', VERSION, 800); add('c', VERSION, 700); const last = add('last', VERSION, 1);
+  const info = await (await call('/api/admin/prize-draw')).json();
+  const prepare = env.DB.prepare;
+  let changed = false;
+  env.DB.prepare = query => {
+    const statement = prepare(query);
+    if (!query.startsWith('SELECT id, name, score, services, date, version FROM scores')) return statement;
+    return { bind(...args) {
+      const bound = statement.bind(...args), all = bound.all;
+      return { ...bound, async all() {
+        const result = await all();
+        if (!changed) { changed = true; sql.prepare('UPDATE scores SET name = ? WHERE id = ?').run(last.name, 'a'); }
+        return result;
+      } };
+    } };
+  };
+  assert.equal((await call('/api/admin/prize-draw', { version: VERSION, day: info.day })).status, 409);
+  assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM prize_draws').get().n, 0);
+  env.DB.prepare = prepare;
+  assert.equal((await (await call('/api/admin/prize-draw')).json()).eligibleCount, 0);
 });
