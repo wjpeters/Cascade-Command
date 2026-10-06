@@ -1,6 +1,6 @@
 # Leaderboard op een aparte monitor
 
-Gebouwd op 6 oktober 2026. De pagina staat op `/leaderboard` en gebruikt het huidige top 10-klassement van dezelfde gameserver. Deze uitbreiding is lokaal klaar en nog niet op Sites gepubliceerd. Bestaande scores en spelregels blijven behouden.
+Gebouwd op 6 oktober 2026. De pagina staat op `/leaderboard` en gebruikt het huidige top 10-klassement van dezelfde gameserver. Deze uitbreiding is op verzoek als Sites-versie 13 gepubliceerd op 6 oktober 2026: https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard. Bestaande scores en spelregels blijven behouden.
 
 ## Openen en gebruiken
 
@@ -37,4 +37,12 @@ De QR-bibliotheek is de bestaande lokale module, met een witte achtergrond en vi
 
 Het bouwpakket meet **815.875 bytes** voor alle gepubliceerde bestanden. De bestaande game blijft binnen haar oorspronkelijke **800.000-byte** limiet: 795.425 bytes. De aparte monitorbestanden krijgen een eigen limiet van 25.000 bytes en gebruiken 20.450 bytes. Het totale pakket heeft daardoor een limiet van 825.000 bytes; de beeldlimiet van 650.000 blijft gelijk. Dit is een bovengrens over alle pagina’s en thema’s, geen gemeten download van één bezoek.
 
-[Controlebewijs en screenshots](leaderboard-display-evidence-2026-10-06/verification.json). De screenshots gebruiken fictieve spelers en een inmiddels gesloten testadres. Online en lokaal houden elk hun eigen bestaande scores. Voor online gebruik moet de nieuwe build nog op de bestaande Sites-locatie worden gepubliceerd.
+[Controlebewijs en screenshots](leaderboard-display-evidence-2026-10-06/verification.json). De screenshots gebruiken fictieve spelers en een inmiddels gesloten testadres. Online en lokaal houden elk hun eigen bestaande scores. De online pagina staat op https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard. De gepubliceerde bron gebruikt RiskStudio App; Classic is afzonderlijk via `?theme=classic` te kiezen.
+
+## Publicatie, 6 oktober 2026
+
+Sites bevestigt succesvolle productiepublicatie van versie 13 met broncommit `4107c1b5b68ece190033bfd11e7d5498e71e91fa`. De bestaande openbare toegang en DB-binding zijn behouden. De bron gebruikt RiskStudio App. De leaderboard haalt dezelfde scores op als de online game; de QR gebruikt hetzelfde openbare gameadres. De oorspronkelijke lokale bouwcontrole met Classic hierboven is historische context. Geen extra online browsertest uitgevoerd. [Publicatiebewijs](publicatie-leaderboard-2026-10-06.json).
+
+## Bewegende winnaarskaartjes
+
+De top 3 heeft een kroon, beker en medaille, met glans en terugkerende confetti. Een nieuwe podiumplek krijgt een kort entree-effect. De knop naast volledig scherm pauzeert de animaties; minder beweging wordt gerespecteerd. [Werking en controle](WINNAARSANIMATIES.md).

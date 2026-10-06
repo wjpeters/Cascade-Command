@@ -254,3 +254,11 @@ Open `/leaderboard` op een tweede monitor of dubbelklik op **Toon Lokaal Leaderb
 Scores worden elke twee seconden opgehaald. Bij verbindingsverlies blijven de laatste scores zichtbaar en probeert de pagina opnieuw; na een achtergrondtab wordt direct ververst. QR en link openen dezelfde game, lokaal via wifi of na Sites-publicatie via het openbare gameadres. De pagina gebruikt dezelfde score-API en voegt geen klassement toe.
 
 53 tests, downloadbudget en Worker-bouwcontrole slagen. Top 10, QR, een scorewijziging binnen twee seconden, reset, herstel van de verbinding, beide thema’s, volledig scherm en mobiele indeling zijn met tijdelijke fictieve scores gecontroleerd. De uitbreiding is lokaal klaar; nog geen nieuwe Sites-publicatie. [Gebruik en controle](docs/LEADERBOARD_SCHERM.md).
+
+## Sites-versie 13 gepubliceerd, 6 oktober 2026
+
+De afzonderlijke [live leaderboardpagina](https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard) staat op de bestaande openbare RiskStudio-site. De gepubliceerde bron kiest RiskStudio App; Classic blijft via `?theme=classic` te kiezen voor het monitorscherm. Top 10, game-QR, volledig scherm en automatische updates iedere twee seconden zijn meegenomen. Broncommit `4107c1b5b68ece190033bfd11e7d5498e71e91fa`; native Sites-resultaat bevestigt succes. Build en Worker-controle slagen. Bestaande openbare toegang en databasebinding zijn behouden. Geen aanvullende online browsertest; eerdere geïsoleerde browsercontroles blijven het functionele bewijs. [Publicatiebewijs](docs/publicatie-leaderboard-2026-10-06.json).
+
+## Winnaarsanimaties, 6 oktober 2026
+
+Het aparte leaderboard heeft bewegende goud-/zilver-/bronseffecten voor de top 3: kroon, beker, medaille, glans en korte confettipulsen. Nieuwe podiumplekken vieren direct hun entree. De scores en QR blijven vast; pauzeren, minder beweging en beide thema’s zijn gecontroleerd. 53 tests en browsercontrole op zes schermmaten slagen. [Details en bewijs](docs/WINNAARSANIMATIES.md).

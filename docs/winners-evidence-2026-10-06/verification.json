@@ -1,0 +1,76 @@
+{
+  "fixtureOnly": true,
+  "version": "cascade-3-14f91b15",
+  "sizes": [
+    {
+      "width": 1920,
+      "height": 1080,
+      "scrollWidth": 1920,
+      "scrollHeight": 1080,
+      "rows": 10,
+      "footerBottom": 1080,
+      "boardBottom": 971.90625
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "scrollWidth": 1366,
+      "scrollHeight": 768,
+      "rows": 10,
+      "footerBottom": 768,
+      "boardBottom": 681.640625
+    },
+    {
+      "width": 2560,
+      "height": 1440,
+      "scrollWidth": 2560,
+      "scrollHeight": 1440,
+      "rows": 10,
+      "footerBottom": 1440,
+      "boardBottom": 1324.703125
+    },
+    {
+      "width": 1080,
+      "height": 1920,
+      "scrollWidth": 1080,
+      "scrollHeight": 1920,
+      "rows": 10,
+      "footerBottom": 1920,
+      "boardBottom": 1795.109375
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1678,
+      "rows": 10,
+      "footerBottom": 1677.734375,
+      "boardBottom": 723.328125
+    },
+    {
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 1704,
+      "rows": 10,
+      "footerBottom": 1703.546875,
+      "boardBottom": 798.640625
+    }
+  ],
+  "updateMs": 1830,
+  "offlinePreserved": true,
+  "reconnected": true,
+  "resetObserved": true,
+  "qrGameRoot": "http://192.168.1.107:54929/",
+  "qrWidth": 268,
+  "fullscreen": true,
+  "gameSpritesDownloaded": false,
+  "consoleErrors": [],
+  "winnerBadges": 3,
+  "confettiParticles": 12,
+  "pauseResumeVerified": true,
+  "reducedMotionVerified": true,
+  "unchangedPollingKeepsAnimations": true,
+  "podiumArrivalVerified": true,
+  "note": "Fictieve scores, tijdelijke server. De screenshots zijn een stilgezet moment in de echte CSS-animaties; het getoonde testadres is gesloten. Geen echte highscores gewijzigd."
+}

@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-06",
+  "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+  "version_number": 13,
+  "version_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16~appgver_9f523027cff881919f97c9bb14f60dba",
+  "deployment_id": "appgdep_6ac4ec082660819180b0b9aa111c8668",
+  "commit_sha": "4107c1b5b68ece190033bfd11e7d5498e71e91fa",
+  "status": "succeeded",
+  "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "leaderboard_url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard",
+  "active_theme": "riskstudio-app",
+  "evidence": "Native Sites-deploymentresultaat. Geen aanvullende online browsercontrole; eerdere lokale controles en succesvolle Worker-bouwcontrole gelden voor de gepubliceerde bron."
+}
