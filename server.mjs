@@ -23,7 +23,7 @@ const saveScores = next => {
 const analytics = localAnalytics(path.join(dataDir, 'analytics.json'));
 const adminStore = { ...localAdminStorage(() => scores, saveScores, sessions, VERSION), stats: (...args) => analytics.stats(...args) };
 const requestMetadata = (req, url, input) => metadata(new Request(url, { headers: req.headers }), input?.analytics || {}, req.socket.remoteAddress);
-const addresses = [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${port}`))];
+const addresses = () => [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${server.address()?.port ?? port}`))];
 const json = (res, status, body) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' }); res.end(JSON.stringify(body)); };
 const body = req => new Promise((resolve, reject) => {
   let text = ''; req.on('data', chunk => { text += chunk; if (text.length > 160000) { reject(new Error('Te veel gegevens.')); req.destroy(); } });
@@ -39,7 +39,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(response.status, Object.fromEntries(response.headers)); res.end(Buffer.from(await response.arrayBuffer())); return;
     }
     if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return json(res, 403, { error: 'Open de game op deze server.' });
-    if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses, port, leaderboardAdmin: true });
+    if (url.pathname === '/api/meta' && req.method === 'GET') return json(res, 200, { version: VERSION, mobileUrls: addresses(), port: server.address().port, leaderboardAdmin: true, leaderboardDisplay: true });
     if (url.pathname === '/api/leaderboard' && req.method === 'GET') return json(res, 200, { scores: topScores() });
     if (url.pathname === '/api/visit' && req.method === 'POST') {
       if (req.headers.origin !== url.origin) return json(res, 403, { error: 'Open de game op deze server.' });
@@ -84,6 +84,7 @@ const server = http.createServer(async (req, res) => {
     let requested = decodeURIComponent(url.pathname);
     if (requested === '/') requested = '/index.html';
     if (['/admin', '/admin/'].includes(requested)) requested = '/admin.html';
+    if (['/leaderboard', '/leaderboard/'].includes(requested)) requested = '/leaderboard.html';
     const plugin = requested.startsWith('/plugins/easter-eggs/');
     if (plugin && GAME_CONFIG.easterEggs !== true) return json(res, 404, { error: 'Niet gevonden.' });
     const base = plugin ? path.join(root, 'plugins/easter-eggs') : requested.startsWith('/src/') ? root : path.join(root, 'public');
@@ -96,4 +97,4 @@ const server = http.createServer(async (req, res) => {
     res.end(req.method === 'HEAD' ? undefined : bytes);
   } catch (e) { if (!res.headersSent) json(res, 500, { error: 'Opslaan lukte niet. Probeer het opnieuw.' }); }
 });
-server.listen(port, host, () => { console.log(`Cascade Command: http://localhost:${server.address().port}`); for (const url of addresses) console.log(`Mobiel op hetzelfde netwerk: ${url}`); });
+server.listen(port, host, () => { console.log(`Cascade Command: http://localhost:${server.address().port}`); for (const url of addresses()) console.log(`Mobiel op hetzelfde netwerk: ${url}`); });

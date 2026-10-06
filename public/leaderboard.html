@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#030d18"><meta name="description" content="Het live klassement van RiskStudio Cascade Command. Scan, speel en verdien je plek.">
+<title>Live leaderboard · Cascade Command · RiskStudio</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link id="game-theme" rel="stylesheet" href="/themes/classic/leaderboard.css">
+</head>
+<body class="display-page">
+<header class="display-header">
+  <a class="brand" href="/" aria-label="Open Cascade Command"><img src="/assets/riskstudio-logo.87fc5d84cca0.webp" width="512" height="130" alt="RiskStudio"></a>
+  <span class="display-game">Cascade Command</span>
+  <div class="display-actions"><span class="live-badge" id="connection" data-state="connecting" role="status"><i aria-hidden="true"></i><span id="connection-label">Verbinden…</span></span><button id="display-fullscreen" type="button" aria-label="Volledig scherm" title="Volledig scherm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div>
+</header>
+<main class="display-layout">
+  <section class="ranking-section" aria-labelledby="ranking-title">
+    <div class="ranking-intro"><div><p class="eyebrow">Zie de keten. Begrijp het risico.</p><h1 id="ranking-title">Wie beschermt de<br><em>galaxy het best?</em></h1></div><span class="edition-label">LIVE<br><strong>TOP 10</strong></span></div>
+    <div class="ranking-board" id="ranking-board" aria-label="Top 10 spelers"><div class="board-placeholder"><span class="orbit-mark" aria-hidden="true">✦</span><h2>Het klassement wordt geladen.</h2><p>Een moment, we halen de nieuwste scores op.</p></div></div>
+    <div class="ranking-note"><span>Punten bepalen je plek. Daarna tellen beschermde diensten en speeldatum.</span><span id="last-checked">Wachten op scores</span></div>
+  </section>
+  <aside class="join-panel" aria-labelledby="join-title">
+    <p class="eyebrow">Jouw missie begint hier</p><h2 id="join-title">Speel mee.<br>Pak je plek.</h2><p class="join-description">Bescherm je leveranciersketen.<br>Zet jouw naam op dit scherm.</p>
+    <div class="qr-frame"><img id="mobile-qr" width="320" height="320" alt="QR-code om Cascade Command te openen" hidden><span id="qr-placeholder">QR-code wordt klaargezet…</span></div>
+    <p class="qr-callout">Scan &amp; speel op je telefoon</p><p id="mobile-qr-hint" class="join-hint" role="status">Gameadres wordt opgehaald…</p><a id="mobile-url" class="game-address"></a><button id="copy-url" class="copy-address" disabled>Kopieer adres</button>
+    <div class="mission-facts"><div><strong id="round-duration">75</strong><span>seconden</span></div><div><strong>3</strong><span>kritieke diensten</span></div><div><strong>1</strong><span>keten</span></div></div>
+    <p id="mobile-availability" class="join-availability"></p>
+  </aside>
+</main>
+<footer class="display-footer"><span>Van inzicht naar veerkracht.</span><span id="display-message" role="status">Scores worden automatisch bijgewerkt.</span><a href="/">Open de game ↗</a></footer>
+<div class="sr-only" id="ranking-announcement" aria-live="polite" aria-atomic="true"></div>
+<noscript><p>Schakel JavaScript in om de live scores en QR-code te tonen.</p></noscript>
+<script type="module" src="/src/leaderboard-display.js"></script>
+</body></html>

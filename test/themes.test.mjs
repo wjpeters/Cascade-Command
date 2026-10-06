@@ -27,7 +27,7 @@ test('every registered theme has complete palettes, icons and available presenta
     for (const key of Object.keys(theme.services)) assert.ok(theme.symbols.services[key]);
     for (const color of Object.values(theme.categories)) assert.match(color, /^#[0-9a-f]{6}$/i, 'Canvas trails add their own alpha');
     assert.ok(theme.fonts.sans && theme.fonts.mono);
-    for (const route of [theme.stylesheet, theme.renderer, ...(theme.shell ? [theme.shell] : []), theme.pluginStylesheet, ...Object.values(theme.assets)]) {
+    for (const route of [theme.stylesheet, theme.leaderboardStylesheet, theme.renderer, ...(theme.shell ? [theme.shell] : []), theme.pluginStylesheet, ...Object.values(theme.assets)]) {
       assert.match(route, /^\/(?:themes|src|plugins|assets)\//);
       const path = route.startsWith('/src/') || route.startsWith('/plugins/') ? '..' + route : '../public' + route;
       await access(new URL(path, import.meta.url));

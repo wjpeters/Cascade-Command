@@ -4,6 +4,7 @@ export const RISKSTUDIO_APP_THEME = {
   name: "RiskStudio App",
   description: "Explore-workspace, gebaseerd op de RiskStudio-appreferentie van 22 september 2026.",
   stylesheet: "/themes/riskstudio-app/game.css",
+  leaderboardStylesheet: "/themes/riskstudio-app/leaderboard.css",
   pluginStylesheet: "/plugins/easter-eggs/themes/riskstudio-app.css",
   metaColor: "#ffffff",
   assets: {

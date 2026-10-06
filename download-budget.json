@@ -1,4 +1,6 @@
 {
-  "maxTotalBytes": 800000,
-  "maxImageBytes": 650000
+  "maxTotalBytes": 825000,
+  "maxImageBytes": 650000,
+  "maxGameBytes": 800000,
+  "maxLeaderboardBytes": 25000
 }

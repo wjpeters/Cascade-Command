@@ -1,0 +1,419 @@
+{
+  "checkedAt": "2026-10-06T11:55:07.294Z",
+  "origin": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "sourceCommit": "1c62399711f20239c6ca5a2476fa78b64c306621",
+  "savedVersion": 12,
+  "archiveWorkerSha256": "321b75481ae14de3d06cc912a041b51f829236003f50fec528ab3d722727d89f",
+  "assets": [
+    {
+      "route": "/admin-stats.js",
+      "status": 200,
+      "bytes": 5164,
+      "sha256": "9c882a89160d8d46c0dd2987918aad4d8aaefa295b4fabb6103a81ec03d8aa2e",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/admin.css",
+      "status": 200,
+      "bytes": 7592,
+      "sha256": "3982eabca512af0fb7065efcca389710920f3034e0974e3f93334be6bc98c0e5",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/admin.html",
+      "status": 200,
+      "bytes": 8908,
+      "sha256": "d96c3d3fa35216d8a210ac454878c8f5c34b4619c1f269b21e74997184ef1b4a",
+      "matchesArchive": false,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/admin.js",
+      "status": 200,
+      "bytes": 6825,
+      "sha256": "237ff9b73e724d3c7acabe7cee6011145570fce6f191a503e5579e3a7178ef9e",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/assets/riskstudio-app-background.svg",
+      "status": 200,
+      "bytes": 103,
+      "sha256": "517e514a106009535e14fd3cc7ae830697e63733ee00f76c69bf429cfa8a8912",
+      "matchesArchive": true,
+      "contentType": "image/svg+xml"
+    },
+    {
+      "route": "/assets/riskstudio-app-logo.077fe3765b62.webp",
+      "status": 200,
+      "bytes": 6042,
+      "sha256": "077fe3765b6256817a694874ac04d0b24eb1f43bbd563349793f3ab60ae13993",
+      "matchesArchive": true,
+      "contentType": "image/webp"
+    },
+    {
+      "route": "/assets/riskstudio-app-sprites.svg",
+      "status": 200,
+      "bytes": 350,
+      "sha256": "2fe27471085b791dea26ab62b38f7017b6217048bdf8a0992cec42a1ef97455a",
+      "matchesArchive": true,
+      "contentType": "image/svg+xml"
+    },
+    {
+      "route": "/assets/riskstudio-logo.87fc5d84cca0.webp",
+      "status": 200,
+      "bytes": 19276,
+      "sha256": "87fc5d84cca099b0329edc510e293dc5760994b3c6557677c1f3610290caebc5",
+      "matchesArchive": true,
+      "contentType": "image/webp"
+    },
+    {
+      "route": "/assets/space.269c230f8b18.webp",
+      "status": 200,
+      "bytes": 50078,
+      "sha256": "269c230f8b188c4755f62586991c8d19f4546e70dd272c8ebc28d1e5799a374d",
+      "matchesArchive": true,
+      "contentType": "image/webp"
+    },
+    {
+      "route": "/assets/sprites.093cb099440e.webp",
+      "status": 200,
+      "bytes": 165050,
+      "sha256": "093cb099440e9211d420fdbc50315161e247edda90616b3ec62f943d90da744f",
+      "matchesArchive": true,
+      "contentType": "image/webp"
+    },
+    {
+      "route": "/favicon.svg",
+      "status": 200,
+      "bytes": 183,
+      "sha256": "df6741698c1446595e94b4f470ed02363ea39e3fe06683f0814ae3bc1e28d6a7",
+      "matchesArchive": true,
+      "contentType": "image/svg+xml"
+    },
+    {
+      "route": "/index.html",
+      "status": 200,
+      "bytes": 15907,
+      "sha256": "e17df533f24cbd8741db02abee9b50cfbca47fb8ce57daa1b573fe112aaa63d8",
+      "matchesArchive": false,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/privacy.html",
+      "status": 200,
+      "bytes": 3163,
+      "sha256": "d6b5578c8c53174363d37d309df73277ff8ba2075ed280ced4745c01183ab255",
+      "matchesArchive": false,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "route": "/style.css",
+      "status": 200,
+      "bytes": 35,
+      "sha256": "55692fcc19344ce535f764e67ce96122ad38a1199c4dcdd7338a6562710deb3d",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/themes/classic/game.css",
+      "status": 200,
+      "bytes": 44276,
+      "sha256": "29dd1efbf642050c8cb7eee02ba9da2953931498a58786cf194dee9d4346efaa",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/themes/classic/tokens.css",
+      "status": 200,
+      "bytes": 241,
+      "sha256": "559ebb1ed0ab4faac21ac2cfd4e24fa449ba27142833f53f7e3627489ed13103",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/themes/riskstudio-app/game.css",
+      "status": 200,
+      "bytes": 30724,
+      "sha256": "7d4a8ddeaf9f7e68dc7166f834c5dc19a750ba45ebbc9c56dc84317fc11cdca5",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/themes/riskstudio-app/tokens.css",
+      "status": 200,
+      "bytes": 214,
+      "sha256": "4fa7cbecd76f025f2d67b7723e1926a1a486071b516054532da36758c495c6b3",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/tokens.css",
+      "status": 200,
+      "bytes": 241,
+      "sha256": "559ebb1ed0ab4faac21ac2cfd4e24fa449ba27142833f53f7e3627489ed13103",
+      "matchesArchive": true,
+      "contentType": "text/css; charset=utf-8"
+    },
+    {
+      "route": "/vendor/LICENSE-qrcode.txt",
+      "status": 200,
+      "bytes": 1071,
+      "sha256": "3a850fa5f08101db6f40676c2786e10bd2cd5fff7b12ffdf1e0c434d4e49d90c",
+      "matchesArchive": true,
+      "contentType": "text/plain; charset=utf-8"
+    },
+    {
+      "route": "/vendor/README.md",
+      "status": 200,
+      "bytes": 492,
+      "sha256": "8e90407c47b63f4806b72a5a568ca19dd775ac32f3340e4050c7448bdfade520",
+      "matchesArchive": true,
+      "contentType": "text/plain; charset=utf-8"
+    },
+    {
+      "route": "/vendor/qrcode.js",
+      "status": 200,
+      "bytes": 21722,
+      "sha256": "17312b4c6501b7ef2b4d73dcdee520cacdb4553bc063389222603fc359292388",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/analytics.js",
+      "status": 200,
+      "bytes": 701,
+      "sha256": "18e893706407e82a475101389a858957d7c5da9f4f377a0d9a67e04364a54373",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/asset-loader.js",
+      "status": 200,
+      "bytes": 569,
+      "sha256": "1a863ef14e2991b25aa7e90b8be76620bf288031bf2137033ef1bceb61d3e9a7",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/assets.js",
+      "status": 200,
+      "bytes": 135,
+      "sha256": "e770139da3aa58a99ae9bfeaa4fbc78a175ecde5b92452bda0c2e11057736b7b",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/audio.js",
+      "status": 200,
+      "bytes": 822,
+      "sha256": "32bd3b75fe538103019f11b88013e915f8fbc8690675d37eb6f3af1c2f700f20",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/engine.js",
+      "status": 200,
+      "bytes": 10899,
+      "sha256": "f23874388c0cd064c6da6602555a682c1d257d5ef8c28a25c86db7a13eb28fef",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/game-config.js",
+      "status": 200,
+      "bytes": 1235,
+      "sha256": "c9afe1295cca7ddf30969d90d2fc6c6ed198dfc36e684e64cee3d33d422cbc8f",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/game-rules.js",
+      "status": 200,
+      "bytes": 3596,
+      "sha256": "f3663d8ce9897f32dec7a1ba2b9558c9de1ca97b2e7d3ea38a5a5729af739fd9",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/main.js",
+      "status": 200,
+      "bytes": 21609,
+      "sha256": "07016989edc9cbff7bde5b04d74158a79d6ed25895267f3d099f25c2121e1739",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/mobile-share.js",
+      "status": 200,
+      "bytes": 911,
+      "sha256": "a91dbfc4442ee2e5974b3395d0644e2a3f0ca99c6947583fa7a253af03b76cb3",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/renderer.js",
+      "status": 200,
+      "bytes": 52,
+      "sha256": "c552ab704875af0d9fc59a0f78992ad6ed95ad5c3a633f62b68a4704961394c8",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/symbols.js",
+      "status": 200,
+      "bytes": 908,
+      "sha256": "856ef39d3d4114dd74d833109d7ff2dd6c51b4e3d512fbfaa619ea0deeb46beb",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/theme.js",
+      "status": 200,
+      "bytes": 1338,
+      "sha256": "37dbbf989540e537c7180ba355e2e68129918551e545faf6da66b525072baaa6",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/themes/classic/renderer.js",
+      "status": 200,
+      "bytes": 10031,
+      "sha256": "c41032fb73afea271c52cfee34080f31167a9d60ea2db2cab474c9638975db6c",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/themes/classic.js",
+      "status": 200,
+      "bytes": 2431,
+      "sha256": "3083491cd6e36495983217727352ee51d90cb1b30a1c9a4e97ef2f4842179a45",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/themes/index.js",
+      "status": 200,
+      "bytes": 367,
+      "sha256": "0d00fee03dbfc8387a1c990cbb809947a28c1b3bcb427b4b582b21d1b13b70a5",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/themes/riskstudio-app/renderer.js",
+      "status": 200,
+      "bytes": 10932,
+      "sha256": "953605ffcfee79803a0d33184479bb6eba09a519cd01a5fd89ffb2e8b932a6a0",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/themes/riskstudio-app/shell.js",
+      "status": 200,
+      "bytes": 8183,
+      "sha256": "97b356772e5c33dc497be2d16f553f187b4f474573dbf3e9ffcbe823cce1e6c0",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    },
+    {
+      "route": "/src/themes/riskstudio-app.js",
+      "status": 200,
+      "bytes": 2584,
+      "sha256": "37cbeac6f88ed9b96d040c6be33ffff45469a663c1f659e6059aa0b80ee7cd6d",
+      "matchesArchive": true,
+      "contentType": "text/javascript; charset=utf-8"
+    }
+  ],
+  "scanHits": [],
+  "privateRoutes": [
+    {
+      "route": "/.env",
+      "status": 404
+    },
+    {
+      "route": "/.openai/hosting.json",
+      "status": 404
+    },
+    {
+      "route": "/.git/config",
+      "status": 404
+    },
+    {
+      "route": "/server.mjs",
+      "status": 404
+    },
+    {
+      "route": "/worker/api.js",
+      "status": 404
+    },
+    {
+      "route": "/admin/api.js",
+      "status": 404
+    },
+    {
+      "route": "/data/leaderboard.json",
+      "status": 404
+    },
+    {
+      "route": "/server/index.js",
+      "status": 404
+    },
+    {
+      "route": "/src/main.js.map",
+      "status": 404
+    }
+  ],
+  "adminChecks": [
+    {
+      "label": "anonymous-admin",
+      "route": "/api/admin/me",
+      "status": 401
+    },
+    {
+      "label": "anonymous-statistics",
+      "route": "/api/admin/stats",
+      "status": 401
+    },
+    {
+      "label": "untrusted-identity-headers",
+      "route": "/api/admin/me",
+      "status": 401
+    }
+  ],
+  "totals": {
+    "assets": 40,
+    "bytes": 464960,
+    "archiveMismatches": 3,
+    "non200": 0,
+    "secretPatternHits": 0
+  },
+  "hostingHtmlChanges": [
+    {
+      "route": "/admin.html",
+      "sourceIsPreserved": true,
+      "addedCharacters": 938,
+      "removedCharacters": 0,
+      "scripts": [],
+      "tagNames": []
+    },
+    {
+      "route": "/index.html",
+      "sourceIsPreserved": true,
+      "addedCharacters": 938,
+      "removedCharacters": 0,
+      "scripts": [],
+      "tagNames": []
+    },
+    {
+      "route": "/privacy.html",
+      "sourceIsPreserved": true,
+      "addedCharacters": 938,
+      "removedCharacters": 0,
+      "scripts": [],
+      "tagNames": []
+    }
+  ],
+  "hostingHtmlChangesClassification": "Cloudflare challenge bootstrap injected into HTML; original HTML preserved; request-dependent public challenge parameters are not application service keys"
+}

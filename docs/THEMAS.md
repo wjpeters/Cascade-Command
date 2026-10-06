@@ -13,7 +13,7 @@ export const GAME_CONFIG = {
 };
 ```
 
-De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De lokale game gebruikt nu `riskstudio-app`. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
+De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De actuele lokale game gebruikt nu `classic`; `riskstudio-app` blijft beschikbaar. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
 
 Een ontbrekende of onbekende naam valt terug op Classic. Als de stylesheet van een geregistreerd thema niet kan laden, blijft de vorige stylesheet aanwezig en start de game met Classic. De loader wacht maximaal acht seconden op een nieuwe stylesheet. Het actieve thema staat als `data-theme` op het HTML-element, voor inspectie en eventuele themaspecifieke selectors.
 
@@ -73,3 +73,9 @@ Themadefinities worden diep bevroren, zodat spelcode de bewaarde instellingen ni
 ## Downloadbudget en build
 
 De build verkleint alle gepubliceerde JS en CSS met de bestaande esbuild-afhankelijkheid. `scripts/browser-file.mjs` wordt gedeeld door de build en budgetcontrole, zodat het budget de exacte gepubliceerde bytes meet. De QR-bibliotheek behoudt haar copyright-, MIT-licentie- en merkmelding. `scripts/validate-build.mjs` vergelijkt elke gemeten bestandsgrootte met het daadwerkelijke Worker-antwoord en controleert die licentiemelding. De bestaande limieten van 800.000 bytes totaal en 650.000 bytes voor beelden blijven gelden, ook met beide thema’s en de optionele Council ingeschakeld. De verkleinde build is afzonderlijk in de browser getest.
+
+## Apart leaderboard, 6 oktober 2026
+
+`/leaderboard` volgt dezelfde themaconfiguratie. De monitor kan ook `?theme=classic` of `?theme=riskstudio-app` kiezen zonder het spelthema te veranderen. Een thema levert hiervoor `leaderboardStylesheet: '/themes/<id>/leaderboard.css'`; die stylesheet importeert de bijbehorende tokens en de gedeelde `/leaderboard.css`. `initializeTheme(id, document, 'leaderboard')` laadt die stijl, het logo en de themakleuren, zonder gameshell of Canvas-renderer.
+
+Nieuwe thema’s moeten ook hun eigen monitorstylesheet toevoegen. De bewaakte gamekosten blijven maximaal 800.000 bytes. De zelfstandige monitorbestanden hebben een aparte limiet van 25.000 bytes; alle bestanden samen maximaal 825.000 bytes. De beeldlimiet blijft 650.000 bytes. [Monitorhandleiding](LEADERBOARD_SCHERM.md).

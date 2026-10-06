@@ -1,0 +1,91 @@
+{
+  "checkedAt": "2026-10-06T11:56:36.395Z",
+  "target": "published Worker archive in memory; no production writes",
+  "engineSource": "live downloaded public JavaScript",
+  "version": "cascade-3-14f91b15",
+  "seed": 271026,
+  "checks": [
+    {
+      "name": "numeric-score-and-services-forgery",
+      "status": 201,
+      "suppliedScore": 9999999,
+      "persistedScore": 0,
+      "suppliedServices": 3,
+      "persistedServices": 0,
+      "blocked": true
+    },
+    {
+      "name": "client-session-parameters-and-early-submit",
+      "status": 400,
+      "clientSeedIgnored": true,
+      "blocked": true
+    },
+    {
+      "name": "coordinate-out-of-bounds",
+      "status": 400,
+      "blocked": true
+    },
+    {
+      "name": "cooldown-violation",
+      "status": 400,
+      "blocked": true
+    },
+    {
+      "name": "reordered-actions",
+      "status": 400,
+      "blocked": true
+    },
+    {
+      "name": "excessive-actions",
+      "status": 400,
+      "blocked": true
+    },
+    {
+      "name": "post-round-actions",
+      "status": 400,
+      "blocked": true
+    },
+    {
+      "name": "expired-session",
+      "status": 400,
+      "blocked": true
+    },
+    {
+      "name": "duplicate-session-submit",
+      "status": 200,
+      "originalScorePreserved": true,
+      "rowCount": 1
+    },
+    {
+      "name": "cross-site-write",
+      "status": 403,
+      "blocked": true
+    },
+    {
+      "name": "oversized-body",
+      "status": 413,
+      "blocked": true
+    },
+    {
+      "name": "offline-generated-valid-actions",
+      "status": 201,
+      "accepted": true,
+      "score": 7925,
+      "services": 3,
+      "actions": 51,
+      "humanPlayed": false
+    },
+    {
+      "name": "same-actions-in-new-session",
+      "status": 201,
+      "accepted": true,
+      "score": 7925,
+      "differentSession": true
+    },
+    {
+      "name": "public-leaderboard-session-identifier",
+      "exposed": false
+    }
+  ],
+  "conclusion": "Replay blocks forged numeric scores and illegal actions, but accepts automated valid actions and repeated deterministic action sequences in separate sessions."
+}

@@ -11,7 +11,7 @@ const imageTypes = new Set(['.svg', '.png', '.webp']);
 // Count every published browser file, even optional QR code, as a safe upper bound.
 export async function checkDownloadBudget(root) {
   const budget = JSON.parse(await readFile(path.join(root, 'download-budget.json'), 'utf8'));
-  for (const key of ['maxTotalBytes', 'maxImageBytes']) {
+  for (const key of ['maxTotalBytes', 'maxImageBytes', 'maxGameBytes', 'maxLeaderboardBytes']) {
     if (!Number.isSafeInteger(budget[key]) || budget[key] <= 0) throw new Error(`Invalid download budget: ${key}`);
   }
   const files = [];
@@ -30,16 +30,20 @@ export async function checkDownloadBudget(root) {
   if (GAME_CONFIG.easterEggs === true) await collect(path.join(root, 'plugins/easter-eggs'));
   files.sort((a, b) => a.path.localeCompare(b.path));
   const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
+  // A standalone monitor page has its own allowance. The existing game ceiling stays 800 KB.
+  const displayFiles = new Set(['public/leaderboard.html', 'public/leaderboard.css', 'src/leaderboard-display.js', 'src/leaderboard-live.js', 'public/themes/classic/leaderboard.css', 'public/themes/riskstudio-app/leaderboard.css']);
+  const leaderboardBytes = files.filter(file => displayFiles.has(file.path)).reduce((sum, file) => sum + file.bytes, 0);
+  const gameBytes = totalBytes - leaderboardBytes;
   const imageBytes = files.filter(file => file.image).reduce((sum, file) => sum + file.bytes, 0);
   const gzipEstimate = files.reduce((sum, file) => sum + file.gzipEstimate, 0);
-  const report = { budget, totalBytes, imageBytes, gzipEstimate, files };
-  if (totalBytes > budget.maxTotalBytes || imageBytes > budget.maxImageBytes) {
-    throw new Error(`Download budget exceeded: ${totalBytes}/${budget.maxTotalBytes} total bytes, ${imageBytes}/${budget.maxImageBytes} image bytes.`);
+  const report = { budget, totalBytes, imageBytes, gzipEstimate, gameBytes, leaderboardBytes, files };
+  if (totalBytes > budget.maxTotalBytes || imageBytes > budget.maxImageBytes || gameBytes > budget.maxGameBytes || leaderboardBytes > budget.maxLeaderboardBytes) {
+    throw new Error(`Download budget exceeded: ${totalBytes}/${budget.maxTotalBytes} total bytes, ${imageBytes}/${budget.maxImageBytes} image bytes; game ${gameBytes}/${budget.maxGameBytes}, leaderboard ${leaderboardBytes}/${budget.maxLeaderboardBytes}.`);
   }
   return report;
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   const report = await checkDownloadBudget(path.resolve(import.meta.dirname, '..'));
-  console.log(`Download budget OK: ${report.totalBytes}/${report.budget.maxTotalBytes} bytes; images ${report.imageBytes}/${report.budget.maxImageBytes}; gzip estimate ${report.gzipEstimate} bytes.`);
+  console.log(`Download budget OK: ${report.totalBytes}/${report.budget.maxTotalBytes} bytes; images ${report.imageBytes}/${report.budget.maxImageBytes}; game ${report.gameBytes}/${report.budget.maxGameBytes}; leaderboard ${report.leaderboardBytes}/${report.budget.maxLeaderboardBytes}; gzip estimate ${report.gzipEstimate} bytes.`);
 }

@@ -1,0 +1,3 @@
+@import url('/themes/riskstudio-app/tokens.css');
+@import url('/leaderboard.css');
+:root{color-scheme:light;--display-bg:#f5f7fb;--display-surface:#fff;--display-winner:linear-gradient(145deg,#fff8e9,#fffdf7);--display-winner-line:#ead8b3;--display-winner-score:#91620d;--display-orbit:#d6951809}

@@ -4,6 +4,7 @@ export const CLASSIC_THEME = {
   name: "Classic",
   description: "De oorspronkelijke Cascade Command-vormgeving, vastgelegd op 5 oktober 2026.",
   stylesheet: "/themes/classic/game.css",
+  leaderboardStylesheet: "/themes/classic/leaderboard.css",
   pluginStylesheet: "/plugins/easter-eggs/themes/classic.css",
   metaColor: "#030d18",
   assets: {
