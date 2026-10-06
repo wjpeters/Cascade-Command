@@ -46,3 +46,7 @@ Sites bevestigt succesvolle productiepublicatie van versie 13 met broncommit `41
 ## Bewegende winnaarskaartjes
 
 De top 3 heeft een kroon, beker en medaille, met glans en terugkerende confetti. Een nieuwe podiumplek krijgt een kort entree-effect. De knop naast volledig scherm pauzeert de animaties; minder beweging wordt gerespecteerd. [Werking en controle](WINNAARSANIMATIES.md).
+
+## Prijzenkaart en trekking, versie 15
+
+De missiekaart draait nu naar configureerbare podiumprijzen en een dagelijkse troostprijs. De beheerder trekt eenmaal per kalenderdag; de uitslag verschijnt live onder het klassement. De top 3 op het trekkingsmoment is uitgesloten. Het monitorbudget is uitgebreid naar 40.000 bytes; het spelbudget blijft 800.000 bytes. Zie [prijzen en trekking](PRIJZEN_EN_TREKKING.md) voor de actuele instellingen en regels.

@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-06",
+  "version_number": 15,
+  "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+  "version_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16~appgver_900c1a941e348191814cf84eb117e0cf",
+  "commit_sha": "7b5c2844aee60ef57538058b47c25784de4e6945",
+  "deployment_id": "appgdep_6ac4f7795dcc8191951ba893cf57a436",
+  "status": "succeeded",
+  "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "updated_at": "2026-10-06T13:28:41.052671+00:00",
+  "evidence": "Native Sites-publicatiesucces. 60 tests en geïsoleerde browsercontrole; geen echte score of live trekking gewijzigd. Schema-only migratie 0002 verpakt; scoreversie cascade-3-14f91b15 behouden."
+}

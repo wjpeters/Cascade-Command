@@ -57,3 +57,7 @@ Bewerken, verwijderen en resetten van scores behouden uitgevoerde trekkingen. De
 Geïsoleerde browsercontrole met fictieve namen: beide thema’s, beide kaartzijden, 1920×1080, 1366×768, 1080×1920, 390×844 en 320×740. Geen horizontale overloop; monitorweergaven passen zonder scrollen. Automatisch draaien op ingestelde tijd, pauze, handmatig draaien, minder beweging, vier afbeeldingen en foutfallback gecontroleerd. Via de echte lokale admin-knop gekozen winnaar komt binnen circa twee seconden op het leaderboard en blijft na herladen staan. Geen echte score of live trekking gewijzigd.
 
 Het oorspronkelijke spelbudget blijft 800.000 bytes. Het aparte monitorscherm krijgt 40.000 bytes voor pagina, animaties, prijzen en demo-afbeeldingen, dus 840.000 bytes totaal. Afbeeldingsplafond blijft 650.000 bytes. De build controleert alle grenzen.
+
+## Live gepubliceerd
+
+Sites-versie 15 is succesvol gepubliceerd op [het leaderboard](https://riskstudio-cascade-command.codexwillem.chatgpt.site/leaderboard). Native status `succeeded`, broncommit `7b5c2844aee60ef57538058b47c25784de4e6945`. Bestaande openbare toegang, beheeraccount en databasebinding behouden. [Publicatiebewijs](publicatie-prijzen-2026-10-06.json), [browserbewijs](prijzen-evidence-2026-10-06/verification.json). Downloadbudget: 833.381/840.000 bytes totaal; game 798.158/800.000, leaderboard 35.223/40.000, afbeeldingen 551.328/650.000. Geen aanvullende online browsertest of echte trekking uitgevoerd.

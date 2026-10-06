@@ -270,3 +270,5 @@ De top 3-winnaarsanimaties staan op [het live leaderboard](https://riskstudio-ca
 ## Prijzen en dagelijkse troostprijs, 6 oktober 2026
 
 De missiekaart op `/leaderboard` draait iedere twaalf seconden naar configureerbare prijzen met afbeeldingen. Instellingen staan onder `GAME_CONFIG.leaderboard`; demo-prijzen meegeleverd. In `/admin` kiest de beheerder één troostprijswinnaar per Nederlandse kalenderdag uit alle spelersnamen van het huidige klassement, met uitsluiting van alle scores van de podiumspelers. De uitslag verschijnt live en blijft opgeslagen. [Handleiding](docs/PRIJZEN_EN_TREKKING.md).
+
+Sites-versie 15 met deze prijzenuitbreiding is succesvol live gepubliceerd. 60 tests, browsercontrole van beide kaartzijden in beide thema’s en bouw-/budgetcontrole slagen. [Publicatiebewijs](docs/publicatie-prijzen-2026-10-06.json).
