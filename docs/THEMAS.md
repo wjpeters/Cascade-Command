@@ -8,12 +8,12 @@ Wijzig bovenaan `src/game-config.js`:
 
 ```js
 export const GAME_CONFIG = {
-  theme: 'classic',
+  theme: 'riskstudio-app',
   // Overige spelinstellingen…
 };
 ```
 
-De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De lokale game gebruikt nu `classic`. Kies `riskstudio-app` voor de lichte Explore-workspace. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
+De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De lokale game gebruikt nu `riskstudio-app`. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
 
 Een ontbrekende of onbekende naam valt terug op Classic. Als de stylesheet van een geregistreerd thema niet kan laden, blijft de vorige stylesheet aanwezig en start de game met Classic. De loader wacht maximaal acht seconden op een nieuwe stylesheet. Het actieve thema staat als `data-theme` op het HTML-element, voor inspectie en eventuele themaspecifieke selectors.
 
