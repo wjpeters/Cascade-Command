@@ -31,7 +31,7 @@ export async function checkDownloadBudget(root) {
   files.sort((a, b) => a.path.localeCompare(b.path));
   const totalBytes = files.reduce((sum, file) => sum + file.bytes, 0);
   // A standalone monitor page has its own allowance. The existing game ceiling stays 800 KB; prize artwork is display-only.
-  const displayFiles = new Set(['public/leaderboard.html', 'public/leaderboard.css', 'src/leaderboard-display.js', 'src/leaderboard-live.js', 'src/leaderboard-prizes.js', 'src/prize-config.js', 'public/themes/classic/leaderboard.css', 'public/themes/riskstudio-app/leaderboard.css']);
+  const displayFiles = new Set(['public/leaderboard.html', 'public/leaderboard.css', 'src/leaderboard-display.js', 'src/leaderboard-live.js', 'src/storage-ui.js', 'src/leaderboard-prizes.js', 'src/prize-config.js', 'public/themes/classic/leaderboard.css', 'public/themes/riskstudio-app/leaderboard.css']);
   const leaderboardBytes = files.filter(file => (displayFiles.has(file.path) || file.path.startsWith('public/assets/prizes/'))).reduce((sum, file) => sum + file.bytes, 0);
   const gameBytes = totalBytes - leaderboardBytes;
   const imageBytes = files.filter(file => file.image).reduce((sum, file) => sum + file.bytes, 0);

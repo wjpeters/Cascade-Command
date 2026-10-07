@@ -40,6 +40,9 @@ export function initializePrizes() {
   return {
     pause(value) { paused = value; schedule(); },
     update(data) {
+      const enabled=data?.enabled!==false;
+      $('consolation-prize').hidden=!enabled;$('consolation-winner').hidden=!enabled;$('draw-rules').hidden=!enabled;
+      $('prize-description').textContent=enabled?'Een prijs voor de top 3. Iedere dag een extra kans.':'Een prijs voor de top 3.';
       const winner = data?.winner, signature = JSON.stringify(winner || null);
       if (signature === lastWinner) return;
       lastWinner = signature;

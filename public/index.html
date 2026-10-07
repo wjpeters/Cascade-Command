@@ -5,6 +5,7 @@
 <meta name="theme-color" content="#030d18"><meta name="description" content="Bescherm je galaxy. Stop kettingreacties en zet de hoogste score neer in RiskStudio Cascade Command.">
 <title>Cascade Command · RiskStudio</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link id="game-theme" rel="stylesheet" href="/themes/classic/game.css">
 <link rel="preload" as="image" href="/assets/sprites.093cb099440e.webp" fetchpriority="high">
+<link rel="stylesheet" href="/storage.css">
 </head>
 <body>
 <header class="header">
@@ -54,7 +55,13 @@
         </div>
         <p class="result-bonus">Dienstenbonus <strong id="final-bonus">+0</strong></p>
         <p class="riskstudio-message">Een risico kan drie leveranciers verderop beginnen en toch jouw organisatie raken. RiskStudio maakt die afhankelijkheden zichtbaar.</p>
-        <form id="score-form"><label for="player-name">Zet je naam op het leaderboard</label><div class="name-row"><input id="player-name" name="name" maxlength="18" placeholder="Jouw naam" autocomplete="off" required pattern="[\p{L}\p{N} ._\-]{1,18}" aria-describedby="save-message"><button class="primary" id="save-score" type="submit">Bewaar</button></div></form>
+        <form id="score-form"><label for="player-name">Zet je naam op het leaderboard</label><div class="name-row"><input id="player-name" name="name" maxlength="18" placeholder="Jouw naam" autocomplete="off" required pattern="[\p{L}\p{N} ._\-]{1,18}" aria-describedby="save-message"><button class="primary" id="save-score" type="submit">Bewaar</button></div><span class="field-error" data-error-for="name"></span>
+        <fieldset id="score-contact" hidden><legend>Contactgegevens voor deelname</legend>
+          <label data-contact-field hidden>Privénaam<span data-required></span><input name="contact.full_name" maxlength="120" autocomplete="name" disabled aria-describedby="contact-full-name-error"><span class="field-error" id="contact-full-name-error" data-error-for="contact.full_name"></span></label>
+          <label data-contact-field hidden>E-mailadres<span data-required></span><input type="email" name="contact.email" maxlength="254" autocomplete="email" disabled aria-describedby="contact-email-error"><span class="field-error" id="contact-email-error" data-error-for="contact.email"></span></label>
+          <label data-contact-field hidden>Telefoonnummer<span data-required></span><input type="tel" name="contact.phone" maxlength="40" autocomplete="tel" disabled aria-describedby="contact-phone-error"><span class="field-error" id="contact-phone-error" data-error-for="contact.phone"></span></label>
+          <p data-contact-notice></p>
+        </fieldset></form>
         <p id="save-message" class="form-message" aria-live="polite"></p><button class="primary retry" id="retry">Nog een poging <svg viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2 6M4 4v7h7"/></svg></button><button class="text-button" id="result-home">Terug naar start</button>
       </section>
     </div>
@@ -78,7 +85,7 @@
   <aside class="sidebar" aria-label="Risico-intelligence en scores">
     <section class="service-status" aria-labelledby="service-title"><h2 id="service-title">Kritieke diensten</h2><div id="service-list"></div></section>
     <section id="feed-panel" aria-labelledby="feed-title"><div class="feed-heading"><h2 id="feed-title">Live Risk Feed</h2><span id="feed-mode">Demo</span></div><p class="feed-count" id="feed-count">Wacht op het eerste signaal</p><ol class="risk-feed" id="risk-feed"></ol></section>
-    <section id="board-panel" aria-labelledby="board-title"><div class="sidebar-title"><h2 id="board-title">Leaderboard</h2><p>Top 10 · Verdien je plek met veerkracht. <a href="/leaderboard" target="_blank" rel="noopener" aria-label="Open leaderboard voor een apart scherm">Apart scherm ↗</a></p></div><div class="leaderboard" id="leaderboard"><div class="empty-board"><span class="podium-mark" aria-hidden="true">01</span><strong>Jouw naam hier?</strong><p>Bescherm de keten. Zet de eerste score.</p></div></div></section>
+    <section id="board-panel" aria-labelledby="board-title"><div class="sidebar-title"><h2 id="board-title">Leaderboard</h2><p>Top 10 · Verdien je plek met veerkracht. <a href="/leaderboard" target="_blank" rel="noopener" aria-label="Open leaderboard voor een apart scherm">Apart scherm ↗</a></p></div><p id="game-board-day" class="leaderboard-day" aria-live="polite"></p><div class="leaderboard" id="leaderboard"><div class="empty-board"><span class="podium-mark" aria-hidden="true">01</span><strong>Jouw naam hier?</strong><p>Bescherm de keten. Zet de eerste score.</p></div></div></section>
     <div class="sidebar-bottom"><button class="mobile-link text-button" id="mobile-link">Speel op je telefoon <span>↗</span></button><p class="footnote">Fictief scenario · echte ketenprincipes</p></div>
   </aside>
 </main>

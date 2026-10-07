@@ -1,6 +1,7 @@
 import { ensureCanonicalLocation } from './site-location.js';
 await ensureCanonicalLocation();
 import { initializePrizes } from './leaderboard-prizes.js';
+import { leaderboardDay, retryDelay } from './storage-ui.js';
 import { GAME_CONFIG } from './game-config.js';
 import { initializeTheme } from './theme.js';
 import { createLiveLeaderboard, gameShareUrl } from './leaderboard-live.js';
@@ -18,7 +19,7 @@ const prizes = initializePrizes();
 
 async function request(route, signal) {
   const response = await fetch(route, { cache: 'no-store', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000) });
-  if (!response.ok) throw new Error('Verbinding niet beschikbaar.');
+  if (!response.ok) throw Object.assign(new Error('Verbinding niet beschikbaar.'), { retryAfterMs: response.status===429?retryDelay(response.headers.get('retry-after')):0 });
   return response.json();
 }
 function element(tag, className, text) {
@@ -94,7 +95,7 @@ function status(state) {
     if (!hasScores) placeholder('Even geen verbinding.', 'Het klassement verschijnt vanzelf zodra de verbinding terug is.');
   }
 }
-const live = createLiveLeaderboard({ load: signal => request('/api/leaderboard', signal), onScores: drawScores, onUpdate: data => prizes.update(data.consolation), onStatus: status });
+const live = createLiveLeaderboard({ load: signal => request('/api/leaderboard', signal), onScores: drawScores, onUpdate: data => { prizes.update(data.consolation); $('display-board-day').textContent=leaderboardDay(data.day); }, onStatus: status });
 
 async function refreshShare() {
   if (document.hidden || sharePending) return;
@@ -102,6 +103,7 @@ async function refreshShare() {
   let retry = false;
   try {
     const meta = await request('/api/meta');
+    if(meta.capabilities?.consolationDraw===false)prizes.update({enabled:false});
     shareUrl = gameShareUrl(meta, location.href);
     await renderMobileShare(shareUrl);
     $('qr-placeholder').hidden = !$('mobile-qr').hidden;

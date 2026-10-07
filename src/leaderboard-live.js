@@ -15,9 +15,9 @@ export function createLiveLeaderboard({ load, onScores, onStatus, onUpdate = () 
       if (!active || run !== generation) return;
       if (!Array.isArray(scores)) throw new Error('Ongeldig klassement.');
       onScores(scores.slice(0, 10)); onUpdate(data); onStatus('live');
-    } catch {
+    } catch (error) {
       if (!active || run !== generation) return;
-      onStatus('offline'); delay = retry;
+      onStatus('offline'); delay = Math.max(retry, error.retryAfterMs || 0);
     } finally {
       if (run === generation) { pending = false; schedule(delay); }
     }

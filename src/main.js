@@ -1,6 +1,7 @@
 import { ensureCanonicalLocation } from './site-location.js';
 await ensureCanonicalLocation();
 import { analyticsContext, recordVisit, recordFinish } from './analytics.js';
+import { retryDelay, leaderboardRoute, leaderboardDay, configureContactForm, contactPayload, clearFieldErrors, showFieldErrors } from './storage-ui.js';
 import { renderMobileShare } from './mobile-share.js';
 import { Game, FPS, DURATION, SEED, VERSION, THREATS, SHOT_COST, SCAN_COST, GAME_CONFIG, SERVICE_NAMES, clamp } from './engine.js';
 import { Audio } from './audio.js';
@@ -14,6 +15,7 @@ const { Renderer } = await import(theme.renderer);
 recordVisit();
 const $=id=>document.getElementById(id), canvas=$('game'), renderer=new Renderer(canvas,theme), audio=new Audio();
 let createGame=seed=>new Game(seed);
+let storageMeta=null,pendingStart=null,boardContext=null,retryAt=0;
 let state='intro',game=createGame(),session=null,actions=[],lastFrame=null,accumulator=0,previousPhase=1,boardId=null,mobileUrl='',busy=false,lastAnnounced=0;
 let lastFeed=-1,lastIntel=undefined,boardRequest=0,scanTargeting=false;
 let frameRequest=null,drawing=false,lastHudAt=-Infinity,toastTimer=null,boardTimer=null,lastBoard=null;
@@ -66,8 +68,10 @@ function setText(element,value){setValue(element,'textContent',String(value));}
 function setAttribute(element,key,value){value=String(value);if(element.getAttribute(key)!==value)element.setAttribute(key,value);}
 function setClass(element,name,value){if(element.classList.contains(name)!==value)element.classList.toggle(name,value);}
 async function request(url,options={}){
+  if(Date.now()<retryAt)throw new Error("Even geduld; de opslagserver heeft om een korte pauze gevraagd. Je invoer blijft staan.");
   const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...options.headers}});
-  const data=await response.json();if(!response.ok)throw new Error(data.error||'Verbinding met de gameserver mislukt.');return data;
+  if(response.status===429)retryAt=Date.now()+retryDelay(response.headers.get("retry-after"));
+  let data;try{data=await response.json();}catch{throw new Error('Geen antwoord ontvangen. Probeer opnieuw met dezelfde ronde.');}if(!response.ok)throw Object.assign(new Error(data.error||'Verbinding met de gameserver mislukt.'),{fields:data.fields,status:response.status,code:data.code,retryAfter:response.headers.get('retry-after')});return data;
 }
 // All three panels remain visible together, including during a round.
 function setTargeting(value){
@@ -98,7 +102,7 @@ function drawBoard(scores){
 }
 async function refreshBoard(){
   const revision=++boardRequest;
-  try{const data=await request('/api/leaderboard');if(revision===boardRequest)drawBoard(data.scores);}
+  try{const data=await request(leaderboardRoute(state==='result'?boardContext:null));if(revision===boardRequest){drawBoard(data.scores);$('game-board-day').textContent=leaderboardDay(data.day);}}
   catch{if(revision===boardRequest&&lastBoard!=='error'){lastBoard='error';$('leaderboard').innerHTML='<div class="empty-board"><strong>Leaderboard even niet bereikbaar.</strong><p>Probeer het zo opnieuw.</p></div>';}}
 }
 function scheduleBoardRefresh(){
@@ -152,16 +156,21 @@ function updateIntelFeed(){
 async function start(){
   if(busy||!assetsReady)return;busy=true;updateLaunchButtons();$('start-error').textContent='';
   try{
-    session=await request('/api/session',{method:'POST',body:JSON.stringify({analytics:analyticsContext()})});
+    storageMeta=await request('/api/meta');configureContactForm($('score-form'),storageMeta);
+    if(storageMeta.storageBackend==='django'){
+      pendingStart??={...(await request('/api/session-id',{method:'POST',body:'{}'})),analytics:analyticsContext()};
+      session=await request('/api/session',{method:'POST',body:JSON.stringify(pendingStart)});
+    }else session=await request('/api/session',{method:'POST',body:JSON.stringify({analytics:analyticsContext()})});
+    pendingStart=null;boardContext=session.day?{day:session.day,version:session.version}:null;
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
     game=createGame(session.seed,true);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
-    $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
+    $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';clearFieldErrors($('score-form'));for(const input of $('score-form').querySelectorAll('[name^="contact."]'))input.value='';
     if(themeUi?.beforeStart){setState('launching');stopFrames();await themeUi.beforeStart();}
     setState(document.hidden?'paused':'playing');if(!document.hidden){canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');}
-  }catch(error){setState('intro');$('start-error').textContent=error.message;}
+  }catch(error){if(error.status===400||error.code==='VERSION_MISMATCH')pendingStart=null;setState('intro');$('start-error').textContent=error.message;}
   finally{busy=false;updateLaunchButtons();}
 }
-function goHome(){session=null;actions=[];game=createGame();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('start').focus({preventScroll:true});refreshBoard();}
+function goHome(){session=null;pendingStart=null;boardContext=null;boardId=null;actions=[];game=createGame();lastFeed=-1;lastIntel=undefined;$('intel-details').hidden=true;$('intel-empty').hidden=false;accumulator=0;setState('intro');$('start').focus({preventScroll:true});refreshBoard();}
 function action(type,point={}){
   if(state!=='playing')return false;
   const a={tick:game.tick,type,...point};
@@ -274,9 +283,24 @@ $('watch-demo').addEventListener('click',()=>{game=createGame(SEED);lastFeed=-1;
 $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);$('quit').addEventListener('click',goHome);$('result-home').addEventListener('click',goHome);$('scan').addEventListener('click',()=>action('scan'));
 $('sound').addEventListener('click',()=>{try{const enabled=audio.toggle();$('sound').setAttribute('aria-pressed',enabled);$('sound').setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');$('sound').title=enabled?'Geluid uit':'Geluid aan';$('sound').innerHTML=enabled?'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>':'<svg viewBox="0 0 24 24"><path d="M11 4 5 9H2v6h3l6 5V4ZM16 8l6 8M22 8l-6 8"/></svg>';}catch{toast('Geluid is niet beschikbaar in deze browser.');}});
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{toast('Gebruik de volledig-schermfunctie van je browser.');}});
-$('score-form').addEventListener('submit',async e=>{e.preventDefault();if(!session)return;$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';try{const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions})});boardId=result.id;drawBoard(result.scores);$('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;}catch(error){$('save-message').textContent=error.message;$('save-score').disabled=false;}});
+$('score-form').addEventListener('input',()=>clearFieldErrors($('score-form')));
+$('score-form').addEventListener('submit',async e=>{
+  e.preventDefault();if(!session)return;
+  clearFieldErrors($('score-form'));$('save-score').disabled=true;$('save-message').textContent='Score wordt gecontroleerd…';
+  try{
+    const contact=contactPayload($('score-form'));
+    const result=await request('/api/score',{method:'POST',body:JSON.stringify({session:session.id,name:$('player-name').value,actions,...(contact?{contact}:{})})});
+    boardContext=result.day?{day:result.day,version:result.version}:null;boardId=result.id;
+    ++boardRequest;drawBoard(result.scores);$('game-board-day').textContent=leaderboardDay(result.day);
+    $('score-form').hidden=true;$('save-message').className='form-message success';$('save-message').textContent=`Je staat op plek ${result.rank}. Goed gespeeld!`;session=null;
+    for(const input of $('score-form').querySelectorAll('[name^="contact."]'))input.value='';
+  }catch(error){
+    $('save-message').textContent=error.message;$('save-score').disabled=false;
+    if(error.fields){try{storageMeta=await request('/api/meta');configureContactForm($('score-form'),storageMeta);}catch{}showFieldErrors($('score-form'),error.fields);}
+  }
+});
 $('mobile-link').addEventListener('click',()=>{if(state==='playing')pause();renderMobileShare(mobileUrl);$('mobile-dialog').showModal();});$('close-mobile').addEventListener('click',()=>$('mobile-dialog').close());$('mobile-dialog').addEventListener('click',e=>{if(e.target===$('mobile-dialog'))$('mobile-dialog').close();});$('copy-url').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(mobileUrl);$('copy-url').textContent='Adres gekopieerd';}catch{$('copy-url').textContent='Selecteer het adres hierboven';}});
-request('/api/meta').then(meta=>{mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Open de game via de link of QR-code. Je begint op je telefoon een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();scheduleBoardRefresh();setState('intro');
+request('/api/meta').then(meta=>{storageMeta=meta;configureContactForm($('score-form'),meta);mobileUrl=meta.mobileUrls[0]||'';const online=meta.hosting==='sites';if(online)mobileUrl=location.origin+'/';$('mobile-instructions').textContent=online?'Scan de QR-code met de camera van je telefoon.':'Verbind je telefoon met hetzelfde wifi-netwerk als deze Mac en scan de QR-code.';$('mobile-availability').textContent=online?'Open de game via de link of QR-code. Je begint op je telefoon een nieuwe ronde.':'De Mac moet aan blijven en de gameserver moet draaien. Je begint op je telefoon een nieuwe ronde.';if($('mobile-dialog').open)renderMobileShare(mobileUrl);}).catch(()=>{});refreshBoard();scheduleBoardRefresh();setState('intro');
 
 // Optional page-scoped access uses the same leaderboard as the visible game.
 if(document.modelContext?.registerTool){

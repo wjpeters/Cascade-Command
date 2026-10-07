@@ -1,0 +1,10 @@
+[hidden]{display:none!important}
+#result{box-sizing:border-box;max-height:calc(100% - 24px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.rs-mobile #result{max-height:none;overflow:visible}
+#score-contact{margin:14px 0 0;padding:14px;border:1px solid currentColor;border-radius:12px;min-width:0}
+#score-contact legend{padding:0 6px;font-weight:600}
+#score-contact label{display:block;margin:0 0 12px}
+#score-contact input{display:block;box-sizing:border-box;width:100%;max-width:100%;margin-top:5px;padding:10px 12px;border:1px solid #8b99ac;border-radius:8px;background:var(--surface,#fff);color:var(--ink,#17253a);font:inherit}
+#score-contact p{font-size:12px;line-height:1.5;margin:8px 0 0}
+.field-error{display:block;color:#b52335;font-size:12px;line-height:1.4}
+.leaderboard-day{font-size:12px;line-height:1.4;opacity:.8}

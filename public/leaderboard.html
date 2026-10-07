@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#030d18"><meta name="description" content="Het live klassement van RiskStudio Cascade Command. Scan, speel en verdien je plek.">
 <title>Live leaderboard · Cascade Command · RiskStudio</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link id="game-theme" rel="stylesheet" href="/themes/classic/leaderboard.css">
-</head>
+<link rel="stylesheet" href="/storage.css"></head>
 <body class="display-page">
 <header class="display-header">
   <a class="brand" href="/" aria-label="Open Cascade Command"><img src="/assets/riskstudio-logo.87fc5d84cca0.webp" width="512" height="130" alt="RiskStudio"></a>
@@ -15,7 +15,7 @@
 <main class="display-layout">
   <section class="ranking-section" aria-labelledby="ranking-title">
     <div class="ranking-intro"><div><p class="eyebrow">Zie de keten. Begrijp het risico.</p><h1 id="ranking-title">Wie beschermt de<br><em>galaxy het best?</em></h1></div><span class="edition-label">LIVE<br><strong>TOP 10</strong></span></div>
-    <div class="ranking-board" id="ranking-board" aria-label="Top 10 spelers"><div class="board-placeholder"><span class="orbit-mark" aria-hidden="true">✦</span><h2>Het klassement wordt geladen.</h2><p>Een moment, we halen de nieuwste scores op.</p></div></div>
+    <p id="display-board-day" class="leaderboard-day" aria-live="polite"></p><div class="ranking-board" id="ranking-board" aria-label="Top 10 spelers"><div class="board-placeholder"><span class="orbit-mark" aria-hidden="true">✦</span><h2>Het klassement wordt geladen.</h2><p>Een moment, we halen de nieuwste scores op.</p></div></div>
     <div class="consolation-winner" id="consolation-winner" role="status"><span class="draw-star" aria-hidden="true">✦</span><div><strong id="draw-heading">Iedere dag een troostprijs</strong><p id="draw-winner">Ook buiten de top 3 maak je kans. De trekking volgt in beheer.</p></div></div>
     <div class="ranking-note"><span>Punten bepalen je plek. Daarna tellen beschermde diensten en speeldatum.</span><span id="last-checked">Wachten op scores</span></div>
   </section>
@@ -30,10 +30,10 @@
   </section>
       <section class="join-panel mission-face prize-face" id="mission-back" aria-labelledby="prizes-title" aria-hidden="true" inert>
         <p class="eyebrow">Bescherm je keten. Win je prijs.</p><h2 id="prizes-title">Speel voor<br>de prijzen.</h2>
-        <p class="join-description">Een prijs voor de top 3.<br>Iedere dag een extra kans.</p>
+        <p id="prize-description" class="join-description">Een prijs voor de top 3.<br>Iedere dag een extra kans.</p>
         <ol id="podium-prizes" class="prize-list" aria-label="Prijzen voor de top 3"></ol>
         <div id="consolation-prize" class="consolation-prize"></div>
-        <p class="prize-rules">Dagelijkse trekking uit alle spelersnamen in het huidige klassement. De top 3 doet niet mee. Eén kans per naam.</p>
+        <p id="draw-rules" class="prize-rules">Dagelijkse trekking uit alle spelersnamen in het huidige klassement. De top 3 doet niet mee. Eén kans per naam.</p>
         <span class="demo-label" id="prize-demo-label">Demo-prijzen · ter illustratie</span>
       </section>
     </div>

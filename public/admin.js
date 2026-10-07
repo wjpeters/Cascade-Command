@@ -18,7 +18,7 @@ async function api(path, body) {
   const response = await fetch('/api/admin/' + path, { cache: 'no-store', ...(body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {}) });
   let data; try { data = await response.json(); } catch { throw new Error('Geen antwoord ontvangen. Probeer het opnieuw.'); }
   if (!response.ok) {
-    const error = Object.assign(new Error(data.error || 'Dit lukte niet. Probeer opnieuw.'), { status: response.status });
+    const error = Object.assign(new Error(data.error || 'Dit lukte niet. Probeer opnieuw.'), { status: response.status, adminUrl: data.adminUrl });
     if ([401, 403].includes(response.status)) accessError(error);
     throw error;
   }
@@ -151,4 +151,4 @@ try {
   const me = await api('me'); $('access').hidden = true; $('manager').hidden = false;
   $('environment').textContent = me.hosting === 'sites' ? 'Online klassement' : 'Lokaal klassement';
   $('account').textContent = me.email; $('signout').hidden = me.hosting !== 'sites'; await load(); initStats(api);
-} catch (error) { if (![401, 403].includes(error.status)) { $('access').querySelector('h2').textContent = 'Beheer niet bereikbaar'; $('access-message').textContent = error.message; } }
+} catch (error) { if(error.status===410){$('access').querySelector('h2').textContent='Beheer via Django';$('access-message').textContent=error.message;$('signin').hidden=true;$('switch-account').hidden=true;if(error.adminUrl){const link=document.createElement('a');link.href=error.adminUrl;link.textContent='Open Django admin ↗';link.target='_blank';link.rel='noopener';$('access').append(link);}}else if (![401, 403].includes(error.status)) { $('access').querySelector('h2').textContent = 'Beheer niet bereikbaar'; $('access-message').textContent = error.message; } }
