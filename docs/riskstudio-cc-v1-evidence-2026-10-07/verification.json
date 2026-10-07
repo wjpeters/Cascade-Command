@@ -142,5 +142,11 @@
   },
   "originalThemeFilesUnchanged": true,
   "physicalPhonesTested": false,
-  "noOnlineTestScores": true
+  "noOnlineTestScores": true,
+  "navigationDuringDelayedStart": {
+    "state": "playing",
+    "openDialogs": [],
+    "canvasAvailable": true,
+    "errors": []
+  }
 }

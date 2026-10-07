@@ -1,6 +1,10 @@
-import { mountExperience, connectExperience } from './experience.js';
-export { beforeStart } from './experience.js';
-import { mountMobile, connectMobile } from './mobile.js';
+import { mountExperience, connectExperience, beforeStart as launchMission } from './experience.js';
+export async function beforeStart() {
+  await prepareLaunch();
+  for (const dialog of document.querySelectorAll('dialog[open]')) if (!['cc-boot', 'cc-launch'].includes(dialog.id)) dialog.close();
+  await launchMission();
+}
+import { mountMobile, connectMobile, prepareLaunch } from './mobile.js';
 export { showMobileScan as onScan } from './mobile.js';
 const icons = {
   target:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>',

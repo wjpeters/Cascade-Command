@@ -22,3 +22,5 @@ De engine, moeilijkheid, energie, puntentelling, API en database zijn niet gewij
 ## Controle
 
 62 regressietests slagen, inclusief de nieuwe themakeuze in de vergelijking van score-identiteiten en replay. Chrome op 320/360/390/430 px, landscape, tablet en desktop; WebKit mobiel. Launching houdt tick 0; een sluitanimatie houdt de simulatietick vast totdat de ronde hervat. Minder beweging, laadfout/herstel, snelle navigatie en desktop-herstel zijn getest. Een volledige echte lokale ronde is gevalideerd en opgeslagen, HTTP 201, in apart tijdelijk testklassement. Geen testscores in de online database. De originele RiskStudio App-bestanden zijn met SHA-256 vergeleken en ongewijzigd. Geen fysieke iPhone/Android getest. [Controlebewijs](riskstudio-cc-v1-evidence-2026-10-07/verification.json).
+
+Navigatie tijdens een vertraagde sessie-aanvraag is aanvullend getest: Ranking sluit vóór de missie-intro en de echte ronde start zonder open dialoog.

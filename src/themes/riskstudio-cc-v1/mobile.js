@@ -13,6 +13,7 @@ const icon = name => `<svg viewBox="0 0 24 24" aria-hidden="true">${glyphs[name]
 let ui;
 let revealScan = () => {};
 export function showMobileScan() { revealScan(); }
+export function prepareLaunch() { return ui?.prepareLaunch?.(); }
 
 export function mountMobile(document) {
   const $ = id => document.getElementById(id);
@@ -119,6 +120,7 @@ export function connectMobile({ game, renderer, requestFrame, state, pause, resu
     return closing;
   }
   ui.setCloser(() => close(true, true));
+  ui.prepareLaunch = () => close(false, true);
   async function open(next) {
     if (!mq.matches || opening) return;
     opening = true;
