@@ -5,12 +5,13 @@ import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import { GAME_CONFIG } from './src/engine.js';
 import { handleAdmin, localAdmin } from './admin/api.js';
+import { localStorageEnvironment } from './storage/local-env.js';
 import { storageConfig } from './storage/config.js';
 import { djangoStorage } from './storage/django.js';
 import { handleGameApi } from './storage/game-api.js';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT ?? 4317), host = process.env.HOST || '0.0.0.0';
-const config = storageConfig(process.env);
+const config = storageConfig(localStorageEnvironment(process.env));
 // Django mode never opens or creates legacy files or session maps.
 const store = config.backend === 'django' ? djangoStorage(config) : (await import('./storage/legacy-local.js')).localLegacyStorage(process.env.CASCADE_DATA_DIR || path.join(root, 'data'));
 const addresses = () => [...new Set(Object.values(os.networkInterfaces()).flat().filter(i => i && i.family === 'IPv4' && !i.internal && /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(i.address)).map(i => `http://${i.address}:${server.address()?.port ?? port}`))];

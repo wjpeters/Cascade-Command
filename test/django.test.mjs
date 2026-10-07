@@ -11,6 +11,7 @@ import { djangoStorage } from '../storage/django.js';
 import { handleGameApi } from '../storage/game-api.js';
 import { handleApi } from '../worker/api.js';
 import { VERSION, replay } from '../src/engine.js';
+import { localStorageEnvironment } from '../storage/local-env.js';
 import { leaderboardRoute, leaderboardDay } from '../src/storage-ui.js';
 
 const id='22345678-1234-4123-8123-123456789abc', scoreId='32345678-1234-4123-8123-123456789abc', visitId='12345678-1234-4123-8123-123456789abc';
@@ -59,6 +60,13 @@ test('one server-only switch defaults to legacy and Django requires a safe URL a
   assert.throws(()=>storageConfig({CASCADE_STORAGE_BACKEND:'django'}));
   for(const url of ['http://external.example/api/v1/internal/games/cascade-command/','https://user:pass@example.test/api/v1/internal/games/cascade-command/','https://api.example/other/'])assert.throws(()=>storageConfig({CASCADE_STORAGE_BACKEND:'django',CASCADE_COMMAND_API_TOKEN:'placeholder',DJANGO_GAMES_API_BASE_URL:url}));
   assert.equal(storageConfig({...{CASCADE_STORAGE_BACKEND:'django',CASCADE_COMMAND_API_TOKEN:'placeholder'},DJANGO_GAMES_API_BASE_URL:'http://localhost:8000/api/v1/internal/games/cascade-command/'}).backend,'django');
+});
+test('editing the shared config or runtime mode also uses the secure keychain from the normal local server',()=>{
+  const env={CASCADE_STORAGE_BACKEND:'django',DJANGO_GAMES_API_BASE_URL:'https://later.example/api/v1/internal/games/cascade-command/'};
+  let account;const result=localStorageEnvironment(env,value=>{account=value;return 'keychain-test-placeholder';});
+  assert.equal(account,'later.example');assert.equal(result.CASCADE_COMMAND_API_TOKEN,'keychain-test-placeholder');assert.equal(env.CASCADE_COMMAND_API_TOKEN,undefined);
+  assert.deepEqual(localStorageEnvironment({CASCADE_STORAGE_BACKEND:'legacy'},()=>{throw new Error('Must not read keychain');}),{CASCADE_STORAGE_BACKEND:'legacy'});
+  assert.equal(localStorageEnvironment({...env,CASCADE_COMMAND_API_TOKEN:'explicit-placeholder'},()=>{throw new Error('Must not read keychain');}).CASCADE_COMMAND_API_TOKEN,'explicit-placeholder');
 });
 test('Django uses server seed, deduplicates visits and a committed start with a lost response',async()=>{
   const f=fixture({loseStart:true});
