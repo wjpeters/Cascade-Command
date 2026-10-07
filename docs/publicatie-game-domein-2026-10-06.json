@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-06",
+  "version_number": 16,
+  "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+  "version_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16~appgver_b33f5f5afeec8191935d113b9e776536",
+  "commit_sha": "dd61e4e7c6199bbc397235d2ad1bfceb40e7d4a6",
+  "deployment_id": "appgdep_6ac50a86194c8191a0ec74dc5a27850b",
+  "status": "succeeded",
+  "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "updated_at": "2026-10-06T14:49:59.213663+00:00",
+  "evidence": "62 regressietests, bouwcontrole en geïsoleerde browserproef: alias -> canonical en missie start. Geen productie-POSTs. Bestaande lokale easterEggs:false behouden."
+}

@@ -1,3 +1,5 @@
+import { mountMobile, connectMobile } from './mobile.js';
+export { showMobileScan as onScan } from './mobile.js';
 const icons = {
   target:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>',
   build:'<path d="m12 3 0 6m0 6v6M3 12h6m6 0h6M5 5l4 4m6 6 4 4M5 19l4-4m6-6 4-4"/><circle cx="12" cy="12" r="3"/><circle cx="12" cy="3" r="1.5"/><circle cx="3" cy="12" r="1.5"/><circle cx="21" cy="12" r="1.5"/>',
@@ -33,9 +35,12 @@ export function mount(document) {
   summary.innerHTML=`<p class="rs-summary-caption">Insight summary</p><div class="rs-summary-title"><span class="rs-summary-symbol">${icon('people')}</span><div><h2>Overzicht veerkracht</h2><p>Het effect van ketenrisico’s op je kritieke diensten, in één overzicht.</p></div></div><p class="rs-breakdown-label">Weerbaarheid</p><div class="rs-donut"><svg viewBox="0 0 144 144" aria-hidden="true"><circle cx="72" cy="72" r="48" stroke="#edf1f8"/>${['portal','payments','operations'].map((key,index)=>`<circle data-service="${key}" id="rs-donut-${index}" cx="72" cy="72" r="48" stroke="var(--service-color)" stroke-dasharray="96 206" transform="rotate(${index*120} 72 72)"/>`).join('')}</svg><div class="rs-donut-value"><strong id="rs-health-total">100%</strong><span>weerbaarheid</span></div></div><div class="rs-summary-legend"><span data-service="portal"><i></i>Portaal</span><span data-service="payments"><i></i>Betalingen</span><span data-service="operations"><i></i>Operatie</span></div><span class="rs-chip">Cascade Command</span>`;
   summary.append(document.querySelector('.service-status'));
   document.querySelector('.sidebar').prepend(summary);
+  mountMobile(document);
 }
 
-export function connect({ game, renderer, requestFrame }) {
+export function connect(controls) {
+  const { game, renderer, requestFrame } = controls;
+  connectMobile(controls);
   const $ = id => document.getElementById(id);
   const tabs=[$('rs-insights-tab'),$('rs-risks-tab')];
   const selectTab = index => {
@@ -56,7 +61,7 @@ export function connect({ game, renderer, requestFrame }) {
     const state=document.body.dataset.state;
     if(state!==lastState){
       if(state==='intro')selectTab(0);
-      if(state==='playing'&&(lastState==='intro'||lastState==='result')&&matchMedia('(max-width:760px)').matches){requestAnimationFrame(()=>document.querySelector('.game-column').scrollIntoView({block:'start',behavior:renderer.reduced?'auto':'smooth'}));}
+      if(state==='playing'&&(lastState==='intro'||lastState==='result')&&!document.body.classList.contains('rs-mobile')&&matchMedia('(max-width:760px)').matches){requestAnimationFrame(()=>document.querySelector('.game-column').scrollIntoView({block:'start',behavior:renderer.reduced?'auto':'smooth'}));}
       lastState=state;
     }
   };

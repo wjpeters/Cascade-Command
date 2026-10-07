@@ -144,7 +144,7 @@ export class Renderer {
     }
     for(const packet of game.packets){
       const threat=THREATS[packet.kind],low=threat.damage===0,color=this.theme.categories[packet.kind];
-      const radius=low?Math.max(11,5/this.scale):Math.max(20,10/this.scale);
+      const radius=low?Math.max(11,5/this.scale):Math.max(20,12/this.scale);
       if(packet.warning>0)this.circle(packet.x,packet.y,radius+8+(45-packet.warning)*.18,color+'aa',1.4);
       else {
         const from=game.network.map[packet.from],to=game.network.map[packet.to],angle=Math.atan2(to.y-from.y,to.x-from.x);

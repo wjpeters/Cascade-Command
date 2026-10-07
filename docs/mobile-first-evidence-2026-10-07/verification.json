@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-07",
+  "theme": "riskstudio-app",
+  "scoreVersion": "cascade-3-14f91b15",
+  "unitTests": {
+    "total": 62,
+    "passed": 62,
+    "failed": 0
+  },
+  "gameplayAndClassicFilesUnchanged": true,
+  "chrome": {
+    "errors": [],
+    "results": [
+      {
+        "width": 320,
+        "height": 568,
+        "mobile": true,
+        "overflow": false,
+        "canvas": {
+          "w": 320,
+          "h": 228.6875
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 360,
+        "height": 640,
+        "mobile": true,
+        "overflow": false,
+        "canvas": {
+          "w": 360,
+          "h": 300.6875
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 390,
+        "height": 700,
+        "mobile": true,
+        "overflow": false,
+        "canvas": {
+          "w": 390,
+          "h": 360.6875
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 390,
+        "height": 844,
+        "mobile": true,
+        "overflow": false,
+        "canvas": {
+          "w": 390,
+          "h": 415.03125
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 430,
+        "height": 932,
+        "mobile": true,
+        "overflow": false,
+        "canvas": {
+          "w": 430,
+          "h": 503.03125
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "mobile": true,
+        "overflow": false,
+        "canvas": {
+          "w": 601,
+          "h": 342
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "mobile": false,
+        "overflow": false,
+        "canvas": {
+          "w": 474,
+          "h": 625
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 1024,
+        "height": 768,
+        "mobile": false,
+        "overflow": false,
+        "canvas": {
+          "w": 730,
+          "h": 625
+        },
+        "railVisible": false,
+        "navVisible": true,
+        "servicesVisible": true
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "mobile": false,
+        "overflow": false,
+        "canvas": {
+          "w": 768,
+          "h": 657
+        },
+        "railVisible": true,
+        "navVisible": true,
+        "servicesVisible": true
+      }
+    ],
+    "interactions": {
+      "scanPaused": true,
+      "intelPaused": true,
+      "targeting": true,
+      "targetScan": true,
+      "feedCount": 14,
+      "leftHand": true,
+      "menuRetained": true,
+      "resultScrollable": true,
+      "inputVisible": true
+    }
+  },
+  "webkit": {
+    "pause": true,
+    "errors": [],
+    "overflow": false,
+    "canvasHeight": 415.03125,
+    "navBottom": 844,
+    "viewportHeight": 844
+  },
+  "fullLocalRound": {
+    "status": 201,
+    "saved": true,
+    "rank": 1,
+    "score": 8325,
+    "errors": []
+  },
+  "testData": "Separate temporary local storage; no scores written to the online database.",
+  "physicalPhonesTested": false
+}

@@ -23,3 +23,7 @@ Twee regressietests controleren alleen het bekende aliasdomein, behoud van route
 De lokale bestaande wijziging `easterEggs: false` blijft behouden in de gepubliceerde bron. Spelregels en score-editie wijzigen niet.
 
 62 regressietests en de browser-/bouwcontrole slagen. [Browserbewijs](game-domein-evidence-2026-10-06/verification.json), [diagnosebewijs](game-domein-diagnose-2026-10-06.json). Alle browserverzoeken gingen naar een tijdelijke lokale server; er is geen live testronde aangemaakt.
+
+## Live herstelversie
+
+Sites-versie 16 succesvol gepubliceerd op 6 oktober 2026 om 14:49:59 UTC. Native status `succeeded`; broncommit `dd61e4e7c6199bbc397235d2ad1bfceb40e7d4a6`. [Publicatiebewijs](publicatie-game-domein-2026-10-06.json). Geen extra live POST-starttest uitgevoerd; de automatische goedkeuringscontrole wees die test af omdat ze een productieronde zou kunnen aanmaken. De geïsoleerde browserproef start wel succesvol een tijdelijke ronde na de doorverwijzing.

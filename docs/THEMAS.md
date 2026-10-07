@@ -13,7 +13,7 @@ export const GAME_CONFIG = {
 };
 ```
 
-De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De actuele lokale game gebruikt nu `classic`; `riskstudio-app` blijft beschikbaar. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
+De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De actuele lokale game gebruikt `riskstudio-app`; `classic` blijft beschikbaar. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
 
 Een ontbrekende of onbekende naam valt terug op Classic. Als de stylesheet van een geregistreerd thema niet kan laden, blijft de vorige stylesheet aanwezig en start de game met Classic. De loader wacht maximaal acht seconden op een nieuwe stylesheet. Het actieve thema staat als `data-theme` op het HTML-element, voor inspectie en eventuele themaspecifieke selectors.
 
@@ -23,7 +23,7 @@ Een themawissel verandert geen spelregels, moeilijkheid, scenarioseed, scorevali
 
 De nieuwe vormgeving volgt de RiskStudio Explore-workspace uit de screenshot van 22 september 2026: het officiële logo, een witte app-header met de werkwijze, witte panelen met subtiele randen, het blauwe accent `#4670dd`, en een lichte Galaxy met een blauwe buitenring en een geel centrum.
 
-Het linkerpaneel toont de missie, leverancierszoekfunctie, huidige focus, intelligence en de tabs Insights / Risico’s. Zoeken selecteert een echte leverancier uit de huidige Galaxy en markeert de locatie; een scan blijft nodig voor intelligence. Het rechterpaneel heeft een donut die de actuele weerbaarheid van de drie diensten volgt, de dienststatus, Live Risk Feed en het volledige klassement. De werkwijze bovenaan geeft app-context; de spelknoppen blijven op hun eigen plek. Op mobiel staan de panelen onder elkaar en brengt Start missie het speelveld in beeld.
+Het linkerpaneel toont de missie, leverancierszoekfunctie, huidige focus, intelligence en de tabs Insights / Risico’s. Zoeken selecteert een echte leverancier uit de huidige Galaxy en markeert de locatie; een scan blijft nodig voor intelligence. Het rechterpaneel heeft een donut die de actuele weerbaarheid van de drie diensten volgt, de dienststatus, Live Risk Feed en het volledige klassement. De werkwijze bovenaan geeft app-context; de spelknoppen blijven op hun eigen plek. Op mobiel gebruikt het thema sinds 7 oktober 2026 een vaste missiepagina. Score, tijd, drie dienstbalken, Galaxy, energie en Scan blijven samen zichtbaar. Intel, Feed en Ranking openen in een gepauzeerd paneel vanaf de onderkant.
 
 | Bestand | Vormgeving |
 |---|---|
@@ -31,6 +31,7 @@ Het linkerpaneel toont de missie, leverancierszoekfunctie, huidige focus, intell
 | `public/themes/riskstudio-app/game.css` en `tokens.css` | Volledige lichte opmaak en responsieve app-layout |
 | `src/themes/riskstudio-app/renderer.js` | Lichte Galaxy, leverancierspictogrammen, organisatie en beschermingsvelden; dezelfde spelcoördinaten |
 | `src/themes/riskstudio-app/shell.js` | App-header, panelen, zoeken, toetsenbordtabs en actuele weerbaarheidsdonut |
+| `src/themes/riskstudio-app/mobile.js` | Mobiele DOM-indeling, panelen, pauze/hervatten, dienststatus en links-/rechtshandige scanbediening |
 | `plugins/easter-eggs/themes/riskstudio-app.css` | Lichte Council-opmaak, alleen bij ingeschakelde plugin |
 
 Het officiële logo komt uit de bestaande lokale RiskStudio-app (`nextjs/public/logo.png`) en is verkleind naar een WebP van 6.042 bytes met bestandsvingerafdruk. De nieuwe achtergrond en spritebron zijn kleine eigen SVG’s; leveranciers en velden worden als vectoren getekend. Er is geen externe download tijdens het spelen. De Council-opmaak gebruikt de bewaarde Classic-geometrie met eigen lichte kleuroverrides. De fontstack kiest Inter indien aanwezig, met de systeemfont als fallback.
@@ -79,3 +80,20 @@ De build verkleint alle gepubliceerde JS en CSS met de bestaande esbuild-afhanke
 `/leaderboard` volgt dezelfde themaconfiguratie. De monitor kan ook `?theme=classic` of `?theme=riskstudio-app` kiezen zonder het spelthema te veranderen. Een thema levert hiervoor `leaderboardStylesheet: '/themes/<id>/leaderboard.css'`; die stylesheet importeert de bijbehorende tokens en de gedeelde `/leaderboard.css`. `initializeTheme(id, document, 'leaderboard')` laadt die stijl, het logo en de themakleuren, zonder gameshell of Canvas-renderer.
 
 Nieuwe thema’s moeten ook hun eigen monitorstylesheet toevoegen. De bewaakte gamekosten blijven maximaal 800.000 bytes. De zelfstandige monitorbestanden hebben een aparte limiet van 25.000 bytes; alle bestanden samen maximaal 825.000 bytes. De beeldlimiet blijft 650.000 bytes. [Monitorhandleiding](LEADERBOARD_SCHERM.md).
+
+## Mobile first, 7 oktober 2026
+
+Het goedgekeurde ontwerp is verwerkt binnen `riskstudio-app`. Onder 761 px en bij een liggend scherm tot 1000 px breed en 500 px hoog gebruikt de game de mobiele missiepagina. Panelen verplaatsen de bestaande interactieve onderdelen; IDs en echte spelgegevens blijven behouden. Bij terugschakelen naar desktop worden de onderdelen op hun oorspronkelijke plaats teruggezet.
+
+- Start: één hoofdknop, korte instructies, echte Galaxy-preview en de bestaande privacy-uitleg.
+- Spelen: score, tijd, dienstweerbaarheid, Galaxy, laatste feedmelding, energie en Scan binnen de viewport.
+- Scan: een geslaagde mobiele scan opent de echte leveranciersintelligence en pauzeert de ronde.
+- Intel, Feed en Ranking: native dialoog vanaf de onderkant, automatisch hervatten alleen als het paneel de ronde zelf pauzeerde. Een bestaande pauze blijft behouden. Escape en de sluitknop gebruiken dezelfde levenscyclus.
+- Gericht scannen: vanuit Intel terug naar het veld, daarna een leverancier of dreiging kiezen. Bestaande energieprijs en cooldown gelden.
+- Missiemenu: speluitleg, geluid, volledig scherm, demo, ranking, privacy en scan links/rechts. Alleen de handvoorkeur wordt lokaal op het apparaat bewaard.
+- Resultaat: scrollbaar formulier met 16px-invoer en afzonderlijke knoppen, ook wanneer het toetsenbord ruimte inneemt.
+- Landscape: Galaxy links, compacte status en bediening rechts. Tablet en desktop behouden hun bestaande zijpanelen.
+
+De gameplayconfig, engine, score-identiteit, API, database en Classic-themaonderdelen zijn niet aangepast. De grotere dreigingssymbolen wijzigen alleen de tekening; hitboxes en spelcoördinaten blijven gelijk.
+
+Browsercontroles omvatten Chrome op 320/360/390/430 px, liggend 844×390 en tablet/desktop, plus WebKit op 390×844. Start, automatische scan, gerichte scan, panelen sluiten met Escape, hervatten, handvoorkeur en resultaat zijn gecontroleerd. Een volledige ronde is succesvol door de server gevalideerd en opgeslagen in een afzonderlijk tijdelijk testklassement. Geen testscores in de online database geplaatst. Een fysieke iPhone/Android is niet getest. Zie [controlebewijs](mobile-first-evidence-2026-10-07/verification.json).

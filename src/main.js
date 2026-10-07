@@ -141,7 +141,7 @@ function updateIntelFeed(){
   if(game.feedRevision!==lastFeed){
     lastFeed=game.feedRevision;$('feed-count').textContent=game.feedRevision?`${game.feedRevision} gebeurtenissen in deze ronde`:'Wacht op het eerste signaal';$('risk-feed').replaceChildren();
     if(!game.feed.length){const item=document.createElement('li');item.className='feed-empty';item.textContent='Wachten op signalen uit de keten…';$('risk-feed').append(item);}
-    for(const event of game.feed.slice(0,4)){
+    for(const event of game.feed.slice(0,theme.id==='riskstudio-app'?game.feed.length:4)){
       const item=document.createElement('li');item.className='feed-event '+event.severity;
       const time=document.createElement('time');time.textContent=formatTime(event.tick);
       const content=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('span');title.textContent=event.text;detail.textContent=event.detail;content.append(title,detail);item.append(time,content);$('risk-feed').append(item);
@@ -167,7 +167,7 @@ function action(type,point={}){
   if(type==='scan'&&a.x!==undefined){a.x=clamp(a.x,0,1000);a.y=clamp(a.y,0,1000);}
   if(game.act(a)){
     actions.push(a);audio.play(type);
-    if(type==='scan'){setTargeting(false);toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();}
+    if(type==='scan'){setTargeting(false);toast(`${game.intelligence.label} · ${severityName[game.intelligence.severity]} · Tier ${game.intelligence.tier}`);updateHud();themeUi?.onScan?.();}
     return true;
   }
   if(type==='shot')toast(game.energy<SHOT_COST?'Energie laadt op…':'Even richten, dan opnieuw.');
@@ -252,7 +252,7 @@ canvas.addEventListener('pointerdown',event=>{
 canvas.addEventListener('pointermove',event=>{if(event.pointerType!=='touch'&&state==='playing'){renderer.keyboard=false;renderer.pointer=renderer.point(event.clientX,event.clientY);}});
 canvas.addEventListener('pointerleave',()=>{if(!renderer.keyboard)renderer.pointer=null;});
 document.addEventListener('keydown',event=>{
-  if(event.target.matches('input,textarea,select')||$('mobile-dialog').open||$('rules-dialog').open||$('intel-dialog').open)return;
+  if(event.target.matches('input,textarea,select')||$('mobile-dialog').open||$('rules-dialog').open||$('intel-dialog').open||document.getElementById('rs-mobile-panel')?.open)return;
   if(event.key==='Escape'){if(scanTargeting){setTargeting(false);return;}if(state==='playing')pause();else if(state==='paused')resume();return;}
   if(state!=='playing'||event.target.matches('button,a'))return;
   if(event.code==='Space'){event.preventDefault();if(!event.repeat)action('scan',renderer.pointer?{...renderer.pointer}:{});return;}
@@ -294,7 +294,7 @@ if(document.modelContext?.registerTool){
 }
 
 
-themeUi?.connect({ game: () => game, renderer, requestFrame });
+themeUi?.connect({ game: () => game, renderer, requestFrame, state: () => state, pause, resume, setTargeting });
 
 // The disabled path never imports or registers the presentation plugin.
 if (GAME_CONFIG.easterEggs === true) {
