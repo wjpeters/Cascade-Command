@@ -141,7 +141,7 @@ function updateIntelFeed(){
   if(game.feedRevision!==lastFeed){
     lastFeed=game.feedRevision;$('feed-count').textContent=game.feedRevision?`${game.feedRevision} gebeurtenissen in deze ronde`:'Wacht op het eerste signaal';$('risk-feed').replaceChildren();
     if(!game.feed.length){const item=document.createElement('li');item.className='feed-empty';item.textContent='Wachten op signalen uit de keten…';$('risk-feed').append(item);}
-    for(const event of game.feed.slice(0,theme.id==='riskstudio-app'?game.feed.length:4)){
+    for(const event of game.feed.slice(0,(theme.id==='riskstudio-app'||theme.fullRiskFeed===true)?game.feed.length:4)){
       const item=document.createElement('li');item.className='feed-event '+event.severity;
       const time=document.createElement('time');time.textContent=formatTime(event.tick);
       const content=document.createElement('div'),title=document.createElement('strong'),detail=document.createElement('span');title.textContent=event.text;detail.textContent=event.detail;content.append(title,detail);item.append(time,content);$('risk-feed').append(item);
@@ -156,6 +156,7 @@ async function start(){
     if(session.version!==VERSION)throw new Error('Er zijn nieuwe spelregels. Vernieuw de pagina. Speel je lokaal? Herstart dan eerst de game.');
     game=createGame(session.seed,true);actions=[];accumulator=0;previousPhase=1;lastAnnounced=0;lastFeed=-1;lastIntel=undefined;
     $('intel-details').hidden=true;$('intel-empty').hidden=false;$('score-form').hidden=false;$('save-message').textContent='';$('save-message').className='form-message';$('save-score').disabled=false;$('player-name').value='';
+    if(themeUi?.beforeStart){setState('launching');stopFrames();await themeUi.beforeStart();}
     setState(document.hidden?'paused':'playing');if(!document.hidden){canvas.focus({preventScroll:true});toast('Stop dreigingen. Laat LOW-signalen passeren.');}
   }catch(error){setState('intro');$('start-error').textContent=error.message;}
   finally{busy=false;updateLaunchButtons();}

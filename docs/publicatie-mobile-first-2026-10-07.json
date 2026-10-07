@@ -1,0 +1,40 @@
+{
+  "source": {
+    "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+    "checkout_path": "/Users/wp/WPOS-local/projects/riskstudio-cascade-command",
+    "commit_sha": "8a202255cedbc560079e87b9575a22c98568fa18",
+    "archive": "/private/tmp/cascade-command-mobile-20261007.tar.gz"
+  },
+  "saved": {
+    "id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16~appgver_7893e043a1d4819181c63593c68a11d6",
+    "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+    "version_number": 17,
+    "source": {
+      "commit_sha": "8a202255cedbc560079e87b9575a22c98568fa18"
+    },
+    "archive_storage": {
+      "archive_format": "tar",
+      "sediment_file_id": "file_00000000bc788210aa8b704db2559684",
+      "content_hash": "sha256:0238531ae49c089b4775033238ebef39e5ca90941be2631b927d242eb6ec221f",
+      "size_bytes": 798720,
+      "file_count": 10
+    },
+    "screenshot_url": null,
+    "deployment_id": null
+  },
+  "deployment": {
+    "id": "appgdep_6ac5f668e408819193b72bf2af7af82d",
+    "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+    "title": "RiskStudio · Cascade Command",
+    "version_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16~appgver_7893e043a1d4819181c63593c68a11d6",
+    "type": "publish",
+    "status": "succeeded",
+    "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+    "has_mcp": false,
+    "screenshot_asset_pointer": null,
+    "provider_deployment_id": "site---6abeaa82afbc8191987cd9a537e1ed16",
+    "failure_message": null,
+    "env_set_revision": 1,
+    "updated_at": "2026-10-07T07:36:25.579103+00:00"
+  }
+}

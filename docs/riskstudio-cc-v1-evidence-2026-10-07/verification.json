@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-07",
+  "theme": "riskstudio-cc-v1",
+  "basedOn": "riskstudio-app",
+  "scoreVersion": "cascade-3-14f91b15",
+  "browser": {
+    "errors": [],
+    "launch": {
+      "state": "launching",
+      "tick": 0
+    },
+    "closeAnimation": {
+      "tickBefore": 6,
+      "duringClose": {
+        "state": "paused",
+        "tick": 6
+      },
+      "tickAfter": 6,
+      "pausedWhileClosing": true
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "height": 568,
+        "mobile": true,
+        "overflow": false,
+        "canvasHeight": 210.6875,
+        "controlsVisible": true,
+        "navVisible": true
+      },
+      {
+        "width": 360,
+        "height": 640,
+        "mobile": true,
+        "overflow": false,
+        "canvasHeight": 282.6875,
+        "controlsVisible": true,
+        "navVisible": true
+      },
+      {
+        "width": 390,
+        "height": 700,
+        "mobile": true,
+        "overflow": false,
+        "canvasHeight": 341.578125,
+        "controlsVisible": true,
+        "navVisible": true
+      },
+      {
+        "width": 430,
+        "height": 932,
+        "mobile": true,
+        "overflow": false,
+        "canvasHeight": 495.984375,
+        "controlsVisible": true,
+        "navVisible": true
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "mobile": true,
+        "overflow": false,
+        "canvasHeight": 342,
+        "controlsVisible": true,
+        "navVisible": true
+      },
+      {
+        "width": 768,
+        "height": 1024,
+        "mobile": false,
+        "overflow": false,
+        "canvasHeight": 625,
+        "controlsVisible": true,
+        "navVisible": true
+      },
+      {
+        "width": 1440,
+        "height": 900,
+        "mobile": false,
+        "overflow": false,
+        "canvasHeight": 657,
+        "controlsVisible": true,
+        "navVisible": true
+      }
+    ],
+    "lobbyRows": [
+      {
+        "width": 320,
+        "height": 568,
+        "startVisible": true,
+        "navVisible": true,
+        "overflow": false
+      },
+      {
+        "width": 360,
+        "height": 640,
+        "startVisible": true,
+        "navVisible": true,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "height": 700,
+        "startVisible": true,
+        "navVisible": true,
+        "overflow": false
+      },
+      {
+        "width": 844,
+        "height": 390,
+        "startVisible": true,
+        "navVisible": true,
+        "overflow": false
+      }
+    ]
+  },
+  "safety": {
+    "errors": [],
+    "reducedMotion": true,
+    "boardStillConnected": true,
+    "resizeRestored": true,
+    "assetFailure": {
+      "errorVisible": true,
+      "errorStartDisabled": true,
+      "recovered": true
+    },
+    "safari": {
+      "startupScanAndResume": true,
+      "noOverflow": true
+    }
+  },
+  "fullRound": {
+    "status": 201,
+    "saved": true,
+    "rank": 1,
+    "score": 8200,
+    "errors": []
+  },
+  "regressionTests": {
+    "total": 62,
+    "passed": 62
+  },
+  "originalThemeFilesUnchanged": true,
+  "physicalPhonesTested": false,
+  "noOnlineTestScores": true
+}

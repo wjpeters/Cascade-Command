@@ -13,7 +13,7 @@ export const GAME_CONFIG = {
 };
 ```
 
-De beschikbare namen staan in `src/themes/index.js`. Er zijn twee bewaarde thema’s: `classic` en `riskstudio-app`. De actuele lokale game gebruikt `riskstudio-app`; `classic` blijft beschikbaar. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
+De beschikbare namen staan in `src/themes/index.js`. Er zijn drie bewaarde thema’s: `classic`, `riskstudio-app` en `riskstudio-cc-v1`. De actuele lokale game gebruikt `riskstudio-cc-v1`; de andere twee blijven beschikbaar. Kies `classic` voor de oorspronkelijke vormgeving. Herlaad de lokale game na een wijziging. Voor de online game: opnieuw bouwen en publiceren. Een lokaal gewijzigde keuze past de al gepubliceerde site niet aan.
 
 Een ontbrekende of onbekende naam valt terug op Classic. Als de stylesheet van een geregistreerd thema niet kan laden, blijft de vorige stylesheet aanwezig en start de game met Classic. De loader wacht maximaal acht seconden op een nieuwe stylesheet. Het actieve thema staat als `data-theme` op het HTML-element, voor inspectie en eventuele themaspecifieke selectors.
 
@@ -97,3 +97,7 @@ Het goedgekeurde ontwerp is verwerkt binnen `riskstudio-app`. Onder 761 px en bi
 De gameplayconfig, engine, score-identiteit, API, database en Classic-themaonderdelen zijn niet aangepast. De grotere dreigingssymbolen wijzigen alleen de tekening; hitboxes en spelcoördinaten blijven gelijk.
 
 Browsercontroles omvatten Chrome op 320/360/390/430 px, liggend 844×390 en tablet/desktop, plus WebKit op 390×844. Start, automatische scan, gerichte scan, panelen sluiten met Escape, hervatten, handvoorkeur en resultaat zijn gecontroleerd. Een volledige ronde is succesvol door de server gevalideerd en opgeslagen in een afzonderlijk tijdelijk testklassement. Geen testscores in de online database geplaatst. Een fysieke iPhone/Android is niet getest. Zie [controlebewijs](mobile-first-evidence-2026-10-07/verification.json).
+
+## RiskStudio CC v1, 7 oktober 2026
+
+Zelfstandige kopie van RiskStudio App met meer mobiele gamebeleving: echte laadvoortgang in een geanimeerd opstartscherm, game-lobby, navigatie, missie-intro en paneelovergangen. De timer start na de intro; hervatten na een paneel gebeurt pas na de overgang. Beide eerdere thema’s en het bestaande klassement blijven behouden. [Werking en controle](RISKSTUDIO_CC_V1.md).

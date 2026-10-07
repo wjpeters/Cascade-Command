@@ -40,7 +40,7 @@ test('theme changes keep the published score edition and deterministic round/rep
   const actions = [{ tick: 0, type: 'scan' }, { tick: 60, type: 'shot', x: 300, y: 200 }];
   const original = replay(actions, SEED);
   const fingerprint = configFingerprint(GAME_CONFIG);
-  for (const theme of ['classic', 'riskstudio-app', 'future-design', undefined]) {
+  for (const theme of ['classic', 'riskstudio-app', 'riskstudio-cc-v1', 'future-design', undefined]) {
     const config = { ...structuredClone(GAME_CONFIG), theme };
     if (theme === undefined) delete config.theme;
     assert.equal(configFingerprint(config), fingerprint);
