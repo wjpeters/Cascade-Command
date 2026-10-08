@@ -1,6 +1,6 @@
 // Server-only defaults. Runtime settings override these without changing gameplay.
 export const STORAGE_CONFIG = Object.freeze({
-  backend: 'legacy',
+  backend: 'legacy', // legacy or django
   apiBaseUrl: 'https://riskstudio-fafnir.abibia.com/api/v1/internal/games/cascade-command/',
 });
 

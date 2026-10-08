@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-07",
+  "project_id": "appgprj_6abeaa82afbc8191987cd9a537e1ed16",
+  "version": 21,
+  "commit_sha": "839a2ab112798794f79e5882d5dc54cbcdbcf607",
+  "deployment_id": "appgdep_6ac64793f8788191adf4c028daed09f6",
+  "status": "succeeded",
+  "url": "https://riskstudio-cascade-command.codexwillem.chatgpt.site",
+  "env_revision": 2,
+  "storage_backend": "legacy",
+  "api_base_url": "https://riskstudio-fafnir.abibia.com/api/v1/internal/games/cascade-command/",
+  "tests": {
+    "total": 72,
+    "passed": 72,
+    "build": "passed",
+    "budget": "passed",
+    "swift_typecheck": "passed",
+    "browser_legacy": "round and score passed",
+    "browser_django_mock": "round, contact validation, correction, score and startday passed",
+    "browser_django_mobile": "390 px; single scrolling result, contact form and score passed"
+  },
+  "fafnir": {
+    "unauthenticated_meta_status": 403,
+    "authenticated_integration": "not tested; API token absent in Sites"
+  },
+  "existing_data": "preserved; no import or migration"
+}

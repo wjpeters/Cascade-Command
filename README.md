@@ -288,3 +288,5 @@ Chrome en WebKit, kleine telefoons, landscape, tablet/desktop en een volledige r
 ## RiskStudio CC v1, 7 oktober 2026
 
 Zelfstandig `riskstudio-cc-v1`-thema als kopie van RiskStudio App, met een geanimeerd mobiel opstartscherm, echte laadvoortgang, game-lobby, missie-intro, game-navigatie en paneelovergangen. De simulatie start pas na de intro en blijft gepauzeerd tot een paneelovergang klaar is. Minder beweging en laadfoutherstel zijn ondersteund. Alle oorspronkelijke RiskStudio App-bestanden blijven gelijk. Spelregels en score-editie blijven behouden. [Themahandleiding](docs/RISKSTUDIO_CC_V1.md) · [Controlebewijs](docs/riskstudio-cc-v1-evidence-2026-10-07/verification.json).
+
+**RiskStudio CC v1 gepubliceerd:** definitieve Sites-versie 19 staat succesvol op de bestaande openbare game. Broncommit `87035a4478847d5247d82480084ecbbf468aa143`; originele thema’s, openbare toegang, database en score-editie behouden. Geen aanvullende online browsertest. [Publicatiebewijs](docs/publicatie-riskstudio-cc-v1-2026-10-07.json).
